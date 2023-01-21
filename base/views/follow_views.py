@@ -1,6 +1,6 @@
 from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 
 from base.models import UserFollow, User, UserBlock, Profile
 from base.models.room_models import RoomUser
@@ -11,6 +11,9 @@ from base.views.mixins import LoginRequiredMixin
 class FollowView(LoginRequiredMixin, DetailView):
     model = UserFollow
     template_name = 'pages/user.html'
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         username = get_dict_item(self.kwargs, 'username')
@@ -36,6 +39,9 @@ class FollowView(LoginRequiredMixin, DetailView):
 class BlockView(LoginRequiredMixin, DetailView):
     model = UserBlock
     template_name = 'pages/user.html'
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         #todo followでも使われている

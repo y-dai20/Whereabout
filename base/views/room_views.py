@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView, View
 from django.shortcuts import redirect, get_object_or_404
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.db.models.functions import Length
 
 from base.models.account_models import User, UserBlock
@@ -20,7 +20,7 @@ from base.views.mixins import LoginRequiredMixin, RoomAdminRequiredMixin
 
 import json
 
-class ShowRoomView(ShowRoomBaseView, PostItemView, SearchBaseView):
+class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
     template_name = 'pages/room.html'
     model = Room
     load_by = 2
@@ -83,9 +83,9 @@ class ManageRoomView(ManageRoomBaseView, ShowRoomBaseView, ListView):
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        #todo self.vrがどの段階で入るかがわからない
+
         if is_empty(self.vr):
-            return context
+            self.vr = self.get_validate_room()
         
         room = self.vr.get_room()
         room_users = RoomUser.objects.filter(room=room, is_blocked=False, is_deleted=False)
@@ -134,6 +134,9 @@ class CreateRoomView(LoginRequiredMixin, CreateView):
     max_room_count = 1
     max_img = 5
     max_img_size = 2 * 1024 * 1024
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -235,6 +238,9 @@ class LeaveRoomView(LoginRequiredMixin, UpdateView):
 class AcceptRoomInviteView(LoginRequiredMixin, CreateView):
     model = RoomInviteUser
 
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
     def post(self, request, *args, **kwargs):
         vr = ValidateRoomView(get_dict_item(kwargs, 'room_pk'))
         if not vr.is_room_exist():
@@ -273,6 +279,9 @@ class AcceptRoomInviteView(LoginRequiredMixin, CreateView):
 
 class AcceptRoomGuestView(ManageRoomBaseView, CreateView):
     model = RoomInviteUser
+    
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         is_blocked = get_boolean_or_none(get_dict_item(request.POST, 'is_blocked'))
@@ -359,6 +368,9 @@ class ManageRoomAuthorityView(ManageRoomBaseView, TemplateView):
     model = RoomUser
     template_name = 'pages/manage_room.html'
 
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
     def post(self, request, *args, **kwargs):
         vr = self.get_validate_room()
         room = vr.get_room()
@@ -398,6 +410,9 @@ class ManageRoomAuthorityView(ManageRoomBaseView, TemplateView):
         return can_reply, can_post, is_admin
 
 class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
     def post(self, request, *args, **kwargs):
         json_data = json.loads(request.body.decode('utf-8'))
         vr = self.get_validate_room()
@@ -444,6 +459,9 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     max_img_size = 2 * 1024 * 1024
     max_video_size = 2 * 1024 * 1024
     max_video = 1
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         vr = self.get_validate_room()
@@ -598,6 +616,9 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         return True
 
 class ManageRoomPostView(ManageRoomBaseView, TemplateView):
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
     def post(self, request, *args, **kwargs):
         vr = self.get_validate_room()
         room = vr.get_room()
@@ -623,6 +644,9 @@ class ManageRoomPostView(ManageRoomBaseView, TemplateView):
 #todo self.max_request_informationをshowroomにも持たせるか
 class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
     form_class = RoomRequestInformationForm
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         vr = self.get_validate_room()
@@ -658,6 +682,9 @@ class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
 class RoomInformationView(TemplateView):
     model = RoomInformation
 
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
     def post(self, request, *args, **kwargs):
         room = get_object_or_404(Room, pk=get_dict_item(kwargs, 'room_pk'), is_deleted=False)
         rris = RoomRequestInformation.objects.filter(room=room, is_deleted=False, is_active=True)
@@ -679,6 +706,9 @@ class RoomInformationView(TemplateView):
 class RoomInviteView(ManageRoomBaseView, TemplateView):
     model = User
     template_name = 'pages/manage_room.html'
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     #todo postで404使うの？
     def post(self, request, *args, **kwargs):
@@ -714,12 +744,18 @@ class RoomGoodView(GoodView):
 class GetRoomView(RoomItemView, TemplateView):
     model = Room
 
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
     def post(self, request, *args, **kwargs):
         room = get_object_or_404(Room, pk=get_dict_item(kwargs, 'room_pk'), is_deleted=False)
         return JsonResponse(get_json_message(True, add_dict=self.get_room_item(room)))
 
 class GetRoomRequestInformationView(TemplateView):
     model = RoomRequestInformation
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         room = get_object_or_404(Room, pk=get_dict_item(kwargs, 'room_pk'), is_deleted=False)

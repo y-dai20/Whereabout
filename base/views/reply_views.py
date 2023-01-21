@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import TemplateView, CreateView
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 
 from base.forms import ReplyReplyForm, ReplyPostForm
 from base.models.general_models import ObjectExpansion
@@ -19,6 +19,9 @@ class ReplyPostView(LoginRequiredMixin, CreateView):
     template_name = 'pages/post_detail.html'
     max_img_size = 2 * 1024 * 1024
     max_img = 1
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         post = get_object_or_404(Post, id=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
@@ -60,6 +63,9 @@ class ReplyPostView(LoginRequiredMixin, CreateView):
 class ReplyReplyView(LoginRequiredMixin, CreateView):
     form_class = ReplyReplyForm
     template_name = 'pages/reply_detail.html'
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         reply_post = get_object_or_404(ReplyPost, id=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
@@ -138,6 +144,9 @@ class ReplyDeleteView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/index.html'
     model = ReplyPost
 
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
     def post(self, request, *args, **kwargs):
         reply = get_object_or_404(self.model, pk=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
         vr = ValidateRoomView(reply.post.room)
@@ -152,6 +161,9 @@ class ReplyDeleteView(LoginRequiredMixin, TemplateView):
 class Reply2DeleteView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/index.html'
     model = ReplyReply
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         reply2 = get_object_or_404(self.model, pk=get_dict_item(kwargs, 'reply2_pk'), is_deleted=False)
@@ -227,6 +239,9 @@ class Reply2DemagogyView(DemagogyView):
 class GetReplyView(DetailBaseView, IndexBaseView):
     load_by = 1
 
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
     def get_items(self):
         post = get_dict_item(self.request.POST, 'obj_id')
         if not is_str(post):
@@ -237,6 +252,9 @@ class GetReplyView(DetailBaseView, IndexBaseView):
 
 class GetReply2View(DetailBaseView, IndexBaseView):
     load_by = 1
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def get_items(self):
         reply = get_dict_item(self.request.POST, 'obj_id')

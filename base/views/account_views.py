@@ -2,7 +2,7 @@ from django.contrib.auth.views import LoginView
 from django.contrib.auth.hashers import make_password
 from django.views.generic import CreateView, TemplateView, ListView, View
 from django.conf import settings
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.contrib.auth import login
 from django.utils.timezone import make_naive
@@ -73,6 +73,7 @@ class SignUpView(CreateView):
         if not form.is_valid():
             return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
 
+        # emailが過去に使用されていれば，使用禁止にする
         user = User.objects.filter(email=self.guest.email)
         if user.exists():
             return get_json_error(500)
@@ -84,6 +85,7 @@ class SignUpView(CreateView):
         self.guest.is_deleted = True
         self.guest.save()
         
+        # adminのRoomに強制参加
         rooms = Room.objects.filter(title="admin", admin__username="admin")
         if rooms.exists():
             RoomUser.objects.create(
@@ -111,6 +113,9 @@ class SignUpView(CreateView):
 #todo 変更の回数制限は不要？
 class ChangePasswordView(LoginRequiredMixin, View):
     form_class = ChangePasswordForm
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
@@ -251,6 +256,9 @@ class SendMailForSignupView(SendMailView):
 class GetUserView(UserItemView, ListView):
     model = settings.AUTH_USER_MODEL
     
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
     def post(self, request, *args, **kwargs):
         target_user = get_object_or_404(User, username=get_dict_item(self.kwargs, 'username'), is_active=True)
         return JsonResponse(self.get_user_item(target_user.profile))

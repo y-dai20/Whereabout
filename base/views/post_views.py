@@ -1,6 +1,6 @@
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import TemplateView, CreateView
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 
 from base.models.general_models import ObjectExpansion
 from base.models.reply_models import ReplyPost
@@ -21,6 +21,9 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
     max_video = 1
     max_img_size = 2 * 1024 * 1024
     max_video_size = 11 * 1024 * 1024
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         vr = ValidateRoomView(get_dict_item(request.POST, 'room_id'))
@@ -134,6 +137,9 @@ class PostDetailView(DetailBaseView, SearchBaseView):
 class PostDeleteView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/index.html'
     model = Post
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
 
     def post(self, request, *args, **kwargs):
         post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
