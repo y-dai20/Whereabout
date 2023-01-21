@@ -710,7 +710,6 @@ class RoomInviteView(ManageRoomBaseView, TemplateView):
     def get(self, request, *args, **kwargs):
         raise Http404
 
-    #todo postで404使うの？
     def post(self, request, *args, **kwargs):
         json_data = json.loads(request.body.decode('utf-8'))
         invite_user = get_object_or_404(User, username=get_dict_item(json_data, 'username'), is_active=True)

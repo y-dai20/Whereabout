@@ -347,7 +347,7 @@ $(document).on('click', '.room-tab-title', function(){
     }
 
     $.ajax({
-        url: `/get/tab_contents/`,
+        url: `/get/tab-contents/`,
         type:'POST',
         data:{'content_id':content_id},
     }).done(function (data) {

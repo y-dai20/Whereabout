@@ -30,7 +30,6 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
     def post(self, request, *args, **kwargs):
         vr = ValidateRoomView(get_dict_item(request.POST, 'room_id'))
 
-
         if not vr.validate_post(request.user):
             return JsonResponse(get_json_message(False, 'エラー', vr.get_error_messages()))
 

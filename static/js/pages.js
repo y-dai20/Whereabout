@@ -489,7 +489,7 @@ $(document).on('click', '.save-display-button', function(){
     fd.append('tabs', JSON.stringify(tabs));
 
     $.ajax({
-        url:'/manage/room/display/' + $('#manage-room-id').val() + '/',
+        url:'/manage/room-display/' + $('#manage-room-id').val() + '/',
         type:'POST',
         data:fd,
         dataType:false,
@@ -513,7 +513,7 @@ $(document).on('click', '.save-participant-button', function(){
     }
 
     $.ajax({
-        url:'/manage/room/participant/' + $('#manage-room-id').val() + '/',
+        url:'/manage/room-participant/' + $('#manage-room-id').val() + '/',
         type:'POST',
         data:JSON.stringify(data),
         dataType:'json',
@@ -527,7 +527,7 @@ $(document).on('click', '.save-participant-button', function(){
 
 $(document).on('click', '.save-reply-type-button', function(){
     $.ajax({
-        url:'/manage/room/reply-type/' + $('#manage-room-id').val() + '/',
+        url:'/manage/room-reply-type/' + $('#manage-room-id').val() + '/',
         type:'POST',
         data:get_form_input_data('manage-reply-types-form'),
         dataType:false,
@@ -553,7 +553,7 @@ $(document).on('click', '.save-information-button', function(){
         var fd = get_form_data($(this).attr('id'), ['input', 'select']);
         fd.append('sequence', idx+1);
         ajax_obj = $.ajax({
-            url:`/manage/room/information/${room_id}/`,
+            url:`/manage/room-information/${room_id}/`,
             type:'POST',
             data:fd,
             dataType:false,
@@ -608,7 +608,7 @@ $(document).on('click', '.save-authority-button', function(){
     };
 
     $.ajax({
-        url:'/manage/room/authority/' + $('#manage-room-id').val() + '/',
+        url:'/manage/room-authority/' + $('#manage-room-id').val() + '/',
         type:'POST',
         data:JSON.stringify(data),
         dataType:'json',
