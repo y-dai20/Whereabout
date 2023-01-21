@@ -16,7 +16,6 @@ from base.views.functions import get_form_error_message, get_combined_list, get_
     get_img_list, get_video_list, get_file_size, is_uploaded_file_img, is_same_empty_count, is_str, \
     get_boolean_or_none, get_dict_item, get_list_item, is_empty, is_all_none, get_dict_item_list, literal_eval, \
     get_json_message, get_img_path, get_json_error, is_int
-from base.views.error_functions import empty_error
 from base.forms import CreateRoomForm, UpdateRoomForm, RoomRequestInformationForm
 from base.views.mixins import LoginRequiredMixin, RoomAdminRequiredMixin
 
@@ -246,13 +245,13 @@ class AcceptRoomInviteView(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         vr = ValidateRoomView(get_dict_item(kwargs, 'room_pk'))
         if not vr.is_room_exist():
-            return JsonResponse(empty_error())
+            raise MyBadRequest
         room = vr.get_room()
         room_invite = get_object_or_404(RoomInviteUser, room=room, user=request.user, is_deleted=False)
 
         is_accept = get_boolean_or_none(get_dict_item(request.POST, 'is_accept'))
         if is_accept is None:
-            return JsonResponse(empty_error())
+            raise MyBadRequest
         
         room_user = RoomUser.objects.filter(room=room, user=request.user)
         if room_user.exists() and not room_user[0].is_deleted:
@@ -288,7 +287,7 @@ class AcceptRoomGuestView(ManageRoomBaseView, CreateView):
     def post(self, request, *args, **kwargs):
         is_blocked = get_boolean_or_none(get_dict_item(request.POST, 'is_blocked'))
         if is_blocked is None:
-            return JsonResponse(empty_error())
+            raise MyBadRequest
 
         result = self.accept_room_guest(get_dict_item(kwargs, 'username'), get_dict_item(kwargs, 'room_pk'), is_blocked)
 

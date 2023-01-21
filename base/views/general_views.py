@@ -7,12 +7,13 @@ from django.conf import settings
 from django.core.validators import validate_email
 from django.http import JsonResponse, Http404
 
+
+from base.views.exceptions import MyBadRequest
 from base.models.post_models import Post, PostImgs, PostAgree, PostFavorite, PostDemagogy
 from base.models.reply_models import ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy
 from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, RoomReplyType, TabContentItem,\
     TabPermutation, RoomGood, RoomRequestInformation, RoomInformation
 from base.models.account_models import UserFollow, UserBlock, Profile
-from base.views.error_functions import empty_error
 from base.views.functions import get_number_unit, is_str, get_json_message, get_bool_or_str, get_list_index, get_img_path, get_dict_item, is_empty,\
     get_reply_types, get_boolean_or_none, get_display_datetime, get_json_error
 from base.views.mixins import LoginRequiredMixin
@@ -152,7 +153,7 @@ class GoodView(UpdateBaseView):
     def get_json_data(self, obj):
         is_good = get_boolean_or_none(get_dict_item(self.request.GET, 'is_good'))
         if is_empty(obj) or is_good is None:
-            return empty_error()
+            raise MyBadRequest
 
         good_obj = self.model.objects.filter(user=self.request.user, obj=obj)
         if good_obj.exists():
@@ -178,7 +179,7 @@ class AgreeView(UpdateBaseView):
     def get_json_data(self, obj, room):
         is_agree = get_boolean_or_none(get_dict_item(self.request.GET, 'is_agree'))
         if is_empty(obj) or is_agree is None:
-            return empty_error()
+            raise MyBadRequest
         
         res = self.can_access_room(room)
         if not res['is_success']:
@@ -208,7 +209,7 @@ class DemagogyView(UpdateBaseView):
     def get_json_data(self, obj, room):
         is_true = get_boolean_or_none(get_dict_item(self.request.GET, 'is_true'))
         if is_empty(obj) or is_true is None:
-            return empty_error()
+            raise MyBadRequest
 
         res = self.can_access_room(room)
         if not res['is_success']:
@@ -237,7 +238,7 @@ class DemagogyView(UpdateBaseView):
 class FavoriteView(UpdateBaseView):
     def get_json_data(self, obj, room):
         if is_empty(obj):
-            return empty_error()
+            raise MyBadRequest
 
         res = self.can_access_room(room)
         if not res['is_success']:
