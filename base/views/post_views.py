@@ -2,6 +2,8 @@ from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import TemplateView, CreateView
 from django.http import JsonResponse, Http404
 
+
+from base.views.exceptions import MyBadRequest
 from base.models.general_models import ObjectExpansion
 from base.models.reply_models import ReplyPost
 from base.models.post_models import Post, PostAgree, PostFavorite, PostImgs
@@ -143,7 +145,7 @@ class PostDeleteView(LoginRequiredMixin, TemplateView):
         post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         vr = ValidateRoomView(post.room)
         if (vr.is_room_exist() and not vr.is_admin(request.user)) or (request.user != post.user):
-            return JsonResponse(get_json_message(False, 'エラー', ['削除に失敗しました']))
+            raise MyBadRequest
 
         post.is_deleted = True
         post.save()

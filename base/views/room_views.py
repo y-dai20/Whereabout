@@ -71,7 +71,7 @@ class GetRoomTabContents(TemplateView):
     def post(self, request, *args, **kwargs):
         content_id = get_dict_item(request.POST, 'content_id')
         if is_empty(content_id) or not is_str(content_id):
-            return get_json_error(400)
+            raise MyBadRequest
         #todo 見直しが必要かも
         room_base = RoomBase()
         return JsonResponse(get_json_message(True, add_dict={'content_items':room_base.get_tab_content_items(content_id)}))
@@ -290,7 +290,6 @@ class AcceptRoomGuestView(ManageRoomBaseView, CreateView):
             raise MyBadRequest
 
         result = self.accept_room_guest(get_dict_item(kwargs, 'username'), get_dict_item(kwargs, 'room_pk'), is_blocked)
-
         if not result:
             return JsonResponse(get_json_message(False, 'エラー', ['エラーが発生しました．(E02)']))
 
@@ -658,14 +657,14 @@ class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
             return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
         is_active = get_boolean_or_none(get_dict_item(form_data, 'is_active'))
         if is_active is None:
-            return get_json_error(500)
+            raise MyBadRequest
         
         sequence = get_dict_item(form_data, 'sequence')
         if not is_int(sequence):
-            return get_json_error(500)
+            raise MyBadRequest
         sequence = int(sequence)
         if sequence < 1 or self.max_request_information < sequence:
-            return get_json_error(500)
+            raise MyBadRequest
         
         #todo 要確認
         rri_exist = RoomRequestInformation.objects.filter(room=room, sequence=sequence, is_deleted=False)
@@ -693,12 +692,12 @@ class RoomInformationView(TemplateView):
         for label, value in form_data.items():
             rri = rris.filter(sequence=label)
             if not rri.exists():
-                return get_json_error(500)
+                raise MyBadRequest
             value = value.strip() if is_str(value) else value
             if len(value) < rri[0].min_length or rri[0].max_length < len(value):
-                return get_json_error(500)
+                raise MyBadRequest
             if (type == 'num' and not is_int(value)) or (type == 'choice' and value not in rri[0].choice):
-                return get_json_error(500)
+                raise MyBadRequest
             
             RoomInformation.objects.create(rri=rri[0], user=self.request.user, text=value)
 

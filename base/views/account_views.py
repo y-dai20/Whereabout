@@ -9,6 +9,8 @@ from django.utils.timezone import make_naive
 from django.contrib import messages
 from django.shortcuts import render
 
+
+from base.views.exceptions import MyBadRequest
 from base.forms import SignUpForm, ChangePasswordForm, SendMailForm, UserProfileForm
 from base.models import Room, RoomGuest, Profile
 from base.models.room_models import RoomInviteUser, RoomUser, RoomAuthority
@@ -57,6 +59,7 @@ class LoginView(LoginView):
     def get_user(self):
         return User.objects.filter(username=get_dict_item(self.request.POST, 'username'), is_active=True)
 
+#todo get_json_messageをerror用とsuccess用の2つに分けた方がいいかも
 class SignUpView(CreateView):
     form_class = SignUpForm
     template_name = 'pages/signup.html'
@@ -76,7 +79,7 @@ class SignUpView(CreateView):
         # emailが過去に使用されていれば，使用禁止にする
         user = User.objects.filter(email=self.guest.email)
         if user.exists():
-            return get_json_error(500)
+            raise MyBadRequest
 
         if get_diff_seconds_from_now(self.guest.updated_at) > self.registrable_seconds:
             return JsonResponse(get_json_message(False, 'エラー', ['時間切れです', 'メールアドレスの登録からやり直してください']))

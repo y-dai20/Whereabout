@@ -2,6 +2,8 @@ from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import TemplateView, CreateView
 from django.http import JsonResponse, Http404
 
+
+from base.views.exceptions import MyBadRequest
 from base.forms import ReplyReplyForm, ReplyPostForm
 from base.models.general_models import ObjectExpansion
 from base.models.post_models import Post, PostAgree
@@ -39,7 +41,7 @@ class ReplyPostView(LoginRequiredMixin, CreateView):
         room_base = RoomBase(vr.get_room())
         reply = form.save(commit=False)
         if reply.type not in room_base.get_room_reply_types():
-            return get_json_error(500)
+            raise MyBadRequest
 
         img_list = get_img_list(request.POST, files, self.max_img)
         if get_file_size(img_list) > self.max_img_size:
@@ -138,6 +140,7 @@ class ReplyDetailView(DetailBaseView, SearchBaseView):
 
         return queryset
 
+#todo delete_base_viewを作った方がいいかも
 class ReplyDeleteView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/index.html'
     model = ReplyPost
@@ -149,7 +152,7 @@ class ReplyDeleteView(LoginRequiredMixin, TemplateView):
         reply = get_object_or_404(self.model, pk=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
         vr = ValidateRoomView(reply.post.room)
         if (vr.is_room_exist() and not vr.is_admin(request.user)) or request.user != reply.user:
-            return JsonResponse(get_json_message(False, 'エラー', ['削除に失敗しました']))
+            raise MyBadRequest
 
         reply.is_deleted = True
         reply.save()
@@ -167,7 +170,7 @@ class Reply2DeleteView(LoginRequiredMixin, TemplateView):
         reply2 = get_object_or_404(self.model, pk=get_dict_item(kwargs, 'reply2_pk'), is_deleted=False)
         vr = ValidateRoomView(reply2.reply.post.room)
         if (vr.is_room_exist() and not vr.is_admin(request.user)) and request.user != reply2.user:
-            return JsonResponse(get_json_message(False, 'エラー', ['削除に失敗しました']))
+            raise MyBadRequest
 
         reply2.is_deleted = True
         reply2.save()
