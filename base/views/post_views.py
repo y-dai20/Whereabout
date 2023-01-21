@@ -73,7 +73,7 @@ class PostDetailView(DetailBaseView, SearchBaseView):
         self.room = self.post.room
         
         if not self.check_can_access(self.room):
-            return redirect('/error/')
+            raise PermissionError
 
         return super().get(request, *args, **kwargs)
 
@@ -157,7 +157,7 @@ class PostAgreeView(AgreeView):
     template_name = 'pages/index.html'
     
     def get(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'))
+        post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=post, room=post.room)
 
         return JsonResponse(json_data)
@@ -167,7 +167,7 @@ class PostFavoriteView(FavoriteView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'))
+        post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=post, room=post.room)
         
         return JsonResponse(json_data)
@@ -177,19 +177,19 @@ class PostDemagogyView(DemagogyView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'))
+        post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=post, room=post.room)
         
         return JsonResponse(json_data)
 
 class GetPostReplyTypesView(TemplateView):
     def get(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, id=get_dict_item(kwargs, 'post_pk'))
+        post = get_object_or_404(Post, id=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         room_base = RoomBase(post.room)
         return JsonResponse(get_json_message(True, add_dict={'reply_types':room_base.get_room_reply_types()}))
 
 class GetReplyReplyTypesView(TemplateView):
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyPost, id=get_dict_item(kwargs, 'reply_pk'))
+        reply = get_object_or_404(ReplyPost, id=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
         room_base = RoomBase(reply.post.room)
         return JsonResponse(get_json_message(True, add_dict={'reply_types':room_base.get_room_reply_types()}))

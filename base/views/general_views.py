@@ -320,7 +320,7 @@ class RoomBase(object):
         if not self.vr.is_room_exist():
             return get_reply_types()
 
-        reply_type_obj = get_object_or_404(RoomReplyType, room=self.room)
+        reply_type_obj = get_object_or_404(RoomReplyType, room=self.room, room__is_deleted=False)
         reply_types = [
             reply_type_obj.type1,
             reply_type_obj.type2,

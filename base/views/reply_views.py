@@ -181,7 +181,7 @@ class ReplyAgreeView(AgreeView):
     template_name = 'pages/index.html'
     
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyPost, pk=get_dict_item(kwargs, 'reply_pk'))
+        reply = get_object_or_404(ReplyPost, pk=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=reply, room=reply.post.room)
 
         return JsonResponse(json_data)
@@ -191,7 +191,7 @@ class Reply2AgreeView(AgreeView):
     template_name = 'pages/index.html'
     
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyReply, pk=get_dict_item(kwargs, 'reply2_pk'))
+        reply = get_object_or_404(ReplyReply, pk=get_dict_item(kwargs, 'reply2_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=reply, room=reply.reply.post.room)
 
         return JsonResponse(json_data)
@@ -201,7 +201,7 @@ class ReplyFavoriteView(FavoriteView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyPost, pk=get_dict_item(kwargs, 'reply_pk'))
+        reply = get_object_or_404(ReplyPost, pk=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=reply, room=reply.post.room)
         
         return JsonResponse(json_data)
@@ -211,7 +211,7 @@ class Reply2FavoriteView(FavoriteView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyReply, pk=get_dict_item(kwargs, 'reply2_pk'))
+        reply = get_object_or_404(ReplyReply, pk=get_dict_item(kwargs, 'reply2_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=reply, room=reply.reply.post.room)
         
         return JsonResponse(json_data)
@@ -221,7 +221,7 @@ class ReplyDemagogyView(DemagogyView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyPost, pk=get_dict_item(kwargs, 'reply_pk'))
+        reply = get_object_or_404(ReplyPost, pk=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=reply, room=reply.post.room)
         
         return JsonResponse(json_data)
@@ -231,7 +231,7 @@ class Reply2DemagogyView(DemagogyView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyReply, pk=get_dict_item(kwargs, 'reply2_pk'))
+        reply = get_object_or_404(ReplyReply, pk=get_dict_item(kwargs, 'reply2_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=reply, room=reply.reply.post.room)
         
         return JsonResponse(json_data)

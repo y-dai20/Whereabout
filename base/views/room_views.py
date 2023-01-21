@@ -70,7 +70,7 @@ class GetRoomTabContents(TemplateView):
     def post(self, request, *args, **kwargs):
         content_id = get_dict_item(request.POST, 'content_id')
         if is_empty(content_id) or not is_str(content_id):
-            return JsonResponse(empty_error())
+            return get_json_error(400)
         #todo 見直しが必要かも
         room_base = RoomBase()
         return JsonResponse(get_json_message(True, add_dict={'content_items':room_base.get_tab_content_items(content_id)}))
@@ -438,7 +438,7 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
     def toggle_banish_user(self, username):
         if is_empty(username):
             return False
-        room_user = get_object_or_404(RoomUser, room=self.room, user__username=username)
+        room_user = get_object_or_404(RoomUser, room=self.room, user__username=username, is_deleted=False)
         room_user.is_blocked = not room_user.is_blocked
         room_user.save()
         return True
@@ -488,7 +488,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
 
         # todo check
         tabs = literal_eval(get_dict_item(form_data, 'tabs'))
-        tab_permu = get_object_or_404(TabPermutation, room=room)
+        tab_permu = get_object_or_404(TabPermutation, room=room, room__is_deleted=False)
         tab_permu.tab_content1 = self.get_tab_content(get_dict_item(get_list_item(tabs, 0), 'content_id'), get_dict_item(get_list_item(tabs, 0), 'title'))
         tab_permu.tab_content2 = self.get_tab_content(get_dict_item(get_list_item(tabs, 1), 'content_id'), get_dict_item(get_list_item(tabs, 1), 'title'))
         tab_permu.tab_content3 = self.get_tab_content(get_dict_item(get_list_item(tabs, 2), 'content_id'), get_dict_item(get_list_item(tabs, 2), 'title'))
@@ -625,7 +625,7 @@ class ManageRoomPostView(ManageRoomBaseView, TemplateView):
         form_data = request.POST
 
         #todo 空は許可する？
-        reply_type = get_object_or_404(RoomReplyType, room=room)
+        reply_type = get_object_or_404(RoomReplyType, room=room, room__is_deleted=False)
         reply_type.type1 = get_dict_item(form_data, 'type1')
         reply_type.type2 = get_dict_item(form_data, 'type2')
         reply_type.type3 = get_dict_item(form_data, 'type3')
