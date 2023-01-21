@@ -97,9 +97,7 @@ class ReplyDetailView(DetailBaseView, SearchBaseView):
     def get(self, request, *args, **kwargs):
         self.reply = get_object_or_404(ReplyPost, id=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
         self.room = self.reply.post.room
-
-        if not self.check_can_access(self.room):
-            raise PermissionError()
+        self.check_can_access(self.room)
         
         return super().get(request, *args, **kwargs)
 

@@ -513,9 +513,8 @@ class DetailBaseView(PostItemView):
 
     def check_can_access(self, room):
         vr = ValidateRoomView(room)
-        if not vr.is_room_exist():
-            return True
-        return vr.can_access(self.request.user)
+        if vr.is_room_exist() and not vr.can_access(self.request.user):
+            raise PermissionError('ルームに対するアクセス権がありません')
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

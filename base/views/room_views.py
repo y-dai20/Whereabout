@@ -4,6 +4,8 @@ from django.shortcuts import redirect, get_object_or_404
 from django.http import JsonResponse, Http404
 from django.db.models.functions import Length
 
+
+from base.views.exceptions import MyBadRequest
 from base.models.account_models import User, UserBlock
 from base.models.post_models import Post, PostFavorite
 from base.models.room_models import Room, RoomGuest, RoomImgs, RoomUser, RoomGood, RoomAuthority, TabContent, \
@@ -178,7 +180,7 @@ class JoinRoomView(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         vr = ValidateRoomView(get_dict_item(kwargs, 'room_pk'))
         if not vr.is_room_exist() or not vr.is_public() or vr.is_admin(request.user):
-            return JsonResponse(get_json_message(False, 'エラー', ['不正エラー']))
+            raise MyBadRequest
         
         room = vr.get_room()
         if UserBlock.objects.filter(blocker=room.admin, blockee=request.user, is_deleted=False):
@@ -222,12 +224,12 @@ class LeaveRoomView(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         vr = ValidateRoomView(get_dict_item(kwargs, 'room_pk'))
         if not vr.is_room_exist() or vr.is_admin(request.user):
-            return redirect('/error/')
+            raise MyBadRequest
         
         room = vr.get_room()
         room_user = RoomUser.objects.filter(user=request.user, room=room, is_blocked=False, is_deleted=False)
         if not room_user.exists():
-            return redirect('/error/')
+            raise MyBadRequest
 
         room_user.update(is_deleted=True)
         room.participant_count -= 1
@@ -338,7 +340,7 @@ class ModalSearchRoomView(ListView):
     def get(self, request, *args, **kwargs):
         word = get_dict_item(request.GET, 'search_word')
         if not is_str(word):
-            return JsonResponse(empty_error())
+            raise MyBadRequest
         rooms = Room.objects.filter(is_deleted=False, is_public=True, title__icontains=word)\
                 .exclude(id__in=RoomBase.get_my_room_list(request.user))\
                     .order_by('-title')\
@@ -354,7 +356,7 @@ class ModalSearchUserView(ListView):
     def get(self, request, *args, **kwargs):
         word = get_dict_item(request.GET, 'search_word')
         if not is_str(word):
-            return JsonResponse(empty_error())
+            raise MyBadRequest
 
         users = User.objects.filter(is_active=True, username__icontains=word)
         if request.user.is_authenticated:
