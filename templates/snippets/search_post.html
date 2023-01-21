@@ -1,0 +1,101 @@
+<div class="accordion" id="search-post-accordion">
+    <div class="accordion-item index-search">
+        <h2 class="accordion-header" id="search-post-accordion-hearder1">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#search-post-accordion-collapse1" aria-expanded="true" aria-controls="search-post-accordion-collapse1">
+            【投稿検索】
+        </button>
+        </h2>
+        <div id="search-post-accordion-collapse1" class="accordion-collapse collapse show" aria-labelledby="search-post-accordion-hearder1" data-bs-parent="#search-post-accordion">
+        <div class="accordion-body">
+            <form action="/" method="get" id="search-post-form">
+                {% csrf_token %}
+                <table class="table"> 
+                    <tr>
+                        <th scope="row" class="search-post-th"><label for="post-search-username">ユーザー</label></th>
+                        <td><input type="text" id="post-search-username" placeholder="ユーザー" name="username" value="{{search.username}}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="search-post-th"><label for="post-search-title">タイトル</label></th>
+                        <td><input type="text" id="post-search-title" placeholder="タイトル" name="title" value="{{search.title}}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="search-post-th"><label for="">投稿日</label></th>
+                        <td>
+                            <input type="text" id="post-search-date-from" placeholder="YYYY-MM-DD" name="date_from" value="{{search.date_from}}">
+                            〜
+                            <input type="text" id="post-search-date-to" placeholder="YYYY-MM-DD" name="date_to" value="{{search.date_to}}">
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="search-post-th"><label for="">検索範囲</label></th>
+                        <td>
+                            {% if search.my_room_check %}
+                                <label class="checkbox-space"><input class="search-range" id="my-room-check-input" type="checkbox" name="my_room_check" checked> MyRoom</label>
+                            {% else %}
+                                <label class="checkbox-space"><input class="search-range" id="my-room-check-input" type="checkbox" name="my_room_check"> MyRoom</label>
+                            {% endif %}
+                            {% if search.attend_room_check %}
+                                <label class="checkbox-space"><input class="search-range" id="attend-room-check-input" type="checkbox" name="attend_room_check" checked> 参加中のRoom</label>
+                            {% else %}
+                                <label class="checkbox-space"><input class="search-range" id="attend-room-check-input" type="checkbox" name="attend_room_check"> 参加中のRoom</label>
+                            {% endif %}
+                            <br>
+                            {% if search.other_room_check %}
+                                <label class="checkbox-space"><input class="search-range" id="other-room-check-input" type="checkbox" name="other_room_check" checked> それ以外のRoom</label>
+                            {% else %}
+                                <label class="checkbox-space"><input class="search-range" id="other-room-check-input" type="checkbox" name="other_room_check"> それ以外のRoom</label>
+                            {% endif %}
+                            {% if search.no_room_check %}
+                                <label class="checkbox-space"><input id="no-room-check-input" type="checkbox" name="no_room_check" checked> Roomに属さない</label>
+                            {% else %}
+                                <label class="checkbox-space"><input id="no-room-check-input" type="checkbox" name="no_room_check"> Roomに属さない</label>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="search-post-th"><label for="">お気に入りのみ</label></th>
+                        <td>
+                            {% if search.is_favorite %}            
+                            <label class="checkbox-space"><input type="checkbox" name="is_favorite" checked> Yes</label>
+                            {% else %}
+                            <label class="checkbox-space"><input type="checkbox" name="is_favorite"> Yes</label>
+                            {% endif %}
+                        </td>
+                    </tr>
+                    {% comment %} <tr>
+                        <th scope="row" class="search-post-th"><label for="">賛否</label></th>
+                        <td>
+                            賛成
+                            <select name="agree-state">
+                                <option value=""></option>
+                                <option value="agree">＞</option>
+                                <option value="disagree">＜</option>
+                                <option value="equal">＝</option>
+                            </select>
+                            反対
+                        </td>
+                    </tr>
+                    <tr>
+                        <th scope="row" class="search-post-th"><label for="">真偽</label></th>
+                        <td>
+                            真
+                            <select name="true-state">
+                                <option value=""></option>
+                                <option value="true">＞</option>
+                                <option value="false">＜</option>
+                                <option value="equal">＝</option>
+                            </select>
+                            偽
+                        </td>
+                    </tr> {% endcomment %}
+                </table>
+                <div class="right-button">
+                    <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
+                    <button type="submit" class="btn btn-secondary">検索</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>
+

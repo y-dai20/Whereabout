@@ -1,0 +1,51 @@
+{% load static %}
+<div class="footer-button item-footer">
+    {% if object.agree_state %}
+        <button type="button" class="agree-button btn-sm btn btn-success">賛成</button>
+    {% else %}
+        <button type="button" class="agree-button btn-sm btn btn-outline-success">賛成</button>
+    {% endif %}
+    <span class="agree-count">{{object.agree_count}}</span>
+
+    {% if object.agree_state == False %}
+        <button type="button" class="disagree-button btn-sm btn btn-danger">反対</button>
+    {% else %}
+        <button type="button" class="disagree-button btn-sm btn btn-outline-danger">反対</button>
+    {% endif %}
+    <span class="disagree-count">{{object.disagree_count}}</span>
+
+    <a class="favorite-button">
+        {% if not object.favorite_state %}
+            <img src="{% static "images/white_star.svg" %}" alt="" class="favorite-img">
+        {% else %}
+            <img src="{% static "images/yellow_star.svg" %}" alt="" class="favorite-img">
+        {% endif %}
+    </a>
+    <span class="favorite-count">{{object.favorite_count}}</span>
+
+    {% if object.demagogy_state %}
+        <button type="button" class="demagogy-button btn-sm btn btn-dark">真</button>
+    {% else %}
+        <button type="button" class="demagogy-button btn-sm btn btn-outline-dark">真</button>
+    {% endif %}
+    <span class="true-count">{{object.true_count}}</span>
+
+    {% if object.demagogy_state == False %}
+        <button type="button" class="disdemagogy-button btn-sm btn btn-dark">偽</button>
+    {% else %}
+        <button type="button" class="disdemagogy-button btn-sm btn btn-outline-dark">偽</button>
+    {% endif %}
+    <span class="false-count">{{object.false_count}}</span>
+
+    {% if object.reply_count != None %}
+    <a href="#" role="button" class="show-modal-reply-button btn btn-sm btn-secondary">返信</a>
+    <span class="reply-count">{{object.reply_count}}</span>
+    {% endif %}
+
+    {% if object.can_user_delete %}
+    <div class="post-edit-delete">
+        {% comment %} <a href="/post/edit/{{object_id}}" class="btn btn-outline-dark" role="button">編集</a> {% endcomment %}
+        <a class="btn btn-sm btn-outline-dark delete-confirm-button" role="button">削除</a>
+    </div>
+    {% endif %}
+</div>

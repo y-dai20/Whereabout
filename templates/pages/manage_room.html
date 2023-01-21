@@ -1,0 +1,449 @@
+{% extends 'base.html' %}
+{% load static %} 
+
+{% block main %}
+<div class="left-sidebar sidebar">
+  <nav class="nav flex-column nav-pills manage-room-function-list w-100">
+    <a class="sidebar-button manage-room-function nav-link active" data-bs-toggle="pill" data-bs-target="#manage-display-pane" type="button" role="pill">
+      表示の管理
+    </a>
+    <a class="sidebar-button manage-room-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-participant-pane" type="button" role="pill">
+      参加者の管理
+    </a>
+    <a class="sidebar-button manage-room-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-authority-pane" type="button" role="pill">
+      権限の管理
+    </a>
+    <a class="sidebar-button manage-room-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-post-pane" type="button" role="pill">
+      投稿の管理
+    </a>
+    <a class="sidebar-button manage-room-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-information-pane" type="button" role="pill">
+      情報の管理
+    </a>
+  </nav>
+</div>
+<div class="menu-wrapper">
+  <div class="hamburger-menu open" data-for="left-sidebar"><span></span><span></span><span></span></div>
+</div>
+
+<div class="content manage-room-content">
+  <div class="my-container c-white">
+    <a href="/room/{{room_id}}/" role="button" class="btn btn-secondary">Roomに戻る</a>
+    <h1 class="manage-room-title">Roomの管理：{{title}}</h1>
+
+    <div class="tab-content">
+      <div class="tab-pane container active" id="manage-display-pane">
+        <button type="button" data-save-for="display" class="save-confirm-button btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <form class="manage-room-form" id="manage-room-display-form">
+          {% csrf_token %}
+          <p for="is_public" class="manage-headline">Roomの公開・非公開</p>
+          <div class="form-check form-switch">
+            {% if is_public %}
+            <input class="form-check-input" type="checkbox" id="manage-room-public" name="is_public" checked>
+            {% else %}
+            <input class="form-check-input" type="checkbox" id="manage-room-public" name="is_public">
+            {% endif %}
+            <label class="form-check-label" id="manage-room-public-label" for="manage-room-public" name="is_public">公開</label>
+          </div>
+
+          <p for="title" class="manage-headline">
+            <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
+              タイトル*<img src="{% static "images/black_question.svg" %}" class="question-img">
+            </span>
+          </p>
+          <div class="form-group">
+              <input type="text" class="input-title form-control" id="input-room-title" value="{{title}}" name="title">
+          </div>
+
+          <p for="text" class="manage-headline">
+            <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
+              サブタイトル*<img src="{% static "images/black_question.svg" %}" class="question-img">
+            </span>
+          </p>
+          <div class="form-group">
+            <textarea class="input-subtitle form-control" id="input-room-subtitle" name="subtitle" rows="3">{{subtitle}}</textarea>
+          </div>
+          
+          <p for="img" class="manage-headline">
+            <span data-bs-toggle="tooltip" data-bs-placement="right" title="最大5枚，2MB以内">
+              画像<img src="{% static "images/black_question.svg" %}" class="question-img">
+            </span>
+          </p>
+          <div class="form-group">
+            <label class="manage-room-img-preview-uploaders img-upload-label">
+              画像の追加
+              <input type="file" class="form-control manage-room-img-preview-uploader file-uploader" name="img" accept="image/*" multiple>
+            </label>
+            <span id="manage-room-img-upload-size" data-size="{{total_img_size.b}}">{{total_img_size.mb}}</span>
+            <div class="manage-room-img-preview-list">
+              {% for img in img_path_and_size %}
+              <div class="manage-room-img-preview" file-name="{{img.path}}" data-size="{{img.size}}">
+                <img src="{{img.path}}" class="img-fluid">
+                <div class="delete">
+                  <a class="manage-room-img-delete-button delete-font">削除</a>
+                </div>
+              </div>
+              {% endfor %}
+            </div>
+          </div>
+          
+          <p for="video" class="manage-headline">
+            <span data-bs-toggle="tooltip" data-bs-placement="right" title="最大1つ，5MB以内">
+              動画<img src="{% static "images/black_question.svg" %}" class="question-img">
+            </span>
+          </p>
+          <div class="form-group">
+            <label class="manage-room-video-preview-uploaders video-upload-label">
+              動画の追加
+              {% if video_path == None %}
+              <input type="file" class="form-control manage-room-video-preview-uploader file-uploader" name="video" file-name="" accept="video/*">
+              {% endif %}
+            </label>
+            <span id="manage-room-video-upload-size" data-size="{{video_size}}"></span>
+            <div class="manage-room-video-preview-list">
+              {% if video_path != None %}
+              <div class="manage-room-video-preview" file-name="{{video_path}}" data-size="{{video_size}}">
+                <video controls src="{{video_path}}" class="manage-room-video"></video>
+                <div class="delete">
+                  <a class="manage-room-video-delete-button delete-font">削除</a>
+                </div>
+              </div>
+              {% endif %}
+            </div>
+          </div>
+
+          <p for="text" class="manage-headline">タブ</p>
+          <div class="tab-operation-area">
+            <div class="addable-object-list"></div>
+            <div class="trash-area droppable">
+              <img src="{% static "images/trash.svg" %}" class="trash-img">
+            </div>
+            <button class="btn btn-secondary expand-object-button" type="button">右へ拡大</button>
+            <button class="btn btn-secondary add-row-button" type="button">行の追加</button>
+          </div>
+
+          <div class="form-group">
+            <div class="manage-room-tab-content">
+              <div class="manage-room-titles">
+                <div class="nav flex-column nav-pills room-tab-title-list w-100"></div>
+                <div class="text-center">
+                  <div class="add-tab-button">
+                    <img src="{% static "images/add.svg" %}" class="img-add-button">
+                  </div>
+                </div>
+              </div>
+              <div class="tab-content manage-room c-white" id="room-tab-pane-list"></div>
+            </div>
+          </div>
+        </form>
+      </div>
+      <div class="tab-pane container" id="manage-participant-pane">
+        <button type="button" data-save-for="participant" class="save-confirm-button btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <p class="manage-headline" for="need_approval">Room参加時に承認が必要・不要</p>
+        <div class="form-check form-switch">
+          {% if need_approval %}
+          <input class="form-check-input" type="checkbox" id="manage-room-approval" name="need_approval" checked>
+          {% else %}
+          <input class="form-check-input" type="checkbox" id="manage-room-approval" name="need_approval">
+          {% endif %}
+          <label class="form-check-label" id="manage-room-approval-label" for="manage-room-approval" name="need_approval">不要</label>
+        </div>
+        <p class="manage-headline">ユーザーを招待</p>
+        <a href="#" role="button" data-bs-toggle="modal" data-bs-target="#modal-search-user" class="btn btn-secondary">招待する</a>
+        <p class="manage-headline">参加者の管理</p>
+        <div class="row">
+          <div class="col">
+            <h4>参加希望者</h4>
+            <input type="text" class="search-user-input" id="search-room-guest" placeholder="検索ワード">
+            <div id="room-guest-list" class="participant-list">
+              {% for room_guest in room_guests %}
+              <p class="room-guest">
+                <a class="c-white show-modal-user-button" href="#" data-username="{{room_guest.guest.username}}">{{room_guest.guest.username}}</a>
+                <button type="button" data-username="{{room_guest.guest.username}}" class="manage-room-accept-button btn btn-outline-success btn-sm">承認</button>
+                <button type="button" data-username="{{room_guest.guest.username}}" class="manage-room-disaccept-button btn btn-outline-danger btn-sm">拒否</button>
+              </p>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="col">
+            <h4>招待中</h4>
+            <input type="text" class="search-user-input" id="search-room-invite-user" placeholder="検索ワード">
+            <div id="room-invite-user-list" class="participant-list">
+              {% for room_invite_user in room_invite_users %}
+              <p class="room-user">
+                <a class="c-white show-modal-user-button" href="#" data-username="{{room_invite_user.user.username}}">{{room_invite_user.user.username}}</a>
+                <button type="button" data-username="{{room_invite_user.user.username}}" class="cancel-invite-button btn btn-success btn-sm">取消</button>
+              </p>                
+              {% endfor %}
+            </div>
+          </div>
+          <div class="col">
+            <h4>参加者</h4>
+            <input type="text" class="search-user-input" id="search-room-user" placeholder="検索ワード">
+            <div id="room-user-list" class="participant-list">
+              {% for room_user in room_users %}
+              <p class="room-user">
+                <a class="c-white show-modal-user-button" href="#" data-username="{{room_user.user.username}}">{{room_user.user.username}}</a>
+                <button type="button" data-username="{{room_user.user.username}}" data-org-state="disbanished" class="banish-button btn btn-danger btn-sm">追放</button>
+              </p>
+              {% endfor %}
+            </div>
+          </div>
+          <div class="col">
+            <h4>追放者</h4>
+            <input type="text" class="search-user-input" id="search-room-block-user" placeholder="検索ワード">
+            <div id="room-user-blocked-list" class="participant-list">
+              {% for room_blocked_user in room_blocked_users %}
+              <p class="room-user">
+                <a class="c-white show-modal-user-button" href="#" data-username="{{room_blocked_user.user.username}}">{{room_blocked_user.user.username}}</a>
+                <button type="button" data-username="{{room_blocked_user.user.username}}" data-org-state="banished" class="disbanish-button btn btn-success btn-sm">取消</button>
+              </p>                
+              {% endfor %}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="tab-pane container" id="manage-authority-pane">
+          <button type="button" data-save-for="authority" class="save-confirm-button btn btn-success">保存</button>
+          <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+          <p class="manage-headline">今後の参加者に付与するデフォルト権限を設定</p>
+          <div class="d-flex flex-row">
+            <div class="px-2">
+                {% if defo_authority.can_reply %}
+                    <label><input id="defa-reply-check-input" type="checkbox" class="check-input" data-default="checked" checked> 返信許可</label>
+                {% else %}
+                    <label><input id="defa-reply-check-input" type="checkbox" class="check-input" data-default=""> 返信許可</label>
+                {% endif %}
+            </div>
+            <div class="px-2">
+                {% if defo_authority.can_post %}
+                    <label><input id="defa-post-check-input" type="checkbox" class="check-input" data-default="checked" checked> 投稿許可</label>
+                {% else %}
+                    <label><input id="defa-post-check-input" type="checkbox" class="check-input" data-default=""> 投稿許可</label>
+                {% endif %}
+            </div>
+            <div class="px-2">
+                {% if defo_authority.is_admin %}
+                    <label><input id="defa-admin-check-input" type="checkbox" class="check-input" data-default="checked" checked> 管理者</label>
+                {% else %}
+                    <label><input id="defa-admin-check-input" type="checkbox" class="check-input" data-default=""> 管理者</label>
+                {% endif %}
+            </div>
+          </div>
+          <p class="manage-headline">ユーザーごとの権限を管理</p>
+          <div class="table-scroll">
+            <table class="table table-light table-striped" id="authority-user-table">
+                <thead>
+                    <tr>
+                        <th scope="col">
+                          <input type="text" class="search-user-input" id="search-authority-user" data-filter="filter-1" placeholder="検索ワード">
+                          <br>
+                          <label>ユーザー</label>
+                        </th>
+                        <th scope="col">
+                          <select name="" id="select-reply-check-display" data-filter="filter-2">
+                            <option selected value="all">すべて</option>
+                            <option value="checked">Check</option>
+                            <option value="unchecked">Not Check</option>
+                          </select>
+                          <br>
+                          <label><input id="reply-check-input-all" type="checkbox" class="check-input-all" value=""> 返信許可</label>
+                        </th>
+                        <th scope="col">
+                          <select name="" id="select-post-check-display" data-filter="filter-3">
+                            <option selected value="all">すべて</option>
+                            <option value="checked">Check</option>
+                            <option value="unchecked">Not Check</option>
+                          </select>
+                          <br>
+                          <label><input id="post-check-input-all" type="checkbox" class="check-input-all" value=""> 投稿許可</label>
+                        </th>
+                        <th scope="col">
+                          <select name="" id="select-admin-check-display" data-filter="filter-4">
+                            <option selected value="all">すべて</option>
+                            <option value="checked">Check</option>
+                            <option value="unchecked">Not Check</option>
+                          </select>
+                          <br>
+                          <label><input id="admin-check-input-all" type="checkbox" class="check-input-all" value=""> 管理者</label>
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for room_user in room_users %}
+                        <tr class="authority-user-col" data-username="{{room_user.user.username}}">
+                            <td>
+                              <a class="c-black show-modal-user-button filter-1" href="#" data-username="{{room_user.user.username}}">{{room_user.user.username}}</a>
+                            </td>
+                            {% if room_user.authority.can_reply %}
+                            <td><input class="reply-check-input filter-2" type="checkbox" data-default="checked" checked></td>
+                            {% else %}
+                            <td><input class="reply-check-input filter-2" type="checkbox" data-default=""></td>
+                            {% endif %}
+                            {% if room_user.authority.can_post %}
+                            <td><input class="post-check-input filter-3" type="checkbox" data-default="checked" checked></td>
+                            {% else %}
+                            <td><input class="post-check-input filter-3" type="checkbox" data-default=""></td>
+                            {% endif %}
+                            {% if room_user.authority.is_admin %}
+                            <td><input class="admin-check-input filter-4" type="checkbox" data-default="checked" checked></td>
+                            {% else %}
+                            <td><input class="admin-check-input filter-4" type="checkbox" data-default=""></td>
+                            {% endif %}
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+          </div>
+      </div>
+      <div class="tab-pane container" id="manage-post-pane">
+        <button type="button" data-save-for="reply-type" class="save-confirm-button btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <p class="manage-headline">返信タイプの管理</p>
+        <form id="manage-reply-types-form">
+          <div class="manage-reply-types row">
+          {% for reply_type in reply_types %}
+            <div class="col-6">
+              <label for="">返信タイプ{{forloop.counter}}</label>
+              <div class="form-group">
+                <input type="text" class="manage-reply-type" name="type{{forloop.counter}}" value="{{reply_type}}">
+              </div>
+            </div>
+          {% endfor %}
+          </div>
+        </form>
+      </div>
+      <div class="tab-pane container" id="manage-information-pane">
+        <button type="button" data-save-for="information" class="save-confirm-button btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <p class="manage-headline">入室する際に情報を要求</p>
+        <button type="button" id="room-request-information-demo-button" class="btn btn-secondary">デモ</button>
+        <table class="table table-light table-striped">
+          <thead>
+            <tr>
+              <th scope="col">順番</th>
+              <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" title="1~255文字以内">
+                タイトル<img src="{% static "images/black_question.svg" %}" class="question-img">
+              </th>
+              <th scope="col">タイプ</th>
+              <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" title="選択肢を&amp;で区切ってください．例)男&amp;女&amp;その他">
+                選択テキスト<img src="{% static "images/black_question.svg" %}" class="question-img">
+              </th>
+              <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" title="0~255以内">
+                最小文字数<img src="{% static "images/black_question.svg" %}" class="question-img">
+              </th>
+              <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" title="0~255以内">
+                最大文字数<img src="{% static "images/black_question.svg" %}" class="question-img">
+              </th>
+              <th scope="col">有効</th>
+            </tr>
+          </thead>
+          <tbody id="request-information-table">
+            {% for item in request_information %}
+            <tr class="manage-information-form" id="manage-information-form{{forloop.counter}}">
+              <td>{{forloop.counter}}</td>
+              <td>
+                {% if item.title %}
+                  <input type="text" class="request-information-title validate-length"  data-max-length="255" name="title" value="{{item.title}}">
+                {% else %}
+                  <input type="text" class="request-information-title validate-length" data-max-length="255" name="title">
+                {% endif %}
+              </td>
+              <td>
+                <select name="type" class="request-information-type">
+                  {% if item.type == 'char' %}
+                    <option value="char" selected>文字列</option>
+                  {% else %}
+                    <option value="char">文字列</option>
+                  {% endif %}
+                  {% if item.type == 'num' %}
+                    <option value="num" selected>数値</option>
+                  {% else %}
+                    <option value="num">数値</option>
+                  {% endif %}
+                  {% if item.type == 'choice'%}
+                    <option value="choice" selected>選択</option>
+                  {% else %}
+                    <option value="choice">選択</option>
+                  {% endif %}
+                </select>
+              </td>
+              <td>
+                {% if item.choice or item.type == 'choice' %}
+                  <input type="text" class="request-information-choice validate-length" data-max-length="255" name="choice" value="{{item.choice}}">
+                {% else %}
+                  <input type="text" class="request-information-choice validate-length not-display" data-max-length="255" name="choice" value="">
+                {% endif %}
+              </td>
+              <td>
+                {% if item.min_length %}
+                <input type="text" class="request-information-length validate-num" data-min-length="0" name="min_length" value="{{item.min_length}}">
+                {% else %}
+                <input type="text" class="request-information-length validate-num" data-min-length="0" name="min_length" value="0">
+                {%endif %}
+              </td>
+              <td>
+                {% if item.max_length %}
+                <input type="text" class="request-information-length validate-num" data-max-length="255" name="max_length" value="{{item.max_length}}">
+                {% else %}
+                <input type="text" class="request-information-length validate-num" data-max-length="255" name="max_length" value="255">
+                {%endif %}
+              </td>
+              <td>
+                {% if item.is_active == True %}
+                  <input type="checkbox" class="check-input" name="is_active" data-default="checked" checked>
+                {% else %}
+                  <input type="checkbox" class="check-input" name="is_active" data-default="checked">
+                {% endif %}
+              </td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+
+        <p class="manage-headline">収集情報</p>
+        <div class="table-scroll">
+          <table class="table table-light table-striped" id="room-information-table">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <input type="text" id="search-information-user" data-filter="filter-1" placeholder="検索ワード">
+                  <br>
+                  ユーザー名
+                </th>
+                {% for item in request_information %}
+                  <th scope="col">
+                    {% if item.title %}
+                      <input type="text" id="search-information-{{forloop.counter}}" data-filter="filter-{{forloop.counter|add:1}}" placeholder="検索ワード">
+                      <br>
+                    {% endif %}
+                    {{item.title}}
+                  </th>
+                {% endfor %}
+              </tr>
+            </thead>
+            <tbody id="request-information-table">
+              {% for room_information in room_information_list %}
+                <tr>
+                  <td scope="col">
+                    <a class="c-black show-modal-user-button filter-1" href="#" data-username="{{room_information.username}}">{{room_information.username}}</a>
+                  </td>
+                  {% for information in room_information.information %}
+                    <td scope="col" class="filter-{{forloop.counter|add:1}}">{{information}}</td>
+                  {% endfor %}
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div class="hidden-area">
+      <input type="hidden" id="manage-room-id" value="{{room_id}}">
+    </div>
+  </div>
+</div>
+
+
+{% endblock %}

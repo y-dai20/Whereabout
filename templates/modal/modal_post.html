@@ -1,0 +1,85 @@
+{% load static %} 
+<div class="modal fade" id="modal-post" tabindex="-1" role="dialog"aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">投稿</h5>
+        <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <form id="post-form">
+        <div class="modal-body">
+          {% csrf_token %}
+          <div class="form-group">
+            <label for="input-post-title">
+              <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~50文字以内">
+                タイトル*<img src="{% static "images/black_question.svg" %}" class="question-img">
+              </span>
+            </label>
+            <input type="text" class="form-control" id="input-post-title" name="title" placeholder="Title" required>
+          </div>
+          <div class="form-group">
+            <label for="input-post-text">
+              <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
+                本文*<img src="{% static "images/black_question.svg" %}" class="question-img">
+              </span>
+            </label>
+            <textarea class="form-control" rows="3" name="text" id="input-post-text" name="text" placeholder="Text" required></textarea>
+          </div>
+          <div class="form-group">
+            <label for="">Room</label><br>
+            <select class="select-post-room" name="room_id" style="width:50%;">
+              {% if title %}
+                <option class="not-select" value="">
+              {% else %}
+                <option class="not-select" value="" selected>
+              {% endif %}
+              選択しない</option>
+
+              <optgroup label="My Room">
+                {% for room in my_rooms %}
+                  {% if room.title_ == title %}
+                    <option value="{{room.id_}}" selected>
+                  {% else %}
+                    <option value="{{room.id_}}">
+                  {% endif %}
+                  {{room.title_}}</option>
+                {% endfor %}
+              </optgroup>
+              
+              <optgroup label="Other Room">
+                {% for room in other_rooms %}
+                {% if room.title_ == title %}
+                  <option value="{{room.id_}}" selected>
+                {% else %}
+                  <option value="{{room.id_}}">
+                {% endif %}
+                  {{room.title_}} by {{room.admin_}}</option>
+                {% endfor %}
+              </optgroup>
+            </select>
+          </div>
+          {% include "form/img.html" with action="post" is_multi=True %}
+          <div class="form-group" id="post-form-video">
+            <span>
+              <span data-bs-toggle="tooltip" data-bs-placement="right" title="最大1つ．5MB以内">
+                動画<img src="{% static "images/black_question.svg" %}" class="question-img">
+              </span>
+            </span>
+            <span class="upload-size" id="post-video-upload-size" data-size="0.0"></span>
+            <br>
+            <label class="post-video-preview-uploaders video-upload-label">
+              動画を追加
+              <input type="file" class="post-video-preview-uploader file-uploader" name="video" file-name="" accept="video/*">
+            </label>
+            <div class="post-video-preview-list"></div>
+          </div>
+        </div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary btm-sm" id="submit-post-button">
+            投稿
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>

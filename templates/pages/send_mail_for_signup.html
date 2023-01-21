@@ -1,0 +1,29 @@
+{% extends 'base.html' %}
+
+{% block main %}
+<div class="content index-post-content">
+  <div class="my-container">
+    <div class="login-area">
+      <div class="title c-white">
+        ユーザー登録
+      </div>
+      <form id="signup-send-mail-form">
+        {% csrf_token %}
+        <div class="form-group">
+          <label for="" class="c-white">メールアドレス</label>
+          <input type="email" class="form-control" name="email" placeholder="Email">
+        </div>
+        <div class="form-group right-button">
+          <button class="btn btn-secondary" id="send-mail-for-signup-button" type="button">
+            メール送信
+          </button>
+        </div>
+      </form>
+      <div class="text-center c-white">
+        <p>ユーザー登録済みでログインの場合は<a href="/login/">こちら</a></p>
+      </div>
+    </div>
+  </div>
+</div>
+ 
+{% endblock %}

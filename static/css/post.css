@@ -1,0 +1,67 @@
+.item-object {
+    padding: 5px 2px;
+    max-width: 600px;
+    margin: 0 auto;
+}
+
+.item-link {
+    cursor: pointer;
+}
+
+.reply-item {
+    padding: 5px;
+}
+
+.agree-item {
+    background-color: rgb(143, 173, 159);
+}
+
+.disagree-item {
+    background-color: rgb(188, 133, 128);
+}
+
+.neutral-item {
+    background-color: antiquewhite;
+}
+
+.post-title {
+    font-size: large;
+    font-weight: bold;
+    border-bottom: 2px solid black;
+}
+
+.created-at {
+    margin-left: auto;
+}
+
+.post-edit-delete {
+    margin-left: auto;
+}
+
+.post-video-preview {
+    max-width: 50%;
+}
+
+.lum-lightbox-inner img.lum-img {
+    max-width: 90%;
+}
+
+.footer-button {
+    z-index: 10;
+}
+
+.index-post-content {
+    flex: 3;
+}
+
+.post-item {
+    padding: 10px;
+}
+
+.post-img-preview-list {
+    padding-top: 10px;
+}
+
+.post-file-content {
+    padding-bottom: 10px;
+}

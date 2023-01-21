@@ -1,0 +1,70 @@
+<div class="accordion" id="search-user-accordion">
+    <div class="accordion-item index-search">
+      <h2 class="accordion-header" id="search-user-header1">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#search-user-collapse1" aria-expanded="true" aria-controls="search-user-collapse1">
+          【ユーザー検索】
+        </button>
+      </h2>
+      <div id="search-user-collapse1" class="accordion-collapse collapse show" aria-labelledby="search-user-header1" data-bs-parent="#search-user-accordion">
+        <div class="accordion-body">
+            <form action="/user/" method="get" id="search-user-form">
+              {% csrf_token %}
+                <table class="table"> 
+                    <tr>
+                        <th scope="row"><label for="user-search-username">ユーザー名</label></th>
+                        <td><input type="text" id="user-search-username" placeholder="ユーザー名" name="username" value="{{search.username}}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="user-search-profession">職業</label></th>
+                        <td><input type="text" id="user-search-profession" placeholder="職業" name="profession" value="{{search.profession}}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="user-search-description">詳細</label></th>
+                        <td><input type="text" id="user-search-description" placeholder="詳細" name="description" value="{{search.description}}"></td>
+                    </tr>
+                    <tr>
+                        <th scope="row"><label for="">作成日</label></th>
+                        <td>
+                            <input type="text" id="user-search-date-from" placeholder="YYYY-MM-DD" name="date_from" value="{{search.date_from}}">
+                            〜
+                            <input type="text" id="user-search-date-to" placeholder="YYYY-MM-DD" name="date_to" value="{{search.date_to}}">
+                        </td>
+                    </tr>
+                    <tr>
+                      <th scope="row"><label for="">ブッロク有無</label></th>
+                      <td class="flex-area">
+                        {% if search.is_blocked %}
+                        <div class="radio-button-area">
+                          <input type="radio" id="search-blocked" name="is_blocked" value="true" checked>
+                          <label for="search-blocked">有</label>
+                          <div class="radio-check"></div>
+                        </div>
+                        <div class="radio-button-area">
+                          <input type="radio" id="search-not-blocked" name="is_blocked" value="false">
+                          <label for="search-not-blocked">無</label>
+                          <div class="radio-check"></div>
+                        </div>
+                        {% else %}
+                        <div class="radio-button-area">
+                          <input type="radio" id="search-blocked" name="is_blocked" value="true">
+                          <label for="search-blocked">有</label>
+                          <div class="radio-check"></div>
+                        </div>
+                        <div class="radio-button-area">
+                          <input type="radio" id="search-not-blocked" name="is_blocked" value="false" checked>
+                          <label for="search-not-blocked">無</label>
+                          <div class="radio-check"></div>
+                        </div>
+                        {% endif %}
+                      </td>
+                    </tr>
+                </table>
+                <div class="right-button">
+                  <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
+                  <button type="submit" class="btn btn-secondary">検索</button>
+                </div>
+            </form>
+        </div>
+      </div>
+    </div>
+</div>

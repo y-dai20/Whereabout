@@ -1,0 +1,17 @@
+{% extends 'base.html' %} 
+{% block main %}
+<div class="content">
+  <div class="my-container">
+    {% include "../snippets/search_room.html" %}
+
+    <div class="room-list my-row">
+      <script>
+        var rooms = {{dumps_object_list | safe}};
+        create_room_items('.room-list', rooms, true);
+      </script>
+    </div>
+    {% include 'snippets/load_more.html' with type="room" %}
+  </div>
+</div>
+
+{% endblock %}

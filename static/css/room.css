@@ -1,0 +1,294 @@
+.room-title {
+    font-size: 40px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.room-subtitle {
+    font-size: 25px;
+    text-align: center;
+}
+.room-item-title {
+    font-size: 25px;
+    text-align: center;
+    font-weight: bold;
+}
+
+.room-item-subtitle {
+    font-size: 20px;
+    text-align: center;
+}
+
+.not-display {
+    display: none;
+}
+
+.active-filter-1 {
+    display: none;
+}
+.active-filter-2 {
+    display: none;
+}
+.active-filter-3 {
+    display: none;
+}
+.active-filter-4 {
+    display: none;
+}
+.active-filter-5 {
+    display: none;
+}
+.active-filter-6 {
+    display: none;
+}
+.active-filter-7 {
+    display: none;
+}
+.active-filter-8 {
+    display: none;
+}
+.active-filter-9 {
+    display: none;
+}
+.active-filter-10 {
+    display: none;
+}
+.active-filter-11 {
+    display: none;
+}
+
+.manage-room-img-preview-list {
+    display: flex;
+    padding-top: 10px;
+}
+
+.manage-room-img-preview {
+    cursor: grab;
+    max-width: 15%;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+.addable-object-list {
+    width: 50%;
+    display: flex;
+    text-align: center;
+}
+
+.addable-object { 
+    border:1px solid white;
+    max-width: 30%;
+    width: 30%;
+    cursor: grab;
+}
+
+.added-object {
+    height: 100%;
+    padding-top: 10px;
+    background-color: aqua;
+    display: flex;
+    align-items: flex-end;
+    cursor: grab;
+}
+
+.added-object-textarea, .added-object-title {
+    box-sizing: border-box;
+    height: 100%;
+    width: 100%;
+    padding-left: 5px;
+}
+
+.trash-area {
+    background-color: white;
+    width: 20%;
+    text-align: center;
+    border: 1px solid red;
+}
+
+
+
+.droppable {
+    min-height: 70px;
+}
+
+.break-word {
+    overflow-x: auto;
+    word-wrap: break-word;
+    white-space: pre-line;
+    margin-bottom: 0;
+}
+
+.tab-title-content {
+    /* display: flex;
+    align-items: flex-end; */
+    line-height: normal;
+    letter-spacing: normal;
+}
+
+.tab-text-content {
+    font-size: large;
+}
+
+.room-tab-table-row {
+    margin: 0;
+    padding-bottom: 10px;
+    width: 100%;
+}
+
+.room-tab-table-col {
+    margin: 0;
+    /* padding-right: 10px; */
+    padding: 0;
+}
+
+.tab-title-style {
+    font-size: 30px;
+    border-bottom: 2px solid white;
+}
+
+.tab-text-font {
+    font-size: 15px;
+    padding-left: 5px;
+}
+
+.tab-pane {
+    margin: 0;
+    padding: 0;
+}
+
+/* .accordion-button.collapsed {
+    background:rgb(143, 173, 159);
+} */
+
+.div-scroll {
+    max-height: 200px;
+    overflow: auto;
+}
+
+.table-scroll {
+    overflow: auto;
+    max-height: 300px;
+}
+
+.table-scroll th {
+    position: sticky;
+    top: 0;
+    left: 0;
+    z-index: 2;
+    /* border: 1px solid black; */
+}
+
+.table-scroll td {
+    z-index: 1;
+}
+
+.room-tab-title {
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    /* overflow-wrap: break-word; */
+}
+
+.input-room-tab-title {
+    width: 90%;
+    padding: 5px;
+    margin: 0;
+}
+
+.manage-room-video-preview {
+    width: 300px;
+}
+
+.room-video {
+    width: 100%;
+}
+
+#room-video-area {
+    max-width: 800px;
+    width: 100%;
+    margin: auto;
+}
+
+.manage-headline {
+    font-size: 20px;
+    padding-left: 10px;
+    margin-top: 30px;
+    border-left: solid 5px #ffaf58;/*左線（実線 太さ 色）*/
+    color: #ffaf58;
+    width: auto;
+}
+
+label.form-check-label {
+    padding-left: 10px;
+}
+
+.room-tab-title {
+    display: inline-block;
+}
+
+.delete-tab-button {
+    width: 50%;
+    cursor: pointer;
+    background-color: rgb(255, 147, 147);
+    text-align: center;
+    margin-bottom: 10px;
+}
+
+.room-item {
+    background-color: rgb(56, 62, 65);
+    padding: 5px;
+}
+
+.manage-room-tab-content {
+    display: flex;
+    width: 100%;
+}
+
+.room-tab-content {
+    width: 100%;
+}
+
+.tab-content {
+    width: 100%;
+}
+
+.show-room-content {
+    flex: 3;
+}
+
+.manage-room-content {
+    flex: 4;
+}
+
+.manage-room-titles {
+    flex: 1;
+    margin-right: 10px;
+}  
+.tab-content.manage-room {
+    flex: 3;
+}
+
+.participant-list {
+    max-height: 500px;
+    height: 100%;
+    padding: 3px;
+    overflow-y: auto;
+}
+
+.add-tab-button {
+    background-color: greenyellow;
+    cursor: pointer;
+}
+
+.tab-operation-area {
+    display: flex;
+    margin-bottom: 10px;
+}
+
+.manage-room-video-preview-list {
+    padding-top: 10px;
+}
+
+.request-information-length {
+    max-width: 3em;
+}

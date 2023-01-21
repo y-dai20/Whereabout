@@ -1,0 +1,16 @@
+<div class="modal-dialog modal-dialog-centered" role="document">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h5 class="modal-title">{{w_title}}</h5>
+            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+            <label for="search-word">検索ワード</label>
+            <input type="text" class="form-control enter-search modal-search-word" id="{{w_id}}" name="search-word">
+            <div class="search-results div-scroll"></div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn btn-secondary btm-sm search-button" data-action="{{w_action}}" data-id="{{w_id}}">検索</button>
+        </div>
+    </div>
+</div>

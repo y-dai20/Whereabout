@@ -1,0 +1,46 @@
+img.traffic-light {
+    height: 25px;
+    width: 40px;
+    object-fit: cover;
+}
+
+img.lock-room {
+    height: 30px;
+    width: auto;
+}
+
+img.question-img {
+    height: 15px;
+    width: auto;
+}
+
+img.favorite-img {
+    height: 25px;
+    width: auto;
+}
+
+img.img-add-button {
+    width: 20px;
+    height: auto;
+}
+img.tab-delete-button {
+    width: 20px;
+    height: auto;
+}
+
+.post-img {
+    cursor: zoom-in;
+    max-width: 40%;
+    height: auto;
+    max-height: 150px;
+}
+
+.trash-img {
+    width: 50%;
+}
+
+img.house {
+    width: 20px;
+    height: auto;
+}
+

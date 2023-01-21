@@ -1,0 +1,25 @@
+{% load static %} 
+<div class="form-group" id="{{action}}-form-img">
+    <span>
+        {% if is_multi %}
+        <span data-bs-toggle="tooltip" data-bs-placement="right" title="最大4枚．2MB以内">
+            画像<img src="{% static "images/black_question.svg" %}" class="question-img">
+        </span>
+        {% else %}
+        <span data-bs-toggle="tooltip" data-bs-placement="right" title="最大1枚．2MB以内">
+            画像<img src="{% static "images/black_question.svg" %}" class="question-img">
+        </span>
+        {% endif %}
+    </span>
+    <span id="{{action}}-img-upload-size" data-size="0.0"></span>
+    <br>
+    <label class="{{action}}-img-preview-uploaders img-upload-label">
+        画像を追加
+        {% if is_multi %}
+            <input type="file" class="{{action}}-img-preview-uploader file-uploader" name="img" file-name="" multiple accept="image/*">
+        {% else %}
+            <input type="file" class="{{action}}-img-preview-uploader file-uploader" name="img" file-name="" accept="image/*">
+        {% endif %}
+    </label>
+    <div class="{{action}}-img-preview-list row"></div>
+</div>

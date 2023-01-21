@@ -1,0 +1,317 @@
+a {
+    cursor: pointer;
+    z-index: 2;
+}
+
+a:hover {
+    color: #0090ff;
+}
+
+body {
+    font-family: 'Meiryo UI';
+}
+
+div.base-body {
+    width: 100vw;
+    height: 100vh;
+}
+
+body, .modal-body, .modal-footer {
+    background-color: rgb(26, 32, 35);
+}
+
+div.my-main {
+    padding-top: 55px;
+    display: flex;
+    width: 100%;
+    height: 100%;
+}
+
+div.title {
+    font-size: 2rem;
+}
+
+span.error, p.error {
+    color: red;
+}
+
+.c-white {
+    color: white;
+}
+
+.c-black {
+    color: black;
+}
+
+.c-orange {
+    color: #ffaf58;
+}
+
+.reset-button {
+    border: none;
+    background-color: transparent;
+}
+
+.text-center {
+    text-align: center;
+}
+
+.v-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+nav.navbar, .modal-header, .dropdown-menu {
+    background-color: rgb(37, 58, 86);
+}
+
+nav.navbar a, .modal-title, .dropdown-item {
+    color: rgb(206, 210, 153);
+}
+
+* {
+    box-sizing: border-box;
+}
+
+.content {
+    padding-top: 10px;
+    height: 100%;
+    width: 100%;
+    overflow-y: auto;
+    overflow-x: hidden;
+}
+
+.sidebar {
+    flex: 1;
+    height: 100%;
+    overflow-y: auto;
+}
+
+.right-sidebar {
+    border-left: 1px solid white;
+}
+
+.left-sidebar {
+    border-right: 1px solid white;
+}
+
+.sidebar-item {
+    padding: 10px 5px;
+    color: white;
+}
+
+a.sidebar-button {
+    display: block;
+    color: white;
+    padding: 15px;
+    text-decoration: none;
+    width: 100%;
+}
+
+.nav-link {
+    width: 100%;
+}
+
+.nav-pills .nav-link.active, .sidebar-menu.open {
+    background-color: rgb(0, 115, 255);
+}
+
+.nav-link:hover:not(.active), .sidebar-menu:hover:not(.open) {
+    background-color: rgb(152, 176, 216);
+}
+
+.fixed-right-bottom {
+    bottom: 50px;
+    right: 50px;
+    position:fixed;
+    z-index: 10;
+}
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+::-webkit-scrollbar-track {
+    background: rgb(37, 58, 86);
+}
+::-webkit-scrollbar-thumb {
+    background: gray;
+    border-radius: 5px;
+}
+
+.my-container {
+    width: 100%;
+    padding:0 10px;
+}
+
+.menu-wrapper {
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.menu-wrapper .sidebar-menu{
+    position: relative;
+    cursor: pointer;
+    width: 40px;
+    height: 40px;
+    padding: 5px;
+}
+
+.menu-wrapper .hamburger-menu{
+    position: relative;
+    cursor: pointer;
+    width: 30px;
+    height: 25px;
+    margin: 10px 5px;
+}
+
+.menu-wrapper .hamburger-menu span {
+    opacity: 1;
+    left: 0;
+    display: block;
+    width: 100%;
+    height: 2px;
+    border-radius: 10px;
+    color: black;
+    background-color: white;
+    position: absolute;
+    transform: rotate(0deg);
+    transition: .4s ease-in-out;
+}
+
+.menu-wrapper .hamburger-menu span:nth-child(1) {
+    top: 0;
+}
+.menu-wrapper .hamburger-menu span:nth-child(2) {
+    top: 9px;
+}
+.menu-wrapper .hamburger-menu span:nth-child(3) {
+    top: 18px;
+}
+.menu-wrapper .hamburger-menu.open span:nth-child(1) {
+    transform: translateY(9px) rotate(135deg);
+}
+.menu-wrapper .hamburger-menu.open span:nth-child(2) {
+    opacity: 0;
+    transform: translateX(-60px);
+}
+.menu-wrapper .hamburger-menu.open span:nth-child(3) {
+    transform: translateY(-9px) rotate(-135deg);
+}
+
+.border-left {
+    border-left: 1px solid white;
+}
+
+.flex-area {
+    display: flex;
+}
+
+.radio-button-area {
+    display: block;
+    position: relative;
+    padding-bottom: 10px;
+}
+
+.radio-button-area input[type=radio] {
+    position: absolute;
+    visibility: hidden;
+}
+
+.radio-button-area label {
+    position: relative;
+    padding: 0 20px 0 25px;
+    z-index: 10;
+    cursor: pointer;
+}
+
+.radio-button-area .radio-check {
+    display: block;
+    position: absolute;
+    border: 5px solid #AAAAAA;
+    border-radius: 100%;
+    height: 20px;
+    width: 20px;
+    top: 2px;
+    left: 0px;
+    z-index: 5;
+    transition: border .25s linear;
+    -webkit-transition: border .25s linear;
+}
+
+.radio-button-area  input[type=radio]:checked ~ .radio-check {
+    border: 5px solid rgb(0, 180, 0);
+}
+
+.radio-button-area input[type=radio]:checked ~ label{
+    color: rgb(0, 180, 0);
+}
+
+.close-button {
+    cursor: pointer;
+    position: absolute;
+    background-color: red;
+    color: white;
+    top: -10px;
+    right: -10px;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+}
+
+video, img {
+    width: 100%;
+    height: auto;
+}
+
+.login-area {
+    margin: auto;
+    max-width: 400px;
+    width: 100%;
+}
+
+input {
+    max-width: 400px;
+}
+
+.headline {
+    padding-left: 10px;
+    border-left: solid 5px #ffaf58;/*左線（実線 太さ 色）*/
+    color: #ffaf58;
+}
+
+.item-header, .item-footer {
+    display: flex;
+}
+
+.item-header *, .item-footer * {
+    margin: auto 1px;
+}
+
+.search-result {
+    display: flex;
+    margin-top: 5px;
+}
+
+.search-result * {
+    margin: auto 2px;
+}
+
+.tooltip-inner {
+    background-color: #0e72cf;
+    box-shadow: 0px 0px 4px black;
+    opacity: 1 !important;
+}
+.tooltip.bs-tooltip-right .tooltip-arrow::before {
+    border-right-color: #0e72cf !important;
+}
+.tooltip.bs-tooltip-left .tooltip-arrow::before {
+    border-left-color: #0e72cf !important;
+}
+.tooltip.bs-tooltip-bottom .tooltip-arrow::before {
+    border-bottom-color: #0e72cf !important;
+}
+.tooltip.bs-tooltip-top .tooltip-arrow::before {
+    border-top-color: #0e72cf !important;
+}

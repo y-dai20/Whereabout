@@ -1,0 +1,29 @@
+{% extends 'base.html' %} 
+
+{% block main %} 
+
+<div class="content">
+  <div class="my-container">
+    <a href="/" class="btn btn-secondary" role="button">&lt;&lt;前へ戻る</a>
+    <div class="my-row">
+      <div class="my-col target-post">
+        <script>
+          var posts = [{{dumps_post | safe}}];
+          create_post_items('.target-post', posts);
+        </script>
+      </div>
+      <div class="my-col">
+        {% include '../snippets/search_reply.html' with type="post" %}
+      </div>
+      <div class="post-detail-list reply-list my-row">
+        <script>
+          var replies = {{dumps_object_list | safe}};
+          create_post_detail_items('.post-detail-list', replies, true);
+        </script>
+      </div>
+    </div>
+    {% include '../snippets/load_more.html' with type="post-detail" %}
+  </div>
+</div>
+
+{% endblock %}

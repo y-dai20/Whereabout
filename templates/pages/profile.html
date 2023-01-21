@@ -1,0 +1,159 @@
+{% extends 'base.html' %}
+ 
+{% block main %}
+{% load static %}
+<div class="left-sidebar sidebar">
+  <nav class="nav flex-column nav-pills profile-function-list">
+    <a class="sidebar-button profile-function nav-link active" data-bs-toggle="pill" data-bs-target="#manage-profile-pane" type="button" role="pill">
+      プロフィールの管理
+    </a>
+    <a class="sidebar-button profile-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-notification-pane" type="button" role="pill">
+      通知の管理
+    </a>
+    <a class="sidebar-button profile-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-user-pane" type="button" role="pill">
+      ユーザーの管理
+    </a>
+  </nav>
+</div>
+
+<div class="menu-wrapper">
+  <div class="hamburger-menu open" data-for="left-sidebar"><span></span><span></span><span></span></div>
+</div>
+
+<div class="content profile-content">
+  <div class="my-container c-white">
+    <div class="tab-content">
+      <div class="tab-pane container active" id="manage-profile-pane">
+        <form id="manage-user-form">
+          <div class="form-group">
+            <button type="button" class="save-confirm-button btn btn-success" data-save-for="user">保存</button>
+            <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+          </div>
+          <p class="manage-headline">画像</p>
+          <div class="form-group">
+            <div class="user-img-profile-area">
+              <div class="user-img-area">
+                {% if img_path %}
+                  <img src="{{img_path}}" alt="" class="user-img">
+                {% else %}
+                  <img src="{% static "images/human.svg" %}" alt="" class="user-img">
+                {% endif %}
+              </div>
+              <label class="user-img-upload-label">
+                編集
+                <input type="file" class="file-uploader user-img-img-preview-uploader" name="img" accept="image/*">
+              </label>
+              <span id="user-img-img-upload-size" data-size="0"></span>
+            </div>
+          </div>
+          <p class="manage-headline">
+            <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
+              職業<img src="{% static "images/black_question.svg" %}" class="question-img">
+            </span>
+          </p>
+          <div class="form-group">
+            <input class="form-control" type="text" id="input-profession" placeholder="職業" name="profession" value="{{profession}}">
+          </div>
+          <p class="manage-headline">
+            <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
+              説明<img src="{% static "images/black_question.svg" %}" class="question-img">
+            </span>
+          </p>
+          <div class="form-group">
+            <textarea class="form-control" name="description" id="input-description" cols="30" rows="5" placeholder="説明">{{description}}</textarea>
+          </div>
+        </form>
+      </div>
+      <div class="tab-pane container" id="manage-notification-pane">
+        <p class="manage-headline">入室申請</p>
+        <div class="table-scroll">
+          <table class="table table-light table-striped" id="room-guest-table">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <input type="text" class="search-room-input" id="search-applied-room" data-filter="filter-1" placeholder="検索ワード">
+                  <br>
+                  <label>Room</label>
+                </th>
+                <th scope="col">
+                  <input type="text" class="search-user-input" id="search-applied-room-user" data-filter="filter-2" placeholder="検索ワード">
+                  <br>
+                  <label>ユーザー</label>
+                </th>
+                <th>承認</th>
+                <th>拒否</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for room in room_guests %}
+                {% for guest in room.guests %}
+                <tr class="table-col" data-room="{{room.room_id}}" data-username="{{guest}}">
+                  <td><a class="c-black filter-1" href="/room/{{room.room_id}}/">{{room.room_title}}</a></td>
+                  <td><a class="c-black show-modal-user-button filter-2" href="#" data-username="{{guest}}">{{guest}}</a></td>
+                  <td><button type="button" class="profile-accept-button btn btn-outline-success btn-sm" data-is-blocked="False">承認</button></td>
+                  <td><button type="button" class="profile-accept-button btn btn-outline-danger btn-sm" data-is-blocked="True">拒否</button></td>
+                </tr>
+                {% endfor %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+        <p class="manage-headline">ユーザーからのRoom招待</p>
+        <div class="table-scroll">
+          <table class="table table-light table-striped" id="room-invite-table">
+            <thead>
+              <tr>
+                <th scope="col">
+                  <input type="text" class="search-room-input" id="search-invited-room" data-filter="filter-1" placeholder="検索ワード">
+                  <br>
+                  <label>Room</label>
+                </th>
+                <th scope="col">
+                  <input type="text" class="search-user-input" id="search-invited-room-user" data-filter="filter-2" placeholder="検索ワード">
+                  <br>
+                  <label>管理者</label>
+                </th>
+                <th>承認</th>
+                <th>拒否</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for room in invited_rooms %}
+                <tr class="table-col" data-room="{{room.room_id}}">
+                  <td><a class="c-black filter-1" href="/room/{{room.room_id}}/">{{room.room_title}}</a></td>
+                  <td><a class="c-black show-modal-user-button filter-2" href="#" data-username="{{room.admin}}">{{room.admin}}</a></td>
+                  <td><button type="button" data-is-accept="True" class="accept-invite-button btn btn-outline-success btn-sm">承認</button></td>
+                  <td><button type="button" data-is-accept="False" class="accept-invite-button btn btn-outline-danger btn-sm">拒否</button></td>
+                </tr>
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <dic class="tab-pane container" id="manage-user-pane">
+        <p class="manage-headline">
+          <span data-bs-toggle="tooltip" data-bs-placement="right" title="8文字以上">
+            パスワード変更<img src="{% static "images/black_question.svg" %}" class="question-img">
+          </span>
+        </p>
+        <form id="change-password-form">
+          <div class="form-group">
+            <label for="">
+              新しいパスワード
+            </label>
+            <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+          </div>
+          <div class="form-group">
+            <label for="">パスワード確認</label>
+            <input type="password" class="form-control" name="password_confirm" placeholder="Password">
+          </div>
+          <button class="btn btn-secondary" id="change-password-button" type="button">
+            変更
+          </button>
+        </form>
+      </dic>
+    </div>
+  </div>
+</div>
+ 
+{% endblock %}

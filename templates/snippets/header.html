@@ -1,0 +1,94 @@
+<nav class="navbar navbar-expand-lg fixed-top">
+  <a class="navbar-brand" href="/">{{TITLE}}</a>
+  <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent" aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse justify-content-around" id="navbarSupportedContent">
+    <ul class="navbar-nav">
+      <li class="nav-item">
+        <a class="nav-link" href="#" data-bs-toggle="modal" data-bs-target="#modal-post">投稿</a>
+      </li>
+    </ul>
+
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownSearch" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          検索
+        </a>
+        <ul class="dropdown-menu" aria-labelledby="navbarDropdownSearch">
+          <li>
+            <a class="dropdown-item" href="/">投稿</a>
+            <a class="dropdown-item" href="/room/">Room</a>
+            <a class="dropdown-item" href="/user/">ユーザー</a>
+          </li>
+        </ul>
+      </li>  
+    </ul>
+
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownMyRoom" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          My Room
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownMyRoom">
+          {% if user.is_authenticated or True%}  
+            <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal-create-room" href="#">Room作成</a>
+          {% else %}
+            <a class="dropdown-item" href="#">Room作成</a>
+          {% endif %}
+          <div class="dropdown-divider"></div>
+          <div class="div-scroll">
+            {% for room in my_rooms %}
+              <a class="dropdown-item" href="/room/{{room.id_}}/">{{room.title_}}</a>
+            {% endfor %}
+          </div>
+        </div>
+      </li>  
+    </ul>
+      
+    <ul class="navbar-nav">
+      <li class="nav-item dropdown">
+        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownOtherRoom" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+          Other Room
+        </a>
+        <div class="dropdown-menu" aria-labelledby="navbarDropdownOtherRoom">
+          <a class="dropdown-item" data-bs-toggle="modal" data-bs-target="#modal-search-room" href="#">Room検索</a>
+          <div class="dropdown-divider"></div>
+          <div class="div-scroll">
+            {% for room in other_rooms %}
+              <a class="dropdown-item" href="/room/{{room.id_}}/">{{room.title_}} by {{room.admin_}}</a>
+            {% endfor %}
+          </div>
+        </div>
+      </li>  
+    </ul>
+      
+    {% if user.is_authenticated %}
+      <ul class="navbar-nav">
+        <li class="nav-item dropdown">
+          <a class="nav-link dropdown-toggle" href="#" id="navbarDropdownUser" role="button" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            {{user.username}}
+            <span class="badge bg-danger ms-2">{{notifications}}</span>
+            <span class="visually-hidden">unread messages</span>
+          </a>
+          <div class="dropdown-menu" aria-labelledby="navbarDropdownUser">
+            <a class="dropdown-item" href="/profile/" href="#">プロフィール</a>
+            <a class="dropdown-item" href="/logout/" href="#">ログアウト</a>
+          </div>
+        </li>  
+      </ul>
+    {% else %}
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/login/">ログイン</a>
+        </li>
+      </ul>
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="/signup/">新規登録</a>
+        </li>
+      </ul>
+    {% endif %}
+  </div>
+</nav>

@@ -1,0 +1,61 @@
+.user-img-area {
+    width: 100%;
+    display: block;
+    position: relative;
+}
+
+.user-img-area::before {
+    content: "";
+    display: block;
+    padding-top: 100%;
+}
+
+.user-img-area img {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    top: 0;
+    object-fit: cover;
+    border-radius: 20%;
+}
+
+.user-img-profile-area {
+    max-width: 200px;
+    width: 100%;
+}
+
+.user-item-img-area {
+    max-width: 50px;
+    width: 100%;
+}
+
+.search-user-input {
+    max-width: 150px;
+    width: 100%;
+}
+
+.user-item {
+    background-color: rgb(56, 62, 65);
+    padding: 5px;
+}
+
+label.user-img-upload-label {
+    display: inline-block;
+    background: gray;
+    cursor: pointer;
+    width: 100%;
+    text-align: center;
+}
+
+label.user-img-upload-label:hover {
+    background-color: rgba(128 , 128, 128, 0.7);
+}
+
+.profile-content {
+    flex: 4;
+}
+
+.item-user-img {
+    max-width: 30px;
+    margin-right: 5px;
+}

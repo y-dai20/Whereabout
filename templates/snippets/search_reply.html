@@ -1,0 +1,161 @@
+{% load static %}
+<form action="/{{type}}/{{obj_id}}/" method="get" id="search-reply-form">
+{% csrf_token %}
+<div class="accordion" id="search-reply-accordion">
+    <div class="accordion-item index-search">
+    <h2 class="accordion-header" id="search-reply-header1">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#search-reply-collapse1" aria-expanded="true" aria-controls="search-reply-collapse1">
+        【返信検索】
+        </button>
+    </h2>
+    <div id="search-reply-collapse1" class="accordion-collapse collapse" aria-labelledby="search-reply-header1" data-bs-parent="#search-reply-accordion">
+        <div class="accordion-body">
+            <table class="table">
+            <tr>
+                <th scope="row">
+                <label for="reply-search-username">返信者</label>
+                </th>
+                <td>
+                <input type="text" id="reply-search-username" placeholder="返信者" name="username" value="{{search.username}}"/>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row">
+                <label for="reply-search-text">テキスト</label>
+                </th>
+                <td>
+                <input type="text" id="reply-search-text" placeholder="テキスト" name="text" value="{{search.text}}"/>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label for="">作成日</label></th>
+                <td>
+                <input type="text" id="reply-search-date-from" placeholder="YYYY-MM-DD" name="date_from" value="{{search.date_from}}"/>
+                〜
+                <input type="text" id="reply-search-date-to" placeholder="YYYY-MM-DD" name="date_to" value="{{search.date_to}}"/>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label for="">立場</label></th>
+                <td>
+                <div class="radio-button">
+                    {% if search.position == "" %}
+                    <input class="radio-position" id="radio-all" type="radio" name="position" value="" checked/>
+                    {% else %}
+                    <input class="radio-position" id="radio-all" type="radio" name="position" value=""/>
+                    {% endif %}
+                    <label for="radio-all">すべて</label>
+                    <div class="my-row">
+                    <div class="my-col">
+                        {% if search.position == "Agree" %}
+                        <input class="radio-position" id="radio-Agree" type="radio" name="position" value="Agree" checked/>
+                        {% else %}
+                        <input class="radio-position" id="radio-Agree" type="radio" name="position" value="Agree"/>
+                        {% endif %}
+                        <label for="radio-Agree">
+                        賛成 <img src="{% static "images/traffic_green.svg" %}"class="traffic-light">
+                        </label>
+                    </div>
+                    <div class="my-col">
+                        {% if search.position == "Neutral" %}
+                        <input class="radio-position" id="radio-Neutral" type="radio" name="position" value="Neutral" checked/>
+                        {% else %}
+                        <input class="radio-position" id="radio-Neutral" type="radio" name="position" value="Neutral"/>
+                        {% endif %}
+                        <label for="radio-Neutral">
+                        中立 <img src="{% static "images/traffic_yellow.svg" %}" class="traffic-light">
+                        </label>
+                    </div>
+                    <div class="my-col">
+                        {% if search.position == "Disagree" %}
+                        <input class="radio-position" id="radio-Disagree" type="radio" name="position" value="Disagree" checked/>
+                        {% else %}
+                        <input class="radio-position" id="radio-Disagree" type="radio" name="position" value="Disagree"/>
+                        {% endif %}
+                        <label for="radio-Disagree">
+                        反対 <img src="{% static "images/traffic_red.svg"%}" class="traffic-light">
+                        </label>
+                    </div>
+                    </div>
+                </div>
+                </td>
+            </tr>
+            <tr>
+                <th scope="row"><label for="">返信タイプ</label></th>
+                <td>
+                <select class="select-reply-type" name="type">
+                    {% if search.type %}
+                    <option value="">すべて</option>
+                    {% else %}
+                    <option value="" selected>すべて</option>
+                    {% endif %} 
+                    {% if reply_types %} 
+                        {% for reply_type in reply_types %}
+                            {%if reply_type != '' %}
+                                {% if reply_type == search.type %}
+                                <option value="{{reply_type}}" selected>
+                                {{reply_type}}
+                                </option>
+                                {%else %}
+                                <option value="{{reply_type}}">{{reply_type}}</option>
+                                {% endif %}
+                            {% endif %}
+                        {% endfor %}
+                    {% endif %}
+                </select>
+                </td>
+            </tr>
+            </table>
+            <div class="right-button">
+                <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
+                <button type="submit" class="btn btn-secondary">検索</button>
+            </div>
+        </div>
+    </div>
+    </div>
+    <div class="accordion-item index-search">
+    <h2 class="accordion-header" id="order-reply-header1">
+        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#order-reply-collapse1" aria-expanded="true" aria-controls="order-reply-collapse1">
+        【並べ替え】
+        </button>
+    </h2>
+    <div id="order-reply-collapse1" class="accordion-collapse collapse" aria-labelledby="order-reply-header1" data-bs-parent="#search-reply-accordion">
+        <div class="accordion-body">
+            <div class="radio-button-area">
+            {% if order.created_at %}
+            <input type="radio" id="order-created" name="order" value="created_at" checked>
+            {% else %}
+            <input type="radio" id="order-created" name="order" value="created_at">
+            {% endif %}
+            <label for="order-created">最新順</label>
+            <div class="radio-check"></div>
+            </div>
+
+            <div class="radio-button-area">
+            {% if order.reaction_count %}
+            <input type="radio" id="order-reaction-count" name="order" value="reaction_count" checked>
+            {% else %}
+            <input type="radio" id="order-reaction-count" name="order" value="reaction_count">
+            {% endif %}
+            <label for="order-reaction-count">リアクション数順</label>
+            <div class="radio-check"></div>
+            </div>
+
+            <div class="radio-button-area">
+            {% if order.favorite_count %}
+            <input type="radio" id="order-favorite-count" name="order" value="favorite_count" checked>
+            {% else %}
+            <input type="radio" id="order-favorite-count" name="order" value="favorite_count">
+            {% endif %}
+            <label for="order-favorite-count">お気に入り数順</label>
+            <div class="radio-check"></div>
+            </div>
+
+            <div class="right-button">
+                <button type="submit" class="btn btn-secondary">並べ替え</button>
+            </div>
+        </div>
+    </div>
+    </div>
+</div>
+</form>

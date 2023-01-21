@@ -1,0 +1,17 @@
+{% extends 'base.html' %} 
+{% block main %}
+<div class="content">
+  <div class="my-container">
+    {% include "../snippets/search_user.html" %}
+
+    <div class="user-list my-row">
+      <script>
+        var users = {{dumps_object_list | safe}};
+        create_user_items('.user-list', users, true);
+      </script>
+    </div>
+    {% include 'snippets/load_more.html' with type="user" %}
+  </div>
+</div>
+
+{% endblock %}

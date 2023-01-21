@@ -1,0 +1,34 @@
+{% extends 'base.html' %} 
+{% block main %}
+<div class="content index-post-content">
+  <div class="my-container">
+    {% include "../snippets/search_post.html" %}
+    <div class="post-list">
+      <script>
+        var posts = {{dumps_object_list | safe}};
+        create_post_items('.post-list', posts, true);
+      </script>
+    </div>
+    {% include '../snippets/load_more.html' with type="post" %}
+  </div>
+</div>
+
+<div class="index-post-reply-sidebar right-sidebar sidebar not-display">
+  <div class="sidebar-item">
+    <div class="post-detail-link obj-link"></div>
+  </div>
+  <div class="sidebar-item">
+    <div class="reply-list c-black"></div>
+    {% include '../snippets/load_more.html' with type="reply" %}
+  </div>
+</div>
+<div class="index-post-reply2-sidebar right-sidebar sidebar not-display">
+  <div class="sidebar-item">
+    <div class="reply-detail-link obj-link"></div>
+  </div>
+  <div class="sidebar-item">
+    <div class="reply2-list c-black"></div>
+    {% include '../snippets/load_more.html' with type="reply2" %}
+  </div>
+</div>
+{% endblock %}

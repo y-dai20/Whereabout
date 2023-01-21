@@ -127,3 +127,11 @@ dmypy.json
 
 # Pyre type checker
 .pyre/
+
+
+# My gitignore
+log/
+media/
+secrets/
+*.sqlite3
+migrations/
