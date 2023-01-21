@@ -138,16 +138,22 @@ class ShowErrorView(TemplateView):
     template_name = 'pages/error.html'
 
 class UpdateBaseView(LoginRequiredMixin, UpdateView):
+    def __init__(self) -> None:
+        super().__init__()
+        self.error_messages = []
+
     def can_access_room(self, room):
         vr = ValidateRoomView(room)
         if not vr.is_room_exist():
             #todo Trueでいいのか？
-            return get_json_message(True)
+            return True
         if vr.is_user_blocked(self.request.user):
-            return get_json_message(False, 'エラー', ['ブロックされているため閲覧のみ可能です'])
+            self.error_messages.append('ブロックされているため閲覧のみ可能です')
+            return False
         if not vr.can_access(self.request.user):
-            return get_json_message(False, 'エラー', ['アクセス制限があります'])
-        return get_json_message(True)
+            self.error_messages.append('アクセス制限があります')
+            return False
+        return True
 
 class GoodView(UpdateBaseView):
     def get_json_data(self, obj):
@@ -181,9 +187,8 @@ class AgreeView(UpdateBaseView):
         if is_empty(obj) or is_agree is None:
             raise MyBadRequest
         
-        res = self.can_access_room(room)
-        if not res['is_success']:
-            return res
+        if not self.can_access_room(room):
+            return get_json_message(False, 'エラー', self.error_messages)
 
         agree_obj = self.model.objects.filter(user=self.request.user, obj=obj)
         if agree_obj.exists():
@@ -211,9 +216,8 @@ class DemagogyView(UpdateBaseView):
         if is_empty(obj) or is_true is None:
             raise MyBadRequest
 
-        res = self.can_access_room(room)
-        if not res['is_success']:
-            return res
+        if not self.can_access_room(room):
+            return get_json_message(False, 'エラー', self.error_messages)
 
         demagogy = self.model.objects.filter(user=self.request.user, obj=obj)        
         if demagogy.exists():
@@ -240,9 +244,8 @@ class FavoriteView(UpdateBaseView):
         if is_empty(obj):
             raise MyBadRequest
 
-        res = self.can_access_room(room)
-        if not res['is_success']:
-            return res
+        if not self.can_access_room(room):
+            return get_json_message(False, 'エラー', self.error_messages)
             
         favorite = self.model.objects.filter(obj=obj, user=self.request.user)
         if favorite.exists():

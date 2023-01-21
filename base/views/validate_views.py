@@ -6,12 +6,16 @@ from base.models.room_models import Room, RoomUser
 class ValidateRoomView(View):
     def __init__(self, room):
         super().__init__()
+        self.error_messages = []
         if is_str(room):
             self.room = Room.objects.get_or_none(id=room, is_deleted=False)
         elif isinstance(room, Room):
             self.room = room
         else:
             self.room = None
+
+    def get_error_messages(self):
+        return self.error_messages
 
     def is_user(self, user):
         return not is_empty(user) and user.is_authenticated
@@ -92,32 +96,34 @@ class ValidateRoomView(View):
 
     def validate_base(self, user):
         if not self.is_user(user):
-            return get_json_message(False, 'エラー', ['ログインが必要です'])
+            self.error_messages.append('ログインが必要です')
+            return False
 
         if not self.is_room_exist():
-            return get_json_message(True)
+            return True
         
         if not self.is_room_user(user):
-            return get_json_message(False, 'エラー', ['返信するためにはルームに参加する必要があります'])
+            self.error_messages.append('返信するためにはルームに参加する必要があります')
+            return False
 
-        return get_json_message(True)
+        return True
 
     def validate_post(self, user):
-        result = self.validate_base(user)
-        if not result['is_success']:
-            return result
+        if not self.validate_base(user):
+            return False
 
         if not self.can_post(user):
-            return get_json_message(False, 'エラー', ['このルームで投稿する権限がありません'])
+            self.error_messages.append('このルームで投稿する権限がありません')
+            return False
 
-        return get_json_message(True)
+        return True
 
     def validate_reply(self, user):
-        result = self.validate_base(user)
-        if not result['is_success']:
-            return result
+        if not self.validate_base(user):
+            return False
 
         if not self.can_reply(user):
-            return get_json_message(False, 'エラー', ['このルームで返信する権限がありません'])
+            self.error_messages.append('このルームで返信する権限がありません')
+            return False
 
-        return get_json_message(True)
+        return True

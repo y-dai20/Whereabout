@@ -29,9 +29,10 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
 
     def post(self, request, *args, **kwargs):
         vr = ValidateRoomView(get_dict_item(request.POST, 'room_id'))
-        result = vr.validate_post(request.user)
-        if not result['is_success']:
-            return JsonResponse(result)
+
+
+        if not vr.validate_post(request.user):
+            return JsonResponse(get_json_message(False, 'エラー', vr.get_error_messages()))
 
         form = self.form_class(request.POST)
         if not form.is_valid():
@@ -53,7 +54,7 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
             return JsonResponse(get_json_message(False, 'エラー', ['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
         
         if get_file_size(video_list) > 0 and get_file_size(img_list) > 0:
-            return get_json_error(500)
+            raise MyBadRequest
 
         post.save()
         PostImgs.objects.create(

@@ -30,9 +30,8 @@ class ReplyPostView(LoginRequiredMixin, CreateView):
         files = request.FILES
 
         vr = ValidateRoomView(post.room)
-        result = vr.validate_reply(request.user)
-        if not result['is_success']:
-            return JsonResponse(result)
+        if not vr.validate_reply(request.user):
+            return JsonResponse(get_json_message(False, 'エラー', vr.get_error_messages()))
 
         form = self.form_class(request.POST)
         if not form.is_valid():
@@ -73,9 +72,8 @@ class ReplyReplyView(LoginRequiredMixin, CreateView):
         reply_post = get_object_or_404(ReplyPost, id=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
 
         vr = ValidateRoomView(reply_post.post.room)
-        result = vr.validate_reply(request.user)
-        if not result['is_success']:
-            return JsonResponse(result)
+        if not vr.validate_reply(request.user):
+            return JsonResponse(get_json_message(False, 'エラー', vr.get_error_messages()))
             
         form = self.form_class(request.POST)
         if not form.is_valid():
