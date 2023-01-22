@@ -70,7 +70,7 @@ class GetRoomTabContents(TemplateView):
     def post(self, request, *args, **kwargs):
         content_id = get_dict_item(request.POST, 'content_id')
         if is_empty(content_id) or not is_str(content_id):
-            raise MyBadRequest
+            raise MyBadRequest('content_id is error.')
         #todo 見直しが必要かも
         room_base = RoomBase()
         return JsonResponse(get_json_success_message(add_dict={'content_items':room_base.get_tab_content_items(content_id)}))
@@ -178,7 +178,7 @@ class JoinRoomView(LoginRequiredMixin, CreateView):
     def get(self, request, *args, **kwargs):
         vr = ValidateRoomView(get_dict_item(kwargs, 'room_pk'))
         if not vr.is_room_exist() or not vr.is_public() or vr.is_admin(request.user):
-            raise MyBadRequest
+            raise MyBadRequest('room is not exist.')
         
         room = vr.get_room()
         if UserBlock.objects.filter(blocker=room.admin, blockee=request.user, is_deleted=False):
@@ -222,12 +222,12 @@ class LeaveRoomView(LoginRequiredMixin, UpdateView):
     def get(self, request, *args, **kwargs):
         vr = ValidateRoomView(get_dict_item(kwargs, 'room_pk'))
         if not vr.is_room_exist() or vr.is_admin(request.user):
-            raise MyBadRequest
+            raise MyBadRequest('room is not exist.')
         
         room = vr.get_room()
         room_user = RoomUser.objects.filter(user=request.user, room=room, is_blocked=False, is_deleted=False)
         if not room_user.exists():
-            raise MyBadRequest
+            raise MyBadRequest('RoomUser is not exist.')
 
         room_user.update(is_deleted=True)
         room.participant_count -= 1
@@ -244,13 +244,13 @@ class AcceptRoomInviteView(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         vr = ValidateRoomView(get_dict_item(kwargs, 'room_pk'))
         if not vr.is_room_exist():
-            raise MyBadRequest
+            raise MyBadRequest('room is not exist.')
         room = vr.get_room()
         room_invite = get_object_or_404(RoomInviteUser, room=room, user=request.user, is_deleted=False)
 
         is_accept = get_boolean_or_none(get_dict_item(request.POST, 'is_accept'))
         if is_accept is None:
-            raise MyBadRequest
+            raise MyBadRequest('is_accept is None.')
         
         room_user = RoomUser.objects.filter(room=room, user=request.user)
         if room_user.exists() and not room_user[0].is_deleted:
@@ -286,7 +286,7 @@ class AcceptRoomGuestView(ManageRoomBaseView, CreateView):
     def post(self, request, *args, **kwargs):
         is_blocked = get_boolean_or_none(get_dict_item(request.POST, 'is_blocked'))
         if is_blocked is None:
-            raise MyBadRequest
+            raise MyBadRequest('is_blocked is None.')
 
         result = self.accept_room_guest(get_dict_item(kwargs, 'username'), get_dict_item(kwargs, 'room_pk'), is_blocked)
         if not result:
@@ -337,7 +337,7 @@ class ModalSearchRoomView(ListView):
     def get(self, request, *args, **kwargs):
         word = get_dict_item(request.GET, 'search_word')
         if not is_str(word):
-            raise MyBadRequest
+            raise MyBadRequest('search_word is not str.')
         rooms = Room.objects.filter(is_deleted=False, is_public=True, title__icontains=word)\
                 .exclude(id__in=RoomBase.get_my_room_list(request.user))\
                     .order_by('-title')\
@@ -353,7 +353,7 @@ class ModalSearchUserView(ListView):
     def get(self, request, *args, **kwargs):
         word = get_dict_item(request.GET, 'search_word')
         if not is_str(word):
-            raise MyBadRequest
+            raise MyBadRequest('search_word is not str.')
 
         users = User.objects.filter(is_active=True, username__icontains=word)
         if request.user.is_authenticated:
@@ -654,16 +654,16 @@ class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
             return JsonResponse(get_json_error_message(get_form_error_message(form)))
         is_active = get_boolean_or_none(get_dict_item(form_data, 'is_active'))
         if is_active is None:
-            raise MyBadRequest
+            raise MyBadRequest('is_active is None.')
         
         sequence = get_dict_item(form_data, 'sequence')
         if not is_int(sequence):
-            raise MyBadRequest
+            raise MyBadRequest('sequence is not int.')
         
         sequence = int(sequence)
         room_base = RoomBase(room)
         if sequence < 1 or room_base.max_request_information < sequence:
-            raise MyBadRequest
+            raise MyBadRequest('sequence is out of range.')
         
         #todo 要確認
         rri_exist = RoomRequestInformation.objects.filter(room=room, sequence=sequence, is_deleted=False)
@@ -688,15 +688,15 @@ class RoomInformationView(TemplateView):
         room = get_object_or_404(Room, pk=get_dict_item(kwargs, 'room_pk'), is_deleted=False)
         rris = RoomRequestInformation.objects.filter(room=room, is_deleted=False, is_active=True)
         form_data = request.POST
-        for label, value in form_data.items():
-            rri = rris.filter(sequence=label)
+        for sequence, value in form_data.items():
+            rri = rris.filter(sequence=sequence)
             if not rri.exists():
-                raise MyBadRequest
+                raise MyBadRequest('RoomRequestInformation is not exist.')
             value = value.strip() if is_str(value) else value
             if len(value) < rri[0].min_length or rri[0].max_length < len(value):
-                raise MyBadRequest
+                raise MyBadRequest("RoomInformation's value length is out of range.")
             if (type == 'num' and not is_int(value)) or (type == 'choice' and value not in rri[0].choice):
-                raise MyBadRequest
+                raise MyBadRequest("RoomInformation's type is error.")
             
             RoomInformation.objects.create(rri=rri[0], user=self.request.user, text=value)
 

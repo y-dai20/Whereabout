@@ -40,7 +40,7 @@ class ReplyPostView(LoginRequiredMixin, CreateView):
         room_base = RoomBase(vr.get_room())
         reply = form.save(commit=False)
         if reply.type not in room_base.get_room_reply_types():
-            raise MyBadRequest
+            raise MyBadRequest('reply_type is not exist.')
 
         img_list = get_img_list(request.POST, files, self.max_img)
         if get_file_size(img_list) > self.max_img_size:
@@ -150,7 +150,7 @@ class ReplyDeleteView(LoginRequiredMixin, TemplateView):
         reply = get_object_or_404(self.model, pk=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
         vr = ValidateRoomView(reply.post.room)
         if (vr.is_room_exist() and not vr.is_admin(request.user)) or request.user != reply.user:
-            raise MyBadRequest
+            raise MyBadRequest('no permission to delete.')
 
         reply.is_deleted = True
         reply.save()
@@ -168,7 +168,7 @@ class Reply2DeleteView(LoginRequiredMixin, TemplateView):
         reply2 = get_object_or_404(self.model, pk=get_dict_item(kwargs, 'reply2_pk'), is_deleted=False)
         vr = ValidateRoomView(reply2.reply.post.room)
         if (vr.is_room_exist() and not vr.is_admin(request.user)) and request.user != reply2.user:
-            raise MyBadRequest
+            raise MyBadRequest('no permission to delete.')
 
         reply2.is_deleted = True
         reply2.save()

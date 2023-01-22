@@ -53,7 +53,7 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
             return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
         
         if get_file_size(video_list) > 0 and get_file_size(img_list) > 0:
-            raise MyBadRequest
+            raise MyBadRequest('file size error.')
 
         post.save()
         PostImgs.objects.create(
@@ -145,7 +145,7 @@ class PostDeleteView(LoginRequiredMixin, TemplateView):
         post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         vr = ValidateRoomView(post.room)
         if (vr.is_room_exist() and not vr.is_admin(request.user)) or (request.user != post.user):
-            raise MyBadRequest
+            raise MyBadRequest('no permission to delete.')
 
         post.is_deleted = True
         post.save()

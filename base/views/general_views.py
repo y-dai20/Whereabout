@@ -160,7 +160,7 @@ class GoodView(UpdateBaseView):
     def get_json_data(self, obj):
         is_good = get_boolean_or_none(get_dict_item(self.request.GET, 'is_good'))
         if is_empty(obj) or is_good is None:
-            raise MyBadRequest
+            raise MyBadRequest('good obj is empty.')
 
         good_obj = self.model.objects.filter(user=self.request.user, obj=obj)
         if good_obj.exists():
@@ -186,7 +186,7 @@ class AgreeView(UpdateBaseView):
     def get_json_data(self, obj, room):
         is_agree = get_boolean_or_none(get_dict_item(self.request.GET, 'is_agree'))
         if is_empty(obj) or is_agree is None:
-            raise MyBadRequest
+            raise MyBadRequest('agree obj is empty.')
         
         if not self.can_access_room(room):
             return get_json_error_message(self.error_messages)
@@ -215,7 +215,7 @@ class DemagogyView(UpdateBaseView):
     def get_json_data(self, obj, room):
         is_true = get_boolean_or_none(get_dict_item(self.request.GET, 'is_true'))
         if is_empty(obj) or is_true is None:
-            raise MyBadRequest
+            raise MyBadRequest('demagogy obj is empty.')
 
         if not self.can_access_room(room):
             return get_json_error_message(self.error_messages)
@@ -243,7 +243,7 @@ class DemagogyView(UpdateBaseView):
 class FavoriteView(UpdateBaseView):
     def get_json_data(self, obj, room):
         if is_empty(obj):
-            raise MyBadRequest
+            raise MyBadRequest('favorite obj is empty.')
 
         if not self.can_access_room(room):
             return get_json_error_message(self.error_messages)
