@@ -20,7 +20,6 @@ from django.contrib.auth.views import LogoutView
 from django.conf.urls.static import static
 from django.conf import settings
 
-#todo 区切りを"/"か"-"で統一したい
 urlpatterns = [
     path('admin/', admin.site.urls),
 

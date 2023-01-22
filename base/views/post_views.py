@@ -8,8 +8,8 @@ from base.models.general_models import ObjectExpansion
 from base.models.reply_models import ReplyPost
 from base.models.post_models import Post, PostAgree, PostFavorite, PostImgs
 from base.forms import PostForm
-from base.views.functions import get_form_error_message, get_file_size_by_unit, get_dict_item, is_empty, get_json_message,\
-    get_img_list, get_file_size, get_video_list, get_json_error
+from base.views.functions import get_form_error_message, get_file_size_by_unit, get_dict_item, is_empty,\
+    get_img_list, get_file_size, get_video_list, get_json_success_message, get_json_error_message
 from base.views.general_views import SearchBaseView, DemagogyView, AgreeView, FavoriteView, DetailBaseView, PostItemView, PostDemagogy, RoomBase
 from base.views.validate_views import ValidateRoomView
 from base.views.mixins import LoginRequiredMixin
@@ -31,11 +31,11 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
         vr = ValidateRoomView(get_dict_item(request.POST, 'room_id'))
 
         if not vr.validate_post(request.user):
-            return JsonResponse(get_json_message(False, 'エラー', vr.get_error_messages()))
+            return JsonResponse(get_json_error_message(vr.get_error_messages()))
 
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
         post = form.save(commit=False)
         post.user = request.user
@@ -45,12 +45,12 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
         files = request.FILES
         video_list = get_video_list(request.POST, files, self.max_video)
         if get_file_size(video_list) > self.max_video_size:
-                return JsonResponse(get_json_message(False, 'エラー', ['動画サイズが{}を超えています'.format(get_file_size_by_unit(self.max_video_size, unit='MB'))]))
+                return JsonResponse(get_json_error_message(['動画サイズが{}を超えています'.format(get_file_size_by_unit(self.max_video_size, unit='MB'))]))
         post.video = video_list[0]
         
         img_list = get_img_list(request.POST, files, self.max_img)
         if get_file_size(img_list) > self.max_img_size:
-            return JsonResponse(get_json_message(False, 'エラー', ['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
+            return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
         
         if get_file_size(video_list) > 0 and get_file_size(img_list) > 0:
             raise MyBadRequest
@@ -64,7 +64,7 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
             img4 = img_list[3],
         )
 
-        return JsonResponse(get_json_message(True, '成功', ['投稿しました'], {'post':self.get_post_item(post)}))
+        return JsonResponse(get_json_success_message(['投稿しました'], {'post':self.get_post_item(post)}))
 
 class PostDetailView(DetailBaseView, SearchBaseView):
     model = ReplyPost
@@ -150,7 +150,7 @@ class PostDeleteView(LoginRequiredMixin, TemplateView):
         post.is_deleted = True
         post.save()
 
-        return JsonResponse(get_json_message(True, '成功', ['削除しました']))
+        return JsonResponse(get_json_success_message(['削除しました']))
 
 class PostAgreeView(AgreeView):
     model = PostAgree
@@ -186,10 +186,10 @@ class GetPostReplyTypesView(TemplateView):
     def get(self, request, *args, **kwargs):
         post = get_object_or_404(Post, id=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         room_base = RoomBase(post.room)
-        return JsonResponse(get_json_message(True, add_dict={'reply_types':room_base.get_room_reply_types()}))
+        return JsonResponse(get_json_success_message(add_dict={'reply_types':room_base.get_room_reply_types()}))
 
 class GetReplyReplyTypesView(TemplateView):
     def get(self, request, *args, **kwargs):
         reply = get_object_or_404(ReplyPost, id=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
         room_base = RoomBase(reply.post.room)
-        return JsonResponse(get_json_message(True, add_dict={'reply_types':room_base.get_room_reply_types()}))
+        return JsonResponse(get_json_success_message(add_dict={'reply_types':room_base.get_room_reply_types()}))

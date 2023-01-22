@@ -165,6 +165,10 @@ def get_display_datetime(dt):
 
 def get_json_message(is_success:bool, title='', messages=[], add_dict={}):
     return {'is_success':is_success, 'title':title, 'message':messages, **add_dict}
+def get_json_success_message(messages=[], add_dict={}):
+    return get_json_message(True, '成功', messages, add_dict)
+def get_json_error_message(messages=[], add_dict={}):
+    return get_json_message(False, 'エラー', messages, add_dict)
 
 def get_file_size_by_unit(byte:int, unit='MB'):
     unit = unit.upper()
@@ -212,7 +216,7 @@ def get_form_error_message(form):
     return messages
 
 def get_json_error(status):
-    return JsonResponse(get_json_message(False, 'エラー', ['{}'.format(status)]), status=status)
+    return JsonResponse(get_json_error_message(['{}'.format(status)]), status=status)
 
 def get_number_unit(num):
     if num >= 1000000000:

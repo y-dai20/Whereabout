@@ -15,7 +15,7 @@ from base.views.validate_views import ValidateRoomView
 from base.views.functions import get_form_error_message, get_combined_list, get_file_size_by_unit, \
     get_img_list, get_video_list, get_file_size, is_uploaded_file_img, is_same_empty_count, is_str, \
     get_boolean_or_none, get_dict_item, get_list_item, is_empty, is_all_none, get_dict_item_list, literal_eval, \
-    get_json_message, get_img_path, get_json_error, is_int
+    get_img_path, is_int, get_json_success_message, get_json_error_message
 from base.forms import CreateRoomForm, UpdateRoomForm, RoomRequestInformationForm
 from base.views.mixins import LoginRequiredMixin, RoomAdminRequiredMixin
 
@@ -74,7 +74,7 @@ class GetRoomTabContents(TemplateView):
             raise MyBadRequest
         #todo 見直しが必要かも
         room_base = RoomBase()
-        return JsonResponse(get_json_message(True, add_dict={'content_items':room_base.get_tab_content_items(content_id)}))
+        return JsonResponse(get_json_success_message(add_dict={'content_items':room_base.get_tab_content_items(content_id)}))
 
 #todo ルームに電話番号，住所など情報追加
 #todo ルームに入室する際に情報を要求
@@ -142,14 +142,14 @@ class CreateRoomView(LoginRequiredMixin, CreateView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
         room = form.save(commit=False)
         if Room.objects.filter(title=room.title, admin=request.user, is_deleted=False).exists():
-            return JsonResponse(get_json_message(False, 'エラー', ['同じタイトルのルームは作成できません']))
+            return JsonResponse(get_json_error_message(['同じタイトルのルームは作成できません']))
 
         if Room.objects.filter(admin=request.user, is_deleted=False).count() >= self.max_room_count and not request.user.is_admin:
-            return JsonResponse(get_json_message(False, 'エラー', ['{}個以上のRoomは作成できません'.format(self.max_room_count)]))
+            return JsonResponse(get_json_error_message(['{}個以上のRoomは作成できません'.format(self.max_room_count)]))
 
         room.admin = request.user
         room.authority = RoomAuthority.objects.create()
@@ -157,7 +157,7 @@ class CreateRoomView(LoginRequiredMixin, CreateView):
         files = request.FILES
         img_list = get_img_list(request.POST, files, self.max_img)
         if get_file_size(img_list) > self.max_img_size:
-            return JsonResponse(get_json_message(False, 'エラー', ['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
+            return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
 
         room.save()
         if not is_all_none(img_list):
@@ -170,7 +170,7 @@ class CreateRoomView(LoginRequiredMixin, CreateView):
                 img5 = img_list[4],
             )
 
-        return JsonResponse(get_json_message(True, '成功', ['ルームを作成しました'], {'room_id':room.id}))
+        return JsonResponse(get_json_success_message(['ルームを作成しました'], {'room_id':room.id}))
 
 #todo request informationがあれば表示するようにする
 class JoinRoomView(LoginRequiredMixin, CreateView):
@@ -183,22 +183,22 @@ class JoinRoomView(LoginRequiredMixin, CreateView):
         
         room = vr.get_room()
         if UserBlock.objects.filter(blocker=room.admin, blockee=request.user, is_deleted=False):
-            return JsonResponse(get_json_message(False, 'エラー', ['管理者にブロックされています']))
+            return JsonResponse(get_json_error_message(['管理者にブロックされています']))
 
         room_user = RoomUser.objects.filter(user=request.user, room=room)
         if room_user.exists() and not room_user[0].is_deleted:
-            return JsonResponse(get_json_message(False, 'エラー', ['すでに参加しています']))
+            return JsonResponse(get_json_error_message(['すでに参加しています']))
 
         room_guest = RoomGuest.objects.filter(guest=request.user, room=room)
         if room_guest.exists() and not room_guest[0].is_deleted:
-            return JsonResponse(get_json_message(False, 'エラー', ['参加申請中です']))
+            return JsonResponse(get_json_error_message(['参加申請中です']))
         
         if room.need_approval:
             if room_guest.exists():
                 room_guest.update(is_deleted=False)
             else:
                 room_guest.create(guest=request.user, room=room)
-            return JsonResponse(get_json_message(True, '成功', ['参加申請を出しました'], {'is_waiting':True}))
+            return JsonResponse(get_json_success_message(['参加申請を出しました'], {'is_waiting':True}))
 
         if room_user.exists():
             room_user.update(is_deleted=False, is_blocked=False)
@@ -215,7 +215,7 @@ class JoinRoomView(LoginRequiredMixin, CreateView):
         room.participant_count += 1
         room.save()
 
-        return JsonResponse(get_json_message(True, '成功', ['参加しました'], {'is_waiting':False}))
+        return JsonResponse(get_json_success_message(['参加しました'], {'is_waiting':False}))
 
 class LeaveRoomView(LoginRequiredMixin, UpdateView):
     model = RoomUser
@@ -255,7 +255,7 @@ class AcceptRoomInviteView(LoginRequiredMixin, CreateView):
         
         room_user = RoomUser.objects.filter(room=room, user=request.user)
         if room_user.exists() and not room_user[0].is_deleted:
-            return JsonResponse(get_json_message(False, 'エラー', ['エラーが発生しました．(E03)']))
+            return JsonResponse(get_json_error_message(['エラーが発生しました．(E03)']))
 
         if is_accept:
             if not room_user.exists():
@@ -276,7 +276,7 @@ class AcceptRoomInviteView(LoginRequiredMixin, CreateView):
         room_invite.is_deleted = True
         room_invite.save()
 
-        return JsonResponse(get_json_message(True))
+        return JsonResponse(get_json_success_message())
 
 class AcceptRoomGuestView(ManageRoomBaseView, CreateView):
     model = RoomInviteUser
@@ -291,9 +291,9 @@ class AcceptRoomGuestView(ManageRoomBaseView, CreateView):
 
         result = self.accept_room_guest(get_dict_item(kwargs, 'username'), get_dict_item(kwargs, 'room_pk'), is_blocked)
         if not result:
-            return JsonResponse(get_json_message(False, 'エラー', ['エラーが発生しました．(E02)']))
+            return JsonResponse(get_json_error_message(['エラーが発生しました．(E02)']))
 
-        return JsonResponse(get_json_message(True))
+        return JsonResponse(get_json_success_message())
 
     def accept_room_guest(self, username, room, is_blocked=False):
         guest = get_object_or_404(User, username=username, is_active=True)
@@ -344,7 +344,7 @@ class ModalSearchRoomView(ListView):
                     .order_by('-title')\
                         .order_by(Length('title').desc())
 
-        return JsonResponse(get_json_message(True, add_dict={
+        return JsonResponse(get_json_success_message(add_dict={
             'rooms':[{'id':room.id, 'title':room.title, 'admin':room.admin.username, 'user_img':get_img_path(room.admin.profile.img)} for room in rooms]}))
 
 class ModalSearchUserView(ListView):
@@ -361,7 +361,7 @@ class ModalSearchUserView(ListView):
             users = users.exclude(id=request.user.id)
         users = users.order_by('-username').order_by(Length('username').desc())
 
-        return JsonResponse(get_json_message(True, add_dict={
+        return JsonResponse(get_json_success_message(add_dict={
             'users':[{'user_img':get_img_path(user.profile.img), 'user_id':user.id, 'username':user.username} for user in users]}))
 
 class ManageRoomAuthorityView(ManageRoomBaseView, TemplateView):
@@ -400,7 +400,7 @@ class ManageRoomAuthorityView(ManageRoomBaseView, TemplateView):
                 auth.is_admin = is_admin
             auth.save()
 
-        return JsonResponse(get_json_message(True,'成功',['保存しました']))
+        return JsonResponse(get_json_success_message(['保存しました']))
     
     def get_authority_check(self, data):
         can_reply = get_boolean_or_none(get_dict_item(data, 'can_reply'))
@@ -433,7 +433,7 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
         self.room.participant_count = RoomUser.objects.filter(room=self.room, is_deleted=False).count()
         self.room.save()
 
-        return JsonResponse(get_json_message(True, '成功', ['保存しました']))
+        return JsonResponse(get_json_success_message(['保存しました']))
 
     def toggle_banish_user(self, username):
         if is_empty(username):
@@ -469,7 +469,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         form_data = request.POST
         form = self.form_class(form_data)
         if not form.is_valid():
-            return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
         self.files = request.FILES
 
@@ -482,7 +482,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
 
         video_list = get_video_list(form_data, self.files, self.max_video)
         if get_file_size(video_list) > self.max_video_size:
-                return JsonResponse(get_json_message(False, 'エラー', ['動画サイズが{}を超えています'.format(get_file_size_by_unit(self.max_video_size, unit='MB'))]))
+                return JsonResponse(get_json_error_message(['動画サイズが{}を超えています'.format(get_file_size_by_unit(self.max_video_size, unit='MB'))]))
         room.video = video_list[0]
         room.save()
 
@@ -519,7 +519,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
                 total_size += self.files[img_name].size
         
         if total_size > self.max_img_size:
-            return JsonResponse(get_json_message(False, 'エラー', ['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
+            return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
 
         img_list = [new_imgs[i] if i < len(new_imgs) else None for i in range(self.max_img)]
         room_imgs.img1 = img_list[0]  
@@ -529,7 +529,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         room_imgs.img5 = img_list[4]  
         room_imgs.save()
 
-        return JsonResponse(get_json_message(True, '成功', ['保存しました']))
+        return JsonResponse(get_json_success_message(['保存しました']))
 
     def get_tab_content(self, tab_content_id, title):
         if is_empty(title):
@@ -555,10 +555,10 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             text = get_dict_item(tab_content_item, 'text')
             img = get_dict_item(tab_content_item, 'img')
             img = self.files[img] if img in self.files and is_uploaded_file_img(self.files[img]) else img
-            # todo check file size
+            # todo error_messages
             if not is_empty(img) and get_file_size([img]) > self.max_img_size:
                 return False
-                return JsonResponse(get_json_message(False, 'エラー', ['動画サイズが{}を超えています'.format(get_file_size_by_unit(self.max_video_size, unit='MB'))]))
+                return JsonResponse(get_json_error_message(['動画サイズが{}を超えています'.format(get_file_size_by_unit(self.max_video_size, unit='MB'))]))
 
             if not is_same_empty_count([title, text, img], 2):
                 continue
@@ -624,7 +624,6 @@ class ManageRoomPostView(ManageRoomBaseView, TemplateView):
         room = vr.get_room()
         form_data = request.POST
 
-        #todo 空は許可する？
         reply_type = get_object_or_404(RoomReplyType, room=room, room__is_deleted=False)
         reply_type.type1 = get_dict_item(form_data, 'type1')
         reply_type.type2 = get_dict_item(form_data, 'type2')
@@ -639,7 +638,7 @@ class ManageRoomPostView(ManageRoomBaseView, TemplateView):
 
         reply_type.save()
 
-        return JsonResponse(get_json_message(True, '成功', ['保存しました']))
+        return JsonResponse(get_json_success_message(['保存しました']))
 
 #todo self.max_request_informationをshowroomにも持たせるか
 class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
@@ -654,7 +653,7 @@ class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
         form_data = request.POST
         form = self.form_class(form_data)
         if not form.is_valid():
-            return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
         is_active = get_boolean_or_none(get_dict_item(form_data, 'is_active'))
         if is_active is None:
             raise MyBadRequest
@@ -677,7 +676,7 @@ class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
         rri.sequence = sequence
         rri.save()
 
-        return JsonResponse(get_json_message(True, '成功', ['保存しました']))
+        return JsonResponse(get_json_success_message(['保存しました']))
 
 class RoomInformationView(TemplateView):
     model = RoomInformation
@@ -701,7 +700,7 @@ class RoomInformationView(TemplateView):
             
             RoomInformation.objects.create(rri=rri[0], user=self.request.user, text=value)
 
-        return JsonResponse(get_json_message(True, '成功', ['保存しました']))
+        return JsonResponse(get_json_success_message(['保存しました']))
 
 class RoomInviteView(ManageRoomBaseView, TemplateView):
     model = User
@@ -716,21 +715,21 @@ class RoomInviteView(ManageRoomBaseView, TemplateView):
         vr = self.get_validate_room()
         room = vr.get_room()
         if RoomUser.objects.filter(user=invite_user, room=room, is_deleted=False).exists():
-            return JsonResponse(get_json_message(False, 'エラー', ['既に参加しています']))
+            return JsonResponse(get_json_error_message(['既に参加しています']))
 
         room_invite_obj = RoomInviteUser.objects.filter(room=room, user=invite_user)
         if room_invite_obj.exists() and not room_invite_obj[0].is_deleted:
-            return JsonResponse(get_json_message(False, 'エラー', ['すでに招待しています']))
+            return JsonResponse(get_json_error_message(['すでに招待しています']))
         
         if room_invite_obj.exists() and room_invite_obj[0].is_deleted:
-            return JsonResponse(get_json_message(True, 'エラー', ['招待が拒否されています']))
+            return JsonResponse(get_json_error_message(['招待が拒否されています']))
 
         RoomInviteUser.objects.create(
             room=room,
             user=invite_user,
         )
 
-        return JsonResponse(get_json_message(True, '成功', ['招待しました']))
+        return JsonResponse(get_json_success_message(['招待しました']))
 
 class RoomGoodView(GoodView):
     model = RoomGood
@@ -748,7 +747,7 @@ class GetRoomView(RoomItemView, TemplateView):
 
     def post(self, request, *args, **kwargs):
         room = get_object_or_404(Room, pk=get_dict_item(kwargs, 'room_pk'), is_deleted=False)
-        return JsonResponse(get_json_message(True, add_dict=self.get_room_item(room)))
+        return JsonResponse(get_json_success_message(add_dict=self.get_room_item(room)))
 
 class GetRoomRequestInformationView(TemplateView):
     model = RoomRequestInformation
@@ -759,4 +758,4 @@ class GetRoomRequestInformationView(TemplateView):
     def post(self, request, *args, **kwargs):
         room = get_object_or_404(Room, pk=get_dict_item(kwargs, 'room_pk'), is_deleted=False)
         room_base = RoomBase(room)
-        return JsonResponse(get_json_message(True, add_dict={'rri':room_base.get_room_request_information(is_active=True)}))
+        return JsonResponse(get_json_success_message(add_dict={'rri':room_base.get_room_request_information(is_active=True)}))

@@ -17,8 +17,8 @@ from base.models.room_models import RoomInviteUser, RoomUser, RoomAuthority
 from base.models.account_models import User, Guest, UserReset
 from base.views.functions import \
     get_diff_seconds_from_now, create_id, get_dict_item, get_img_path, is_empty,\
-    get_json_message, is_uploaded_file_img, get_file_size_by_unit, get_form_error_message,\
-    get_json_error, get_img_list, get_file_size
+    get_json_success_message, get_json_error_message, get_file_size_by_unit, get_form_error_message,\
+    get_img_list, get_file_size
 from base.views.general_views import UserItemView, SendMailView, HeaderView
 from base.views.mixins import LoginRequiredMixin
 
@@ -59,7 +59,6 @@ class LoginView(LoginView):
     def get_user(self):
         return User.objects.filter(username=get_dict_item(self.request.POST, 'username'), is_active=True)
 
-#todo get_json_messageをerror用とsuccess用の2つに分けた方がいいかも
 class SignUpView(CreateView):
     form_class = SignUpForm
     template_name = 'pages/signup.html'
@@ -74,7 +73,7 @@ class SignUpView(CreateView):
 
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
         # emailが過去に使用されていれば，使用禁止にする
         user = User.objects.filter(email=self.guest.email)
@@ -82,7 +81,7 @@ class SignUpView(CreateView):
             raise MyBadRequest
 
         if get_diff_seconds_from_now(self.guest.updated_at) > self.registrable_seconds:
-            return JsonResponse(get_json_message(False, 'エラー', ['時間切れです', 'メールアドレスの登録からやり直してください']))
+            return JsonResponse(get_json_error_message(['時間切れです', 'メールアドレスの登録からやり直してください']))
 
         user = form.save()
         self.guest.is_deleted = True
@@ -102,7 +101,7 @@ class SignUpView(CreateView):
             )
 
         login(request, user)
-        return JsonResponse(get_json_message(True, '成功', ['ユーザー登録しました']))
+        return JsonResponse(get_json_success_message(['ユーザー登録しました']))
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -123,7 +122,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
         
         user = request.user
         user.password = make_password(form.clean_password())
@@ -132,7 +131,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
 
         login(request, user)
 
-        return JsonResponse(get_json_message(True, '成功', ['パスワードを変更しました']))
+        return JsonResponse(get_json_success_message(['パスワードを変更しました']))
 
 #todo リセット可能時間を設定
 class ResetPasswordView(TemplateView):
@@ -147,7 +146,7 @@ class ResetPasswordView(TemplateView):
         ur = self.get_user_reset()
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
         user = ur.user
         ur.prev_password = user.password
@@ -159,7 +158,7 @@ class ResetPasswordView(TemplateView):
         ur.is_success = True
         ur.save()
 
-        return JsonResponse(get_json_message(True, '成功', ['パスワードをリセットしました','続けてログインしてください']))
+        return JsonResponse(get_json_success_message(['パスワードをリセットしました','続けてログインしてください']))
     
     #todo まとめる？
     def get_user_reset(self):
@@ -175,7 +174,7 @@ class SendMailForResetPasswordView(SendMailView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
         username = get_dict_item(request.POST, 'username')
         email = form.clean_email()
@@ -185,7 +184,7 @@ class SendMailForResetPasswordView(SendMailView):
         if user.exists():
             ur = UserReset.objects.filter(user=user[0])
             if ur.exists() and get_diff_seconds_from_now(ur[0].updated_at) < self.resettable_seconds:
-                return JsonResponse(get_json_message(False, 'エラー', ['間隔を空けてください']))
+                return JsonResponse(get_json_error_message(['間隔を空けてください']))
 
             #todo メールを送信するなら回数制限，モーダルエラーなら登録しているメールアドレスがバレないように．．．
             if ur.exists() and get_diff_seconds_from_now(user[0].updated_at) < self.resettable_interval:
@@ -204,7 +203,7 @@ class SendMailForResetPasswordView(SendMailView):
                     \n（期限：5分以内）'.format(settings.MY_URL, ur.one_time_id)
             self.send_mail('パスワードリセット', message, [user[0].email])
 
-        return JsonResponse(get_json_message(True, '成功', ['メールを送信しました']))
+        return JsonResponse(get_json_success_message(['メールを送信しました']))
 
 class SendMailForSignupView(SendMailView):
     form_class = SendMailForm
@@ -217,7 +216,7 @@ class SendMailForSignupView(SendMailView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
         self.email = form.clean_email()        
         guest = Guest.objects.filter(email=self.email)
@@ -226,7 +225,7 @@ class SendMailForSignupView(SendMailView):
                 guest[0].access_count = 0
 
             if guest[0].access_count > self.max_access_count:
-                return JsonResponse(get_json_message(False, 'エラー', [
+                return JsonResponse(get_json_error_message([
                     '入力したメールアドレスに対してのアクセス回数が許容範囲を超えています', 
                     '登録するメールアドレスを変更するか，1日以上の間隔を空けて再度登録してください']))
 
@@ -247,7 +246,7 @@ class SendMailForSignupView(SendMailView):
             message,
             [self.email], 
         )
-        return JsonResponse(get_json_message(True, '成功', ['【{}】から【{}】宛にメールを送信しました'.format(self.user_from, self.email)]))
+        return JsonResponse(get_json_success_message(['【{}】から【{}】宛にメールを送信しました'.format(self.user_from, self.email)]))
 
     def get_register_message(self, id):
         return '\
@@ -277,12 +276,12 @@ class UserProfileView(LoginRequiredMixin, HeaderView, TemplateView):
         form_data = request.POST
         form = self.form_class(form_data)
         if not form.is_valid():
-            return JsonResponse(get_json_message(False, 'エラー', get_form_error_message(form)))
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
         files = request.FILES
         img_list = get_img_list(form_data, files, self.max_img)
         if get_file_size(img_list) > self.max_img_size:
-            return JsonResponse(get_json_message(False, 'エラー', ['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
+            return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
         profile = request.user.profile
         profile.img = img_list[0]
 
@@ -290,7 +289,7 @@ class UserProfileView(LoginRequiredMixin, HeaderView, TemplateView):
         profile.description = form.clean_description()
         profile.save()
 
-        return JsonResponse(get_json_message(True, '成功', ['保存しました']))
+        return JsonResponse(get_json_success_message(['保存しました']))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)

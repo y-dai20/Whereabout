@@ -14,8 +14,9 @@ from base.models.reply_models import ReplyAgree, ReplyFavorite, ReplyDemagogy, R
 from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, RoomReplyType, TabContentItem,\
     TabPermutation, RoomGood, RoomRequestInformation, RoomInformation
 from base.models.account_models import UserFollow, UserBlock, Profile
-from base.views.functions import get_number_unit, is_str, get_json_message, get_bool_or_str, get_list_index, get_img_path, get_dict_item, is_empty,\
-    get_reply_types, get_boolean_or_none, get_display_datetime, get_json_error
+from base.views.functions import get_number_unit, get_bool_or_str, get_list_index,\
+    get_img_path, get_dict_item, is_empty, get_json_error_message, get_json_success_message,\
+    get_reply_types, get_boolean_or_none, get_display_datetime
 from base.views.mixins import LoginRequiredMixin
 from base.views.validate_views import ValidateRoomView
 
@@ -63,7 +64,7 @@ class IndexBaseView(HeaderView, ListView):
         if self.idx < 0:
             self.idx = 0
 
-        return JsonResponse(get_json_message(True, add_dict={'idx':self.idx+1, 'items':self.get_dump_items(), 'is_end':True if is_empty(self.items) else False}))
+        return JsonResponse(get_json_success_message(add_dict={'idx':self.idx+1, 'items':self.get_dump_items(), 'is_end':True if is_empty(self.items) else False}))
     
     def get_blocked_user_list(self):
         if self.request.user.is_authenticated:
@@ -174,7 +175,7 @@ class GoodView(UpdateBaseView):
         obj.bad_count = self.model.objects.filter(obj=obj, is_good=False, is_deleted=False).count()
         obj.save()
 
-        return get_json_message(True, add_dict={
+        return get_json_success_message(add_dict={
             'is_good':is_good,
             'is_deleted':good_obj[0].is_deleted,
             'good_count':get_number_unit(obj.good_count),
@@ -188,7 +189,7 @@ class AgreeView(UpdateBaseView):
             raise MyBadRequest
         
         if not self.can_access_room(room):
-            return get_json_message(False, 'エラー', self.error_messages)
+            return get_json_error_message(self.error_messages)
 
         agree_obj = self.model.objects.filter(user=self.request.user, obj=obj)
         if agree_obj.exists():
@@ -203,7 +204,7 @@ class AgreeView(UpdateBaseView):
         obj.expansion.disagree_count = self.model.objects.filter(obj=obj, is_agree=False, is_deleted=False).count()
         obj.expansion.save()
 
-        return get_json_message(True, add_dict={
+        return get_json_success_message(add_dict={
             'is_agree':is_agree,
             'is_deleted':agree_obj[0].is_deleted,
             'agree_count':get_number_unit(obj.expansion.agree_count),
@@ -217,7 +218,7 @@ class DemagogyView(UpdateBaseView):
             raise MyBadRequest
 
         if not self.can_access_room(room):
-            return get_json_message(False, 'エラー', self.error_messages)
+            return get_json_error_message(self.error_messages)
 
         demagogy = self.model.objects.filter(user=self.request.user, obj=obj)        
         if demagogy.exists():
@@ -232,7 +233,7 @@ class DemagogyView(UpdateBaseView):
         obj.expansion.false_count = self.model.objects.filter(obj=obj, is_true=False, is_deleted=False).count()
         obj.expansion.save()
 
-        return get_json_message(True,add_dict={
+        return get_json_success_message(add_dict={
             'is_true':is_true,
             'is_deleted':(demagogy[0].is_deleted),
             'true_count':get_number_unit(obj.expansion.true_count),
@@ -245,7 +246,7 @@ class FavoriteView(UpdateBaseView):
             raise MyBadRequest
 
         if not self.can_access_room(room):
-            return get_json_message(False, 'エラー', self.error_messages)
+            return get_json_error_message(self.error_messages)
             
         favorite = self.model.objects.filter(obj=obj, user=self.request.user)
         if favorite.exists():
@@ -256,7 +257,7 @@ class FavoriteView(UpdateBaseView):
         obj.expansion.favorite_count = self.model.objects.filter(obj=obj, is_deleted=False).count()
         obj.expansion.save()
 
-        return get_json_message(True, add_dict={
+        return get_json_success_message(add_dict={
             'is_favorite':not favorite[0].is_deleted,
             'favorite_count':get_number_unit(obj.expansion.favorite_count),
         })
@@ -469,7 +470,7 @@ class UserItemView(View):
         if not isinstance(profile, Profile):
             return {}
             
-        user_dict = get_json_message(True, add_dict={
+        user_dict = get_json_success_message(add_dict={
             'username':profile.user.username,
             'created_at':get_display_datetime(datetime.now() - make_naive(profile.user.created_at)),
             'img':get_img_path(profile.img),
@@ -669,7 +670,7 @@ class ShowRoomBaseView(HeaderView):
         context['tab_content1_items'] = json.dumps(self.room_base.get_tab_content_items(self.room.tabpermutation.tab_content1))
         context['dumps_request_information'] = json.dumps(self.room_base.get_room_request_information())
 
-        # context['do_pass_request_information'] = True
+        context['do_pass_request_information'] = True
         if not self.vr.is_admin(self.request.user) and\
             self.vr.is_room_user(self.request.user) and\
                 not RoomInformation.objects.filter(rri__room=room, user=self.request.user, is_deleted=False).exists():

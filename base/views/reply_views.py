@@ -11,8 +11,8 @@ from base.models.room_models import RoomReplyType
 from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy
 from base.views.general_views import AgreeView, FavoriteView, DetailBaseView, DemagogyView, SearchBaseView, IndexBaseView, RoomBase
 from base.views.validate_views import ValidateRoomView
-from base.views.functions import get_form_error_message, get_dict_item, is_empty, get_json_message, is_str, \
-    get_file_size_by_unit, get_img_list, get_file_size, get_json_error
+from base.views.functions import get_form_error_message, get_dict_item, is_empty, is_str, \
+    get_file_size_by_unit, get_img_list, get_file_size, get_json_error_message
 from base.views.mixins import LoginRequiredMixin
 
 #todo AgreeやDisagreeを定数にしたい
@@ -31,11 +31,11 @@ class ReplyPostView(LoginRequiredMixin, CreateView):
 
         vr = ValidateRoomView(post.room)
         if not vr.validate_reply(request.user):
-            return JsonResponse(get_json_message(False, 'エラー', vr.get_error_messages()))
+            return JsonResponse(get_json_error_message(vr.get_error_messages()))
 
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return get_json_message(False, 'エラー', get_form_error_message(form))
+            return get_json_error_message(get_form_error_message(form))
 
         room_base = RoomBase(vr.get_room())
         reply = form.save(commit=False)
@@ -44,7 +44,7 @@ class ReplyPostView(LoginRequiredMixin, CreateView):
 
         img_list = get_img_list(request.POST, files, self.max_img)
         if get_file_size(img_list) > self.max_img_size:
-            return JsonResponse(get_json_message(False, 'エラー', ['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
+            return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
         reply.img = img_list[0]
             
         reply.user = request.user
@@ -59,7 +59,7 @@ class ReplyPostView(LoginRequiredMixin, CreateView):
         post.expansion.reply_count += 1
         post.expansion.save()
 
-        return JsonResponse(get_json_message(True,'成功',['返信しました']))
+        return JsonResponse(get_json_success_message(['返信しました']))
 
 class ReplyReplyView(LoginRequiredMixin, CreateView):
     form_class = ReplyReplyForm
@@ -73,11 +73,11 @@ class ReplyReplyView(LoginRequiredMixin, CreateView):
 
         vr = ValidateRoomView(reply_post.post.room)
         if not vr.validate_reply(request.user):
-            return JsonResponse(get_json_message(False, 'エラー', vr.get_error_messages()))
+            return JsonResponse(get_json_error_message(vr.get_error_messages()))
             
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return get_json_message(False, 'エラー', get_form_error_message(form))
+            return get_json_error_message(get_form_error_message(form))
 
         reply = form.save(commit=False)
         reply.user = request.user
@@ -88,7 +88,7 @@ class ReplyReplyView(LoginRequiredMixin, CreateView):
         reply_post.expansion.reply_count += 1
         reply_post.expansion.save()
 
-        return JsonResponse(get_json_message(True,'成功',['返信しました']))
+        return JsonResponse(get_json_success_message(['返信しました']))
 
 class ReplyDetailView(DetailBaseView, SearchBaseView):
     template_name = 'pages/reply_detail.html'
@@ -155,7 +155,7 @@ class ReplyDeleteView(LoginRequiredMixin, TemplateView):
         reply.is_deleted = True
         reply.save()
 
-        return JsonResponse(get_json_message(True,'成功',['削除しました']))
+        return JsonResponse(get_json_success_message(['削除しました']))
 
 class Reply2DeleteView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/index.html'
@@ -173,7 +173,7 @@ class Reply2DeleteView(LoginRequiredMixin, TemplateView):
         reply2.is_deleted = True
         reply2.save()
 
-        return JsonResponse(get_json_message(True,'成功',['削除しました']))
+        return JsonResponse(get_json_success_message(['削除しました']))
 
 class ReplyAgreeView(AgreeView):
     model = ReplyAgree

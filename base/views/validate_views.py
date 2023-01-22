@@ -1,6 +1,6 @@
 from django.views.generic import View
 
-from base.views.functions import is_str, get_json_message, is_empty
+from base.views.functions import is_str, is_empty
 from base.models.room_models import Room, RoomUser
 
 class ValidateRoomView(View):

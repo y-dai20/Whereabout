@@ -22,6 +22,9 @@ function create_room_tab_titles(tab_contents, is_editable=true) {
 }
 
 function create_room_tab_title(id="None" ,title="title", is_editable=true, is_active=false) {
+    if (is_empty(id)) {
+        id = ' ';
+    }
     var tab = $('.room-tab-title').length + 1;
     if (is_editable) {
         var html = `<a id="room-tab-title${tab}" class="room-tab-title nav-link`;
@@ -337,6 +340,9 @@ $(document).on('click', '.room-tab-content-img-delete-button', function(){
 
 $(document).on('click', '.room-tab-title', function(){
     var content_id = $(this).data('content-id');
+    if (is_empty(content_id)) {
+        return false;
+    }
     var scroll_target = ".room-file-content";
     var tab = $(this).data('tab');
     if (ShowContentIds.includes(content_id)) {
