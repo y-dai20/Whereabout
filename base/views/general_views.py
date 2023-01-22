@@ -262,8 +262,8 @@ class FavoriteView(UpdateBaseView):
             'favorite_count':get_number_unit(obj.expansion.favorite_count),
         })
 
-#todo HeaderViewを削除したので影響調査
 class RoomBase(object):
+    max_request_information = 10
 
     def __init__(self, room=None):
         self.vr = ValidateRoomView(room)
@@ -343,11 +343,11 @@ class RoomBase(object):
 
         return reply_types
 
-    def get_room_request_information(self, is_active=None, max_length=10):
+    def get_room_request_information(self, is_active=None):
         if not self.vr.is_room_exist():
             return []
 
-        rri_list = [None for _ in range(max_length)]
+        rri_list = [None for _ in range(self.max_request_information)]
         is_active = get_boolean_or_none(is_active)
         if is_active is None:
             rri_objects = RoomRequestInformation.objects.filter(room=self.room, is_deleted=False).values(
@@ -358,7 +358,7 @@ class RoomBase(object):
 
         for rri_object in rri_objects:
             idx = rri_object['sequence'] - 1
-            if idx < 0 or max_length < idx:
+            if idx < 0 or self.max_request_information < idx:
                 raise ValueError()
             rri_list[idx] = rri_object
 

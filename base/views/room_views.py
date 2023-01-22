@@ -59,7 +59,6 @@ class ManageRoomBaseView(LoginRequiredMixin, RoomAdminRequiredMixin, View):
         super().__init__()
         self.vr = None
         self.max_img = 5
-        self.max_request_information = 10
 
     def get_validate_room(self):
         vr = ValidateRoomView(get_dict_item(self.kwargs, 'room_pk'))
@@ -105,7 +104,7 @@ class ManageRoomView(ManageRoomBaseView, ShowRoomBaseView, ListView):
         context['img_path_and_size'] = get_combined_list('path', get_dict_item_list(context, 'img_paths'),'size',img_sizes)
         context['total_img_size'] = {'b':sum(img_sizes), 'mb':get_file_size_by_unit(sum(img_sizes), 'MB')}
         context['video_size'] = room.video.file.size if bool(room.video) else 0
-        request_information = room_base.get_room_request_information(max_length=self.max_request_information)
+        request_information = room_base.get_room_request_information()
         context['request_information'] = request_information
         
         room_information_list = []
@@ -640,7 +639,6 @@ class ManageRoomPostView(ManageRoomBaseView, TemplateView):
 
         return JsonResponse(get_json_success_message(['保存しました']))
 
-#todo self.max_request_informationをshowroomにも持たせるか
 class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
     form_class = RoomRequestInformationForm
 
@@ -661,8 +659,10 @@ class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
         sequence = get_dict_item(form_data, 'sequence')
         if not is_int(sequence):
             raise MyBadRequest
+        
         sequence = int(sequence)
-        if sequence < 1 or self.max_request_information < sequence:
+        room_base = RoomBase(room)
+        if sequence < 1 or room_base.max_request_information < sequence:
             raise MyBadRequest
         
         #todo 要確認
