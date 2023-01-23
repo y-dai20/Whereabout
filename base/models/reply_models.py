@@ -7,6 +7,11 @@ from base.models.post_models import Post
 from base.models.functions import img_directory_path
 from base.models.general_models import ObjectExpansion
 
+class ReplyPosition(models.TextChoices):
+    AGREE = 'Agree', '賛成'
+    NEUTRAL = 'Neutral', '中立'
+    DISAGREE = 'Disagree', '反対'
+
 class ReplyPost(models.Model):
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     text = models.CharField(default='', max_length=255, blank=False)
@@ -15,7 +20,7 @@ class ReplyPost(models.Model):
     expansion = models.ForeignKey(ObjectExpansion, on_delete=models.CASCADE)
     url = models.CharField(null=True, blank=True, max_length=255)
     img = models.ImageField(null=True, blank=True, upload_to=img_directory_path)
-    position = models.CharField(default='Neutral', max_length=255)
+    position = models.CharField(default=ReplyPosition.NEUTRAL, choices=ReplyPosition.choices, max_length=16)
     type = models.CharField(max_length=8)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -31,7 +36,7 @@ class ReplyReply(models.Model):
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     expansion = models.ForeignKey(ObjectExpansion, on_delete=models.CASCADE)
     img = models.ImageField(null=True, blank=True, upload_to=img_directory_path)
-    position = models.CharField(default='Neutral', max_length=255)
+    position = models.CharField(choices=ReplyPosition.choices, max_length=16)
     type = models.CharField(max_length=8)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

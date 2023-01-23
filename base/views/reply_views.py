@@ -8,14 +8,14 @@ from base.forms import ReplyReplyForm, ReplyPostForm
 from base.models.general_models import ObjectExpansion
 from base.models.post_models import Post, PostAgree
 from base.models.room_models import RoomReplyType
-from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy
+from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy, ReplyPosition
 from base.views.general_views import AgreeView, FavoriteView, DetailBaseView, DemagogyView, SearchBaseView, IndexBaseView, RoomBase, DeleteBaseView
 from base.views.validate_views import ValidateRoomView
 from base.views.functions import get_form_error_message, get_dict_item, is_empty, is_str, \
     get_file_size_by_unit, get_img_list, get_file_size, get_json_error_message, get_json_success_message
 from base.views.mixins import LoginRequiredMixin
 
-#todo (高) AgreeやDisagreeを定数にしたい
+#todo (高) jsで == Agreeとしている部分をis_agreeなどとして，DBで持っている文字列を感がなくてよくしたい
 class ReplyPostView(LoginRequiredMixin, CreateView):
     form_class = ReplyPostForm
     template_name = 'pages/post_detail.html'
@@ -53,8 +53,8 @@ class ReplyPostView(LoginRequiredMixin, CreateView):
 
         agree_post = PostAgree.objects.filter(obj=get_dict_item(kwargs, 'post_pk'), user=request.user, is_deleted=False)
         if agree_post.exists():
-            reply.position = 'Agree' if agree_post[0].is_agree else 'Disagree'
-        
+            reply.position = ReplyPosition.AGREE if agree_post[0].is_agree else ReplyPosition.DISAGREE
+
         reply.save()
         post.expansion.reply_count += 1
         post.expansion.save()
@@ -124,11 +124,11 @@ class ReplyDetailView(DetailBaseView, SearchBaseView):
             self.load_by *= 3
             return self.get_reply_detail_items(self.get_items(replies2))
 
-        agree_reply = self.get_replies_after_order(replies.filter(position='Agree'))
+        agree_reply = self.get_replies_after_order(replies.filter(position=ReplyPosition.AGREE))
         len_ar = len(agree_reply)
-        neutral_reply = self.get_replies_after_order(replies.filter(position='Neutral'))
+        neutral_reply = self.get_replies_after_order(replies.filter(position=ReplyPosition.NEUTRAL))
         len_nr = len(neutral_reply)
-        disagree_reply = self.get_replies_after_order(replies.filter(position='Disagree'))
+        disagree_reply = self.get_replies_after_order(replies.filter(position=ReplyPosition.DISAGREE))
         len_dr = len(disagree_reply)
 
         for idx in range(self.get_start_idx(), self.get_end_idx(max(len_ar, len_nr, len_dr))):

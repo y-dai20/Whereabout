@@ -588,6 +588,7 @@ class DetailBaseView(PostItemView):
         favorite_state = self.favorite_model.objects.filter(obj=obj.id, user=self.request.user, is_deleted=False)
 
         room_base = RoomBase(room)
+        print(obj.position)
         dict_queryset = {
             'text':obj.text,
             'username':obj.user.username,

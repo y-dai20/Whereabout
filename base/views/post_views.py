@@ -5,7 +5,7 @@ from django.http import JsonResponse, Http404
 
 from base.views.exceptions import MyBadRequest
 from base.models.general_models import ObjectExpansion
-from base.models.reply_models import ReplyPost
+from base.models.reply_models import ReplyPost, ReplyPosition
 from base.models.post_models import Post, PostAgree, PostFavorite, PostImgs
 from base.forms import PostForm
 from base.views.functions import get_form_error_message, get_file_size_by_unit, get_dict_item, is_empty,\
@@ -94,11 +94,11 @@ class PostDetailView(DetailBaseView, SearchBaseView):
             self.load_by *= 3
             return self.get_post_detail_items(self.get_idx_items(post_replies))
 
-        agree_reply = self.get_replies_after_order(replies.filter(position='Agree'))
+        agree_reply = self.get_replies_after_order(replies.filter(position=ReplyPosition.AGREE))
         len_ar = len(agree_reply)
-        neutral_reply = self.get_replies_after_order(replies.filter(position='Neutral'))
+        neutral_reply = self.get_replies_after_order(replies.filter(position=ReplyPosition.NEUTRAL))
         len_nr = len(neutral_reply)
-        disagree_reply = self.get_replies_after_order(replies.filter(position='Disagree'))
+        disagree_reply = self.get_replies_after_order(replies.filter(position=ReplyPosition.DISAGREE))
         len_dr = len(disagree_reply)
 
         items = []
