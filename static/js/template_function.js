@@ -131,11 +131,11 @@ function get_reply_item(reply, is_link=false) {
     }
     html += `">`
 
-    if (reply.position == 'Agree') {
+    if (reply.is_agree) {
         html += `<div class="agree-item reply-item">`;
-    } else if (reply.position == 'Disagree') {
+    } else if (reply.is_disagree) {
         html += `<div class="disagree-item reply-item">`;
-    } else if (reply.position == 'Neutral') {
+    } else if (reply.is_neutral) {
         html += `<div class="neutral-item reply-item">`;
     } else {
         html += `<div class="empty-reply reply-item">`;
@@ -152,11 +152,11 @@ function get_reply_item(reply, is_link=false) {
 
 function get_reply_header(reply) {
     var html = `<div class="reply-item-header item-header">`;
-    if (reply.position == 'Agree') {
+    if (reply.is_agree) {
         html += `<img src="${traffic_green}" class="traffic-light">`;
-    } else if (reply.position == 'Disagree') {
+    } else if (reply.is_disagree) {
         html += `<img src="${traffic_red}" class="traffic-light">`;
-    } else if (reply.position == 'Neutral') {
+    } else if (reply.is_neutral) {
         html += `<img src="${traffic_yellow}" class="traffic-light">`;
     }
     if (reply.type) {

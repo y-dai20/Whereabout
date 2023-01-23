@@ -15,7 +15,6 @@ from base.views.functions import get_form_error_message, get_dict_item, is_empty
     get_file_size_by_unit, get_img_list, get_file_size, get_json_error_message, get_json_success_message
 from base.views.mixins import LoginRequiredMixin
 
-#todo (高) jsで == Agreeとしている部分をis_agreeなどとして，DBで持っている文字列を感がなくてよくしたい
 class ReplyPostView(LoginRequiredMixin, CreateView):
     form_class = ReplyPostForm
     template_name = 'pages/post_detail.html'

@@ -10,7 +10,7 @@ from django.http import JsonResponse, Http404
 
 from base.views.exceptions import MyBadRequest
 from base.models.post_models import Post, PostImgs, PostAgree, PostFavorite, PostDemagogy
-from base.models.reply_models import ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy
+from base.models.reply_models import ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy, ReplyPosition
 from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, RoomReplyType, TabContentItem,\
     TabPermutation, RoomGood, RoomRequestInformation, RoomInformation
 from base.models.account_models import UserFollow, UserBlock, Profile
@@ -588,14 +588,15 @@ class DetailBaseView(PostItemView):
         favorite_state = self.favorite_model.objects.filter(obj=obj.id, user=self.request.user, is_deleted=False)
 
         room_base = RoomBase(room)
-        print(obj.position)
         dict_queryset = {
             'text':obj.text,
             'username':obj.user.username,
             'user_img':get_img_path(obj.user.profile.img),
             'type':obj.type,
             'type_id':get_list_index(room_base.get_room_reply_types(), obj.type),
-            'position':obj.position,
+            'is_agree':True if obj.position == ReplyPosition.AGREE else False,
+            'is_neutral':True if obj.position == ReplyPosition.NEUTRAL else False,
+            'is_disagree':True if obj.position == ReplyPosition.DISAGREE else False,
             'created_at':get_display_datetime(datetime.now() - make_naive(obj.created_at)),
             'img_path':get_img_path(obj.img) if not is_empty(obj.img) else '',
 

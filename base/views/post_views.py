@@ -90,6 +90,7 @@ class PostDetailView(DetailBaseView, SearchBaseView):
         )
 
         if not is_empty(params['position']):
+            #todo (中) search_reply.htmlと密結合になっている．Agreeなどが送られてこないと検索に引っかからない
             post_replies = self.get_replies_after_order(replies.filter(position=params['position']))
             self.load_by *= 3
             return self.get_post_detail_items(self.get_idx_items(post_replies))
