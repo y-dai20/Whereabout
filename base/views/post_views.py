@@ -53,7 +53,7 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
             return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
         
         if get_file_size(video_list) > 0 and get_file_size(img_list) > 0:
-            raise MyBadRequest('file size error.')
+            raise MyBadRequest('only img or video.')
 
         post.save()
         PostImgs.objects.create(

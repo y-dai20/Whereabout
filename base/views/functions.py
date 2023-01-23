@@ -243,9 +243,9 @@ def get_file_list(type, form_data, files, max_files=1):
     file_names = get_dict_item(form_data, type + '_file_names').split(',')
     file_list = []
     for idx in range(max_files):
-        img_name = get_list_item(file_names, idx)
-        if img_name in files and is_upload_file(type, files[img_name]):
-            file_list.append(files[img_name])
+        file_name = get_list_item(file_names, idx)
+        if file_name in files and (is_upload_file(type, files[file_name]) or os.path.isfile(str(files[file_name]))):
+            file_list.append(files[file_name])
             continue
         file_list.append(None)
 

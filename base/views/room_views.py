@@ -59,6 +59,7 @@ class ManageRoomBaseView(LoginRequiredMixin, RoomAdminRequiredMixin, View):
         super().__init__()
         self.vr = None
         self.max_img = 5
+        self.error_messages = []
 
     def get_validate_room(self):
         vr = ValidateRoomView(get_dict_item(self.kwargs, 'room_pk'))
@@ -450,7 +451,6 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
         invite_obj.save()
         return True
 
-#todo 要確認
 class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     model = Room
     form_class = UpdateRoomForm
@@ -466,67 +466,61 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         vr = self.get_validate_room()
         room = vr.get_room()
         form_data = request.POST
+        self.files = request.FILES
+
         form = self.form_class(form_data)
         if not form.is_valid():
             return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
-        self.files = request.FILES
-
         is_public = get_boolean_or_none(get_dict_item(form_data, 'is_public'))
-        if is_public is not None:
-            room.is_public = is_public
+        if is_public is None:
+            raise MyBadRequest('is_public is None.')
 
+        room.is_public = is_public
         room.title = form.clean_title()
         room.subtitle = form.clean_subtitle()
 
         video_list = get_video_list(form_data, self.files, self.max_video)
         if get_file_size(video_list) > self.max_video_size:
-                return JsonResponse(get_json_error_message(['動画サイズが{}を超えています'.format(get_file_size_by_unit(self.max_video_size, unit='MB'))]))
+            return JsonResponse(get_json_error_message(['動画サイズが{}を超えています'.format(get_file_size_by_unit(self.max_video_size, unit='MB'))]))
         room.video = video_list[0]
         room.save()
 
-        # todo check
-        tabs = literal_eval(get_dict_item(form_data, 'tabs'))
-        tab_permu = get_object_or_404(TabPermutation, room=room, room__is_deleted=False)
-        tab_permu.tab_content1 = self.get_tab_content(get_dict_item(get_list_item(tabs, 0), 'content_id'), get_dict_item(get_list_item(tabs, 0), 'title'))
-        tab_permu.tab_content2 = self.get_tab_content(get_dict_item(get_list_item(tabs, 1), 'content_id'), get_dict_item(get_list_item(tabs, 1), 'title'))
-        tab_permu.tab_content3 = self.get_tab_content(get_dict_item(get_list_item(tabs, 2), 'content_id'), get_dict_item(get_list_item(tabs, 2), 'title'))
-        tab_permu.tab_content4 = self.get_tab_content(get_dict_item(get_list_item(tabs, 3), 'content_id'), get_dict_item(get_list_item(tabs, 3), 'title'))
-        tab_permu.tab_content5 = self.get_tab_content(get_dict_item(get_list_item(tabs, 4), 'content_id'), get_dict_item(get_list_item(tabs, 4), 'title'))
-
-        self.set_tab_content_item(tab_permu.tab_content1, get_dict_item(get_list_item(tabs, 0), 'content'))
-        self.set_tab_content_item(tab_permu.tab_content2, get_dict_item(get_list_item(tabs, 1), 'content'))
-        self.set_tab_content_item(tab_permu.tab_content3, get_dict_item(get_list_item(tabs, 2), 'content'))
-        self.set_tab_content_item(tab_permu.tab_content4, get_dict_item(get_list_item(tabs, 3), 'content'))
-        self.set_tab_content_item(tab_permu.tab_content5, get_dict_item(get_list_item(tabs, 4), 'content'))
-        tab_permu.save()
-
+        #todo self.filesのkeyとvalueがjs側と一致しないといけない
         room_imgs = room.roomimgs
+        for room_img in [room_imgs.img1, room_imgs.img2, room_imgs.img3, room_imgs.img4, room_imgs.img5]:
+            if not bool(room_img):
+                continue
+            self.files[get_img_path(room_img.name)] = room_img.file
 
-        #todo get_img_list使えるようにしたい
-        new_imgs = []
-        total_size = 0
-        for img_name in get_dict_item(form_data, 'img_file_names').split(','):
-            if settings.MEDIA_URL in img_name:
-                for img in [room_imgs.img1, room_imgs.img2, room_imgs.img3, room_imgs.img4, room_imgs.img5]:
-                    if not is_empty(img) and str(img) in img_name:
-                        new_imgs.append(img)
-                        total_size += img.file.size
-                        break
-            elif img_name in self.files.keys() and is_uploaded_file_img(self.files[img_name]):
-                new_imgs.append(self.files[img_name])
-                total_size += self.files[img_name].size
-        
-        if total_size > self.max_img_size:
+        img_list = get_img_list(form_data, self.files, self.max_img)
+        if get_file_size(img_list) > self.max_img_size:
             return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
 
-        img_list = [new_imgs[i] if i < len(new_imgs) else None for i in range(self.max_img)]
-        room_imgs.img1 = img_list[0]  
+        room_imgs.img1 = img_list[0]
         room_imgs.img2 = img_list[1]  
         room_imgs.img3 = img_list[2]  
         room_imgs.img4 = img_list[3]  
         room_imgs.img5 = img_list[4]  
         room_imgs.save()
+
+        tabs = literal_eval(get_dict_item(form_data, 'tabs'))
+        tab_permutation = get_object_or_404(TabPermutation, room=room, room__is_deleted=False)
+        tab_permutation.tab_content1 = self.get_tab_content(get_dict_item(get_list_item(tabs, 0), 'content_id'), get_dict_item(get_list_item(tabs, 0), 'title'))
+        tab_permutation.tab_content2 = self.get_tab_content(get_dict_item(get_list_item(tabs, 1), 'content_id'), get_dict_item(get_list_item(tabs, 1), 'title'))
+        tab_permutation.tab_content3 = self.get_tab_content(get_dict_item(get_list_item(tabs, 2), 'content_id'), get_dict_item(get_list_item(tabs, 2), 'title'))
+        tab_permutation.tab_content4 = self.get_tab_content(get_dict_item(get_list_item(tabs, 3), 'content_id'), get_dict_item(get_list_item(tabs, 3), 'title'))
+        tab_permutation.tab_content5 = self.get_tab_content(get_dict_item(get_list_item(tabs, 4), 'content_id'), get_dict_item(get_list_item(tabs, 4), 'title'))
+
+        self.set_tab_content_item(tab_permutation.tab_content1, get_dict_item(get_list_item(tabs, 0), 'content'))
+        self.set_tab_content_item(tab_permutation.tab_content2, get_dict_item(get_list_item(tabs, 1), 'content'))
+        self.set_tab_content_item(tab_permutation.tab_content3, get_dict_item(get_list_item(tabs, 2), 'content'))
+        self.set_tab_content_item(tab_permutation.tab_content4, get_dict_item(get_list_item(tabs, 3), 'content'))
+        self.set_tab_content_item(tab_permutation.tab_content5, get_dict_item(get_list_item(tabs, 4), 'content'))
+        tab_permutation.save()
+
+        if not is_empty(self.error_messages):
+            return JsonResponse(get_json_error_message(self.error_messages))
 
         return JsonResponse(get_json_success_message(['保存しました']))
 
@@ -547,26 +541,28 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         self.delete_tab_content(tab_content, get_dict_item_list(data, 'delete'))
         self.create_tab_content(tab_content, get_dict_item_list(data, 'create'))
 
-
     def create_tab_content(self, tab_content, tab_content_items):
         for tab_content_item in tab_content_items:
-            title = get_dict_item(tab_content_item, 'title')
-            text = get_dict_item(tab_content_item, 'text')
-            img = get_dict_item(tab_content_item, 'img')
-            img = self.files[img] if img in self.files and is_uploaded_file_img(self.files[img]) else img
-            # todo error_messages
-            if not is_empty(img) and get_file_size([img]) > self.max_img_size:
-                return False
-                return JsonResponse(get_json_error_message(['動画サイズが{}を超えています'.format(get_file_size_by_unit(self.max_video_size, unit='MB'))]))
-
-            if not is_same_empty_count([title, text, img], 2):
-                continue
-
             row = get_dict_item(tab_content_item, 'row')
             column = get_dict_item(tab_content_item, 'column')
             col = get_dict_item(tab_content_item, 'col')
 
-            if not is_same_empty_count([row, column, col], 0):
+            if not is_int(row) or not is_int(column) or not is_int(col):
+                self.error_messages.append('row：{}，column：{}，col：{}が不正です'.format(row, column, col))
+                continue
+
+            title = get_dict_item(tab_content_item, 'title')
+            text = get_dict_item(tab_content_item, 'text')
+            img = get_dict_item(tab_content_item, 'img')
+            #todo 要確認
+            img = self.files[img] if img in self.files and is_uploaded_file_img(self.files[img]) else img
+            if not is_empty(img) and get_file_size([img]) > self.max_img_size:
+                self.error_messages.append('row：{}，column：{}，col：{}の画像サイズが{}を超えています'.format(
+                    row, column, col, get_file_size_by_unit(self.max_video_size, unit='MB')))
+                continue
+
+            if not is_same_empty_count([title, text, img], 2):
+                self.error_messages.append('row：{}，column：{}，col：{}が内容が不正です'.format(row, column, col))
                 continue
 
             items = TabContentItem.objects.filter(
@@ -600,6 +596,10 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             row = get_dict_item(tab_content_item, 'row')
             column = get_dict_item(tab_content_item, 'column')
             col = get_dict_item(tab_content_item, 'col')
+
+            if not is_int(row) or not is_int(column) or not is_int(col):
+                self.error_messages.append('row：{}，column：{}，col：{}が不正です'.format(row, column, col))
+                continue
 
             items = TabContentItem.objects.filter(
                 row=row, 
@@ -665,7 +665,6 @@ class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
         if sequence < 1 or room_base.max_request_information < sequence:
             raise MyBadRequest('sequence is out of range.')
         
-        #todo 要確認
         rri_exist = RoomRequestInformation.objects.filter(room=room, sequence=sequence, is_deleted=False)
         if rri_exist.exists():
             rri_exist.update(is_deleted=True)
