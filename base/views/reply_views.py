@@ -9,7 +9,7 @@ from base.models.general_models import ObjectExpansion
 from base.models.post_models import Post, PostAgree
 from base.models.room_models import RoomReplyType
 from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy
-from base.views.general_views import AgreeView, FavoriteView, DetailBaseView, DemagogyView, SearchBaseView, IndexBaseView, RoomBase
+from base.views.general_views import AgreeView, FavoriteView, DetailBaseView, DemagogyView, SearchBaseView, IndexBaseView, RoomBase, DeleteBaseView
 from base.views.validate_views import ValidateRoomView
 from base.views.functions import get_form_error_message, get_dict_item, is_empty, is_str, \
     get_file_size_by_unit, get_img_list, get_file_size, get_json_error_message, get_json_success_message
@@ -138,38 +138,23 @@ class ReplyDetailView(DetailBaseView, SearchBaseView):
 
         return queryset
 
-#todo (高) delete_base_viewを作った方がいいかも
-class ReplyDeleteView(LoginRequiredMixin, TemplateView):
-    template_name = 'pages/index.html'
+class ReplyDeleteView(LoginRequiredMixin, DeleteBaseView):
     model = ReplyPost
-
-    def get(self, request, *args, **kwargs):
-        raise Http404
 
     def post(self, request, *args, **kwargs):
         reply = get_object_or_404(self.model, pk=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
-        vr = ValidateRoomView(reply.post.room)
-        if (vr.is_room_exist() and not vr.is_admin(request.user)) or request.user != reply.user:
-            raise MyBadRequest('no permission to delete.')
-
+        self.validate_delete(reply.post.room, reply.user)
         reply.is_deleted = True
         reply.save()
 
         return JsonResponse(get_json_success_message(['削除しました']))
 
-class Reply2DeleteView(LoginRequiredMixin, TemplateView):
-    template_name = 'pages/index.html'
+class Reply2DeleteView(LoginRequiredMixin, DeleteBaseView):
     model = ReplyReply
-
-    def get(self, request, *args, **kwargs):
-        raise Http404
 
     def post(self, request, *args, **kwargs):
         reply2 = get_object_or_404(self.model, pk=get_dict_item(kwargs, 'reply2_pk'), is_deleted=False)
-        vr = ValidateRoomView(reply2.reply.post.room)
-        if (vr.is_room_exist() and not vr.is_admin(request.user)) and request.user != reply2.user:
-            raise MyBadRequest('no permission to delete.')
-
+        self.validate_delete(reply2.reply.post.room, reply2.user)
         reply2.is_deleted = True
         reply2.save()
 

@@ -10,7 +10,7 @@ from base.models.post_models import Post, PostAgree, PostFavorite, PostImgs
 from base.forms import PostForm
 from base.views.functions import get_form_error_message, get_file_size_by_unit, get_dict_item, is_empty,\
     get_img_list, get_file_size, get_video_list, get_json_success_message, get_json_error_message
-from base.views.general_views import SearchBaseView, DemagogyView, AgreeView, FavoriteView, DetailBaseView, PostItemView, PostDemagogy, RoomBase
+from base.views.general_views import SearchBaseView, DemagogyView, AgreeView, FavoriteView, DetailBaseView, PostItemView, PostDemagogy, RoomBase, DeleteBaseView
 from base.views.validate_views import ValidateRoomView
 from base.views.mixins import LoginRequiredMixin
 
@@ -134,19 +134,12 @@ class PostDetailView(DetailBaseView, SearchBaseView):
 
 #         return super().post(request, *args, **kwargs)
 
-class PostDeleteView(LoginRequiredMixin, TemplateView):
-    template_name = 'pages/index.html'
+class PostDeleteView(LoginRequiredMixin, DeleteBaseView):
     model = Post
-
-    def get(self, request, *args, **kwargs):
-        raise Http404
 
     def post(self, request, *args, **kwargs):
         post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
-        vr = ValidateRoomView(post.room)
-        if (vr.is_room_exist() and not vr.is_admin(request.user)) or (request.user != post.user):
-            raise MyBadRequest('no permission to delete.')
-
+        self.validate_delete(post.room, post.user)
         post.is_deleted = True
         post.save()
 

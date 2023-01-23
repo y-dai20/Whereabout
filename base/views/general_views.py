@@ -719,3 +719,14 @@ class SendMailView(TemplateView):
             return False
 
         return not is_empty(email)
+
+class DeleteBaseView(TemplateView):
+    template_name = 'pages/index.html'
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
+    def validate_delete(self, room, user):
+        vr = ValidateRoomView(room)
+        if (vr.is_room_exist() and not vr.is_admin(self.request.user)) or self.request.user != user:
+            raise MyBadRequest('no permission to delete.')
