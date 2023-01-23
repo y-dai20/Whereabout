@@ -12,10 +12,10 @@ from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFav
 from base.views.general_views import AgreeView, FavoriteView, DetailBaseView, DemagogyView, SearchBaseView, IndexBaseView, RoomBase
 from base.views.validate_views import ValidateRoomView
 from base.views.functions import get_form_error_message, get_dict_item, is_empty, is_str, \
-    get_file_size_by_unit, get_img_list, get_file_size, get_json_error_message
+    get_file_size_by_unit, get_img_list, get_file_size, get_json_error_message, get_json_success_message
 from base.views.mixins import LoginRequiredMixin
 
-#todo AgreeやDisagreeを定数にしたい
+#todo (高) AgreeやDisagreeを定数にしたい
 class ReplyPostView(LoginRequiredMixin, CreateView):
     form_class = ReplyPostForm
     template_name = 'pages/post_detail.html'
@@ -138,7 +138,7 @@ class ReplyDetailView(DetailBaseView, SearchBaseView):
 
         return queryset
 
-#todo delete_base_viewを作った方がいいかも
+#todo (高) delete_base_viewを作った方がいいかも
 class ReplyDeleteView(LoginRequiredMixin, TemplateView):
     template_name = 'pages/index.html'
     model = ReplyPost

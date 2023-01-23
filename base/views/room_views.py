@@ -52,7 +52,6 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
         
         return self.get_post_items(self.get_idx_items(posts))
 
-#todo 要チェック
 class ManageRoomBaseView(LoginRequiredMixin, RoomAdminRequiredMixin, View):
     
     def __init__(self):
@@ -64,7 +63,7 @@ class ManageRoomBaseView(LoginRequiredMixin, RoomAdminRequiredMixin, View):
     def get_validate_room(self):
         vr = ValidateRoomView(get_dict_item(self.kwargs, 'room_pk'))
         if not vr.is_room_exist():
-            return PermissionError()
+            raise MyBadRequest('room is not exist.')
         return vr
     
 class GetRoomTabContents(TemplateView):
@@ -72,12 +71,11 @@ class GetRoomTabContents(TemplateView):
         content_id = get_dict_item(request.POST, 'content_id')
         if is_empty(content_id) or not is_str(content_id):
             raise MyBadRequest('content_id is error.')
-        #todo 見直しが必要かも
+
         room_base = RoomBase()
         return JsonResponse(get_json_success_message(add_dict={'content_items':room_base.get_tab_content_items(content_id)}))
 
-#todo ルームに電話番号，住所など情報追加
-#todo ルームに入室する際に情報を要求
+#todo (低) ルームに電話番号，住所など情報追加
 class ManageRoomView(ManageRoomBaseView, ShowRoomBaseView, ListView):
     model = RoomUser
     template_name = 'pages/manage_room.html'
@@ -172,7 +170,7 @@ class CreateRoomView(LoginRequiredMixin, CreateView):
 
         return JsonResponse(get_json_success_message(['ルームを作成しました'], {'room_id':room.id}))
 
-#todo request informationがあれば表示するようにする
+#todo (中) request informationがあれば表示するようにする
 class JoinRoomView(LoginRequiredMixin, CreateView):
     model = RoomGuest
 
@@ -330,7 +328,7 @@ class AcceptRoomGuestView(ManageRoomBaseView, CreateView):
         room_guest.save()
         return True
 
-#todo modal search base viewを作ろう
+#todo (低) modal search base viewを作ろう
 class ModalSearchRoomView(ListView):
     model = Room
     template_name = 'pages/index.html'
@@ -486,7 +484,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         room.video = video_list[0]
         room.save()
 
-        #todo self.filesのkeyとvalueがjs側と一致しないといけない
+        #todo (中) self.filesのkeyとvalueがjs側と一致しないといけない
         room_imgs = room.roomimgs
         for room_img in [room_imgs.img1, room_imgs.img2, room_imgs.img3, room_imgs.img4, room_imgs.img5]:
             if not bool(room_img):
@@ -554,7 +552,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             title = get_dict_item(tab_content_item, 'title')
             text = get_dict_item(tab_content_item, 'text')
             img = get_dict_item(tab_content_item, 'img')
-            #todo 要確認
+
             img = self.files[img] if img in self.files and is_uploaded_file_img(self.files[img]) else img
             if not is_empty(img) and get_file_size([img]) > self.max_img_size:
                 self.error_messages.append('row：{}，column：{}，col：{}の画像サイズが{}を超えています'.format(

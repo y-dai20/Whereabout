@@ -100,7 +100,7 @@ class PostForm(ValidationForm, forms.ModelForm):
             raise ValidationError(('本文は{}文字以下で入力してください'.format(POST_TEXT_MAX_LENGTH)))
         return text
 
-#todo urlってどうする？？
+#todo (中) urlってどうする？？
 class ReplyPostForm(ValidationForm, forms.ModelForm):
     
     class Meta:

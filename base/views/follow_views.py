@@ -7,7 +7,7 @@ from base.models.room_models import RoomUser
 from base.views.functions import get_dict_item, get_number_unit, get_json_error_message, get_json_success_message
 from base.views.mixins import LoginRequiredMixin
 
-#todo get_or_noneの横展開
+#todo (中) get_or_noneの横展開
 class FollowView(LoginRequiredMixin, DetailView):
     model = UserFollow
     template_name = 'pages/user.html'
@@ -23,7 +23,7 @@ class FollowView(LoginRequiredMixin, DetailView):
         followee = get_object_or_404(User, username=username, is_active=True)
         follow = UserFollow.objects.get_or_none(follower=request.user, followee=followee)
 
-        #todo 綺麗に書けそう
+        #todo (低) 綺麗に書けそう
         if follow is None:
             follow.create(follower=request.user, followee=followee)
         else:
@@ -44,7 +44,7 @@ class BlockView(LoginRequiredMixin, DetailView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        #todo followでも使われている
+        #todo (中) followでも使われている
         username = get_dict_item(self.kwargs, 'username')
         if request.user.username == username:
             return JsonResponse(get_json_error_message(['自身をブロックできません']))

@@ -24,7 +24,6 @@ import json
 from datetime import datetime, timedelta
 from abc import abstractmethod
 
-#todo getとpostは両方定義した方がいいと思う
 class HeaderView(View):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -39,7 +38,7 @@ class HeaderView(View):
             id_=F('room__id'), title_=F('room__title'), admin_=F('room__admin__username'))
         context['other_rooms'] = other_rooms
 
-        # todo notificationをmodelとして持つべきか
+        # todo (低) notificationをmodelとして持つべきか
         notifications = RoomGuest.objects.filter(room__admin=self.request.user, is_deleted=False).count()
         notifications += RoomInviteUser.objects.filter(user=self.request.user, is_deleted=False).count()
         context['notifications'] = notifications
@@ -146,7 +145,6 @@ class UpdateBaseView(LoginRequiredMixin, UpdateView):
     def can_access_room(self, room):
         vr = ValidateRoomView(room)
         if not vr.is_room_exist():
-            #todo Trueでいいのか？
             return True
         if vr.is_user_blocked(self.request.user):
             self.error_messages.append('ブロックされているため閲覧のみ可能です')
@@ -494,8 +492,8 @@ class UserItemView(View):
             queryset.append(self.get_user_item(profile))
         return queryset
 
-#todo SearchBaseViewを継承させる？
-#todo 要確認，DetailItemViewを別で作った方がいいかもしれない
+#todo (中) SearchBaseViewを継承させる？
+#todo (中) 要確認，DetailItemViewを別で作った方がいいかもしれない
 class DetailBaseView(PostItemView):
     load_by = 3
 
@@ -525,7 +523,7 @@ class DetailBaseView(PostItemView):
         context = super().get_context_data(**kwargs)
         context['order'] = self.order
         
-        #todo self.roomをどこで入れているのかわからなくない？
+        #todo (高) self.roomをどこで入れているのかわからなくない？
         vr = ValidateRoomView(self.room)
         if not vr.is_room_exist() or not self.request.user.is_authenticated:
             return context
@@ -689,7 +687,7 @@ class ShowRoomBaseView(HeaderView):
             context['is_admin'] = True
             return context
 
-        #todo 基本的にobjects.filterは共通で書くようにする
+        #todo (中) 基本的にobjects.filterは共通で書くようにする
         room_user = RoomUser.objects.filter(room=room, user=self.request.user, is_deleted=False)
         if room_user.exists():
             if room_user[0].is_blocked:

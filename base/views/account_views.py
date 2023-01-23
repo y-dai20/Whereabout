@@ -28,7 +28,7 @@ class LoginView(LoginView):
     template_name = 'pages/login.html'
     max_fail_login_count = 5
     
-    #todo login with username, email, password
+    #todo (低) login with username, email, password
     def post(self, request, *args, **kwargs):
         user = self.get_user()
         if user.exists() and user[0].fail_login_count > self.max_fail_login_count:
@@ -55,7 +55,6 @@ class LoginView(LoginView):
             user.save()
         return super().form_invalid(form)
     
-    #todo これどこかでまとめたい
     def get_user(self):
         return User.objects.filter(username=get_dict_item(self.request.POST, 'username'), is_active=True)
 
@@ -108,11 +107,10 @@ class SignUpView(CreateView):
         context['email'] = self.guest.email
         return context
 
-    #todo まとめたい
     def get_guest(self):
         return get_object_or_404(Guest, one_time_id=get_dict_item(self.kwargs, 'one_time_id'), is_deleted=False)
 
-#todo 変更の回数制限は不要？
+#todo (高) 変更の回数制限は不要？
 class ChangePasswordView(LoginRequiredMixin, View):
     form_class = ChangePasswordForm
 
@@ -133,7 +131,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
 
         return JsonResponse(get_json_success_message(['パスワードを変更しました']))
 
-#todo リセット可能時間を設定
+#todo (高) リセット可能時間を設定
 class ResetPasswordView(TemplateView):
     form_class = ChangePasswordForm
     template_name = 'pages/reset_password.html'
@@ -160,7 +158,6 @@ class ResetPasswordView(TemplateView):
 
         return JsonResponse(get_json_success_message(['パスワードをリセットしました','続けてログインしてください']))
     
-    #todo まとめる？
     def get_user_reset(self):
         return get_object_or_404(UserReset, one_time_id=get_dict_item(self.kwargs, 'one_time_id'), is_deleted=False)
 
@@ -180,13 +177,13 @@ class SendMailForResetPasswordView(SendMailView):
         email = form.clean_email()
         
         user = User.objects.filter(username=username ,email=email, is_active=True)
-        #todo　低 メールを送信しない場合とする場合のレスポンス時間を同一にする
+        #todo (低) メールを送信しない場合とする場合のレスポンス時間を同一にする
         if user.exists():
             ur = UserReset.objects.filter(user=user[0])
             if ur.exists() and get_diff_seconds_from_now(ur[0].updated_at) < self.resettable_seconds:
                 return JsonResponse(get_json_error_message(['間隔を空けてください']))
 
-            #todo メールを送信するなら回数制限，モーダルエラーなら登録しているメールアドレスがバレないように．．．
+            #todo (低) メールを送信するなら回数制限，モーダルエラーなら登録しているメールアドレスがバレないように．．．
             if ur.exists() and get_diff_seconds_from_now(user[0].updated_at) < self.resettable_interval:
                 next_reset = make_naive(user[0].updated_at) + timedelta(seconds=self.resettable_interval)
                 message = '前回パスワードリセットした時刻と間隔が短すぎます．\
@@ -212,7 +209,7 @@ class SendMailForSignupView(SendMailView):
     one_time_id_len = 128
     send_mail_interval = 24 * 60 * 60
 
-    #todo 嫌がらせ対策が必要
+    #todo (低) 嫌がらせ対策が必要
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if not form.is_valid():
@@ -254,7 +251,6 @@ class SendMailForSignupView(SendMailView):
         \n{}/signup/{}/\
         \n(期限：5分以内)'.format(settings.MY_URL, id)
         
-#todo modelのis_deletedが適切か横展開が必要→どこかでまとめたい
 class GetUserView(UserItemView, ListView):
     model = settings.AUTH_USER_MODEL
     
@@ -303,7 +299,6 @@ class UserProfileView(LoginRequiredMixin, HeaderView, TemplateView):
 
         return context
 
-    #todo　場所はここでいいの？？
     def get_accept_room_guests(self):
         data = []
         rooms = Room.objects.filter(admin=self.request.user, is_deleted=False)
@@ -319,7 +314,6 @@ class UserProfileView(LoginRequiredMixin, HeaderView, TemplateView):
 
         return data
 
-    #todo　場所はここでいいの？？
     def get_invited_rooms(self):
         data = []
         invite_rooms = RoomInviteUser.objects.filter(user=self.request.user, is_deleted=False)
