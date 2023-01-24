@@ -95,8 +95,7 @@ class ReplyDetailView(DetailBaseView, SearchBaseView):
 
     def get(self, request, *args, **kwargs):
         self.reply = get_object_or_404(ReplyPost, id=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
-        self.room = self.reply.post.room
-        self.check_can_access(self.room)
+        self.check_can_access(self.reply.post.room)
         
         return super().get(request, *args, **kwargs)
 
@@ -226,10 +225,8 @@ class GetReplyView(DetailBaseView, IndexBaseView):
         raise Http404
 
     def get_items(self):
-        post = get_dict_item(self.request.POST, 'obj_id')
-        if not is_str(post):
-            return []
-
+        post = get_object_or_404(Post, id=get_dict_item(self.request.POST, 'obj_id'), is_deleted=False)
+        self.check_can_access(post.room)
         replies = ReplyPost.objects.filter(post=post, is_deleted=False)
         return self.get_post_detail_items(self.get_idx_items(replies))
 
@@ -240,9 +237,7 @@ class GetReply2View(DetailBaseView, IndexBaseView):
         raise Http404
 
     def get_items(self):
-        reply = get_dict_item(self.request.POST, 'obj_id')
-        if not is_str(reply):
-            return []
-
+        reply = get_object_or_404(ReplyPost, id=get_dict_item(self.request.POST, 'obj_id'), is_deleted=False)
+        self.check_can_access(reply.post.room)
         replies = ReplyReply.objects.filter(reply=reply, is_deleted=False)
         return self.get_reply_detail_items(self.get_idx_items(replies))

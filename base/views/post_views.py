@@ -72,8 +72,7 @@ class PostDetailView(DetailBaseView, SearchBaseView):
         
     def get(self, request, *args, **kwargs):
         self.post = get_object_or_404(Post, id=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
-        self.room = self.post.room
-        self.check_can_access(self.room)
+        self.check_can_access(self.post.room)
 
         return super().get(request, *args, **kwargs)
 

@@ -492,14 +492,11 @@ class UserItemView(View):
             queryset.append(self.get_user_item(profile))
         return queryset
 
-#todo (中) SearchBaseViewを継承させる？
-#todo (中) 要確認，DetailItemViewを別で作った方がいいかもしれない
 class DetailBaseView(PostItemView):
     load_by = 3
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
-        self.room = None
         self.search = {
             'username':'',
             'text': '',
@@ -522,20 +519,6 @@ class DetailBaseView(PostItemView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['order'] = self.order
-        
-        #todo (高) self.roomをどこで入れているのかわからなくない？
-        vr = ValidateRoomView(self.room)
-        if not vr.is_room_exist() or not self.request.user.is_authenticated:
-            return context
-            
-        if vr.is_admin(self.request.user):
-            context['is_allowed'] = True
-            context['is_admin'] = True
-            return context
-
-        if vr.is_room_user(self.request.user):
-            context['is_allowed'] = False
-
         return context
 
     def get_post_detail_items(self, reply_posts):
