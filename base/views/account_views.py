@@ -110,103 +110,10 @@ class SignUpView(CreateView):
     def get_guest(self):
         return get_object_or_404(Guest, one_time_id=get_dict_item(self.kwargs, 'one_time_id'), is_deleted=False)
 
-#todo (高) 変更の回数制限は不要？
-class ChangePasswordView(LoginRequiredMixin, View):
-    form_class = ChangePasswordForm
-
-    def get(self, request, *args, **kwargs):
-        raise Http404
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if not form.is_valid():
-            return JsonResponse(get_json_error_message(get_form_error_message(form)))
-        
-        user = request.user
-        user.password = make_password(form.clean_password())
-        user.fail_login_count = 0
-        user.save()
-
-        login(request, user)
-
-        return JsonResponse(get_json_success_message(['パスワードを変更しました']))
-
-#todo (高) リセット可能時間を設定
-class ResetPasswordView(TemplateView):
-    form_class = ChangePasswordForm
-    template_name = 'pages/reset_password.html'
-
-    def get(self, request, *args, **kwargs):
-        ur = self.get_user_reset()
-        return super().get(request, *args, **kwargs)
-
-    def post(self, request, *args, **kwargs):
-        ur = self.get_user_reset()
-        form = self.form_class(request.POST)
-        if not form.is_valid():
-            return JsonResponse(get_json_error_message(get_form_error_message(form)))
-
-        user = ur.user
-        ur.prev_password = user.password
-        user.password = make_password(form.clean_password())
-        user.fail_login_count = 0
-        user.save()
-
-        ur.is_deleted = True
-        ur.is_success = True
-        ur.save()
-
-        return JsonResponse(get_json_success_message(['パスワードをリセットしました','続けてログインしてください']))
-    
-    def get_user_reset(self):
-        return get_object_or_404(UserReset, one_time_id=get_dict_item(self.kwargs, 'one_time_id'), is_deleted=False)
-
-class SendMailForResetPasswordView(SendMailView):
-    form_class = SendMailForm
-    template_name = 'pages/send_mail_for_reset_password.html'
-    one_time_id_len = 128
-    resettable_seconds = 5 * 60
-    resettable_interval = 10 * 24 * 60 * 60
-
-    def post(self, request, *args, **kwargs):
-        form = self.form_class(request.POST)
-        if not form.is_valid():
-            return JsonResponse(get_json_error_message(get_form_error_message(form)))
-
-        username = get_dict_item(request.POST, 'username')
-        email = form.clean_email()
-        
-        user = User.objects.filter(username=username ,email=email, is_active=True)
-        #todo (低) メールを送信しない場合とする場合のレスポンス時間を同一にする
-        if user.exists():
-            ur = UserReset.objects.filter(user=user[0])
-            if ur.exists() and get_diff_seconds_from_now(ur[0].updated_at) < self.resettable_seconds:
-                return JsonResponse(get_json_error_message(['間隔を空けてください']))
-
-            #todo (低) メールを送信するなら回数制限，モーダルエラーなら登録しているメールアドレスがバレないように．．．
-            if ur.exists() and get_diff_seconds_from_now(user[0].updated_at) < self.resettable_interval:
-                next_reset = make_naive(user[0].updated_at) + timedelta(seconds=self.resettable_interval)
-                message = '前回パスワードリセットした時刻と間隔が短すぎます．\
-                    \n次回パスワードリセットできるのは{}以降です．'.format(next_reset.strftime('%Y年%m月%d日 %H:%M'))
-            else:
-                if ur.exists() and not ur[0].is_deleted:
-                    ur.update(one_time_id = create_id(self.one_time_id_len), is_deleted=False)
-                    ur = ur[0]
-                else:
-                    ur = UserReset.objects.create(user=user[0], one_time_id=create_id(self.one_time_id_len))
-                
-                message = '以下のURLからパスワードをリセットしてください\
-                    \n{}/reset-password/{}/\
-                    \n（期限：5分以内）'.format(settings.MY_URL, ur.one_time_id)
-            self.send_mail('パスワードリセット', message, [user[0].email])
-
-        return JsonResponse(get_json_success_message(['メールを送信しました']))
-
 class SendMailForSignupView(SendMailView):
     form_class = SendMailForm
     template_name = 'pages/send_mail_for_signup.html'
     max_access_count = 3
-    one_time_id_len = 128
     send_mail_interval = 24 * 60 * 60
 
     #todo (低) 嫌がらせ対策が必要
@@ -250,7 +157,109 @@ class SendMailForSignupView(SendMailView):
         以下のURLをクリックしてユーザー登録を完了してください．\
         \n{}/signup/{}/\
         \n(期限：5分以内)'.format(settings.MY_URL, id)
+
+#todo (低) 変更の回数制限は不要？
+class ChangePasswordView(LoginRequiredMixin, View):
+    form_class = ChangePasswordForm
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if not form.is_valid():
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
         
+        user = request.user
+        user.password = make_password(form.clean_password())
+        user.fail_login_count = 0
+        user.save()
+
+        login(request, user)
+
+        return JsonResponse(get_json_success_message(['パスワードを変更しました']))
+
+class ResetPasswordBaseView(View):
+    resettable_seconds = 5 * 60
+    resettable_interval = 10 * 24 * 60 * 60
+
+class ResetPasswordView(ResetPasswordBaseView, TemplateView):
+    form_class = ChangePasswordForm
+    template_name = 'pages/reset_password.html'
+
+    def get(self, request, *args, **kwargs):
+        ur = self.get_user_reset()
+        return super().get(request, *args, **kwargs)
+
+    def post(self, request, *args, **kwargs):
+        ur = self.get_user_reset()
+        form = self.form_class(request.POST)
+        if not form.is_valid():
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
+
+        if get_diff_seconds_from_now(ur.updated_at) > self.resettable_seconds:
+            return JsonResponse(get_json_error_message(['時間切れです', 'もう一度メール送信からやり直してください']))
+
+        user = ur.user
+        ur.prev_password = user.password
+        user.password = make_password(form.clean_password())
+        user.fail_login_count = 0
+        user.save()
+
+        ur.is_deleted = True
+        ur.is_success = True
+        ur.save()
+
+        return JsonResponse(get_json_success_message(['パスワードをリセットしました','続けてログインしてください']))
+    
+    def get_user_reset(self):
+        return get_object_or_404(UserReset, one_time_id=get_dict_item(self.kwargs, 'one_time_id'), is_deleted=False)
+
+class SendMailForResetPasswordView(SendMailView, ResetPasswordBaseView):
+    form_class = SendMailForm
+    template_name = 'pages/send_mail_for_reset_password.html'
+    mail_title = 'パスワードリセット'
+
+    def post(self, request, *args, **kwargs):
+        form = self.form_class(request.POST)
+        if not form.is_valid():
+            return JsonResponse(get_json_error_message(get_form_error_message(form)))
+
+        username = get_dict_item(request.POST, 'username')
+        email = form.clean_email()
+        
+        user = User.objects.get_or_none(username=username ,email=email, is_active=True)
+        #todo (低) メールを送信しない場合とする場合のレスポンス時間を同一にする
+        if user is None:
+            return self.get_success_json_response()
+
+        ur = UserReset.objects.get_or_none(user=user)
+        if ur is None:
+            ur = UserReset.objects.create(user=user, one_time_id=create_id(self.one_time_id_len))
+            self.send_mail(self.mail_title, self.get_reset_message(ur.one_time_id), [user.email])
+            return self.get_success_json_response()
+
+        if get_diff_seconds_from_now(ur.updated_at) < self.resettable_seconds:
+            return JsonResponse(get_json_error_message(['間隔を空けてください']))
+
+        #todo (低) メールを送信するなら回数制限，モーダルエラーなら登録しているメールアドレスがバレないように．．．
+        if get_diff_seconds_from_now(user.updated_at) < self.resettable_interval:
+            next_reset = make_naive(user.updated_at) + timedelta(seconds=self.resettable_interval)
+            message = '前回パスワードリセットした時刻と間隔が短すぎます．\
+                \n次回パスワードリセットできるのは{}以降です．'.format(next_reset.strftime('%Y年%m月%d日 %H:%M'))
+            self.send_mail(self.mail_title, message, [user.email])
+            return self.get_success_json_response()
+        
+        ur.update(one_time_id = create_id(self.one_time_id_len), is_deleted=False)
+        self.send_mail(self.mail_title, self.get_reset_message(ur.one_time_id), [user.email])
+
+        return self.get_success_json_response()
+
+    def get_reset_message(self, one_time_id):
+        return '以下のURLからパスワードをリセットしてください\
+            \n{}/reset-password/{}/\
+            \n（期限：5分以内）'.format(settings.MY_URL, one_time_id)
+
 class GetUserView(UserItemView, ListView):
     model = settings.AUTH_USER_MODEL
     

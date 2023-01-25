@@ -4,7 +4,6 @@ from django.shortcuts import redirect, get_object_or_404
 from django.utils.timezone import make_aware, make_naive
 from django.core.mail import send_mail
 from django.conf import settings
-from django.core.validators import validate_email
 from django.http import JsonResponse, Http404
 
 
@@ -63,6 +62,7 @@ class IndexBaseView(HeaderView, ListView):
         if self.idx < 0:
             self.idx = 0
 
+        #todo (中) is_endのいい判定方法ないかな
         return JsonResponse(get_json_success_message(add_dict={'idx':self.idx+1, 'items':self.get_dump_items(), 'is_end':True if is_empty(self.items) else False}))
     
     def get_blocked_user_list(self):
@@ -70,6 +70,7 @@ class IndexBaseView(HeaderView, ListView):
             return UserBlock.objects.filter(blocker=self.request.user ,is_deleted=False).values_list('blockee__id', flat=True)
         return []
 
+    #todo (中) self.itemsっている？
     def get_dump_items(self):
         self.items = self.get_items()
         return json.dumps(self.items)
@@ -603,6 +604,7 @@ class DetailBaseView(PostItemView):
 
         return dict_queryset
 
+    #todo (中) 怪しい
     def get_replies_after_order(self, replies):
         params = self.request.GET
         if ('order' not in params) or (params['order'] not in self.order.keys()):
@@ -687,7 +689,9 @@ class ShowRoomBaseView(HeaderView):
         return context
 
 class SendMailView(TemplateView):
-    user_from = settings.EMAIL_HOST_USER 
+    user_from = settings.EMAIL_HOST_USER
+    one_time_id_len = 128
+
     def send_mail(self, title, message, user_to):
         send_mail(
             title,
@@ -697,13 +701,8 @@ class SendMailView(TemplateView):
             fail_silently=False, 
         )
 
-    def validate_email(self, email):
-        try:
-            validate_email(email)
-        except:
-            return False
-
-        return not is_empty(email)
+    def get_success_json_response(self):
+        return JsonResponse(get_json_success_message(['メールを送信しました']))
 
 class DeleteBaseView(TemplateView):
     template_name = 'pages/index.html'

@@ -45,6 +45,7 @@ class Guest(models.Model):
         return self.email
 
 class UserReset(models.Model):
+    objects = UserManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     prev_password = models.CharField(max_length=128)
@@ -107,6 +108,7 @@ class Profile(models.Model):
         return self.user.username
 
 class UserEvaluate(models.Model):
+    objects = UserManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     false_access = models.BooleanField(default=False)
