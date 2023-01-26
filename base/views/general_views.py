@@ -15,7 +15,7 @@ from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, R
 from base.models.account_models import UserFollow, UserBlock, Profile
 from base.views.functions import get_number_unit, get_bool_or_str, get_list_index,\
     get_img_path, get_dict_item, is_empty, get_json_error_message, get_json_success_message,\
-    get_reply_types, get_boolean_or_none, get_display_datetime
+    get_reply_types, get_boolean_or_none, get_display_datetime, create_id
 from base.views.mixins import LoginRequiredMixin
 from base.views.validate_views import ValidateRoomView
 
@@ -701,8 +701,14 @@ class SendMailView(TemplateView):
             fail_silently=False, 
         )
 
+    def get_base_path(self):
+        return settings.MY_URL
+
     def get_success_json_response(self):
         return JsonResponse(get_json_success_message(['メールを送信しました']))
+
+    def get_one_time_id(self):
+        return create_id(self.one_time_id_len)
 
 class DeleteBaseView(TemplateView):
     template_name = 'pages/index.html'

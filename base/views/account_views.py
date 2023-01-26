@@ -74,10 +74,9 @@ class SignUpView(CreateView):
         if not form.is_valid():
             return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
-        # emailが過去に使用されていれば，使用禁止にする
-        user = User.objects.filter(email=self.guest.email)
-        if user.exists():
-            raise MyBadRequest
+        user = User.objects.get_or_none(email=self.guest.email)
+        if user is not None:
+            raise MyBadRequest('user is exist.')
 
         if get_diff_seconds_from_now(self.guest.updated_at) > self.registrable_seconds:
             return JsonResponse(get_json_error_message(['時間切れです', 'メールアドレスの登録からやり直してください']))
@@ -87,15 +86,15 @@ class SignUpView(CreateView):
         self.guest.save()
         
         # adminのRoomに強制参加
-        rooms = Room.objects.filter(title="admin", admin__username="admin")
-        if rooms.exists():
+        room = Room.objects.get_or_none(title="admin", admin__username="admin")
+        if room is not None:
             RoomUser.objects.create(
-                room=rooms[0],
+                room=room,
                 user=user,
                 authority=RoomAuthority.objects.create(
-                    can_reply=rooms[0].authority.can_reply, 
-                    can_post=rooms[0].authority.can_post, 
-                    is_admin=rooms[0].authority.is_admin
+                    can_reply=room.authority.can_reply, 
+                    can_post=room.authority.can_post, 
+                    is_admin=room.authority.is_admin
                 ),
             )
 
@@ -113,6 +112,7 @@ class SignUpView(CreateView):
 class SendMailForSignupView(SendMailView):
     form_class = SendMailForm
     template_name = 'pages/send_mail_for_signup.html'
+    mail_title = 'YourRoom：ユーザー登録'
     max_access_count = 3
     send_mail_interval = 24 * 60 * 60
 
@@ -122,41 +122,46 @@ class SendMailForSignupView(SendMailView):
         if not form.is_valid():
             return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
-        self.email = form.clean_email()        
-        guest = Guest.objects.filter(email=self.email)
-        if guest.exists():
-            if get_diff_seconds_from_now(guest[0].updated_at) > self.send_mail_interval:
-                guest[0].access_count = 0
-
-            if guest[0].access_count > self.max_access_count:
-                return JsonResponse(get_json_error_message([
-                    '入力したメールアドレスに対してのアクセス回数が許容範囲を超えています', 
-                    '登録するメールアドレスを変更するか，1日以上の間隔を空けて再度登録してください']))
-
-            message = self.get_register_message(guest[0].one_time_id)
-            access_count = guest[0].access_count
-            guest.update(access_count=access_count+1, one_time_id=create_id(self.one_time_id_len), is_deleted=False)
-            guest = guest[0]
-        else:
-            guest = Guest.objects.create(email=self.email, one_time_id=create_id(self.one_time_id_len))
-            message = self.get_register_message(guest.one_time_id)
+        self.email = form.clean_email()
+        user = User.objects.get_or_none(email=self.email)
+        if user is not None:
+            guest = Guest.objects.get_or_404(email=self.email)
+            access_count = guest.access_count
+            guest.access_count = access_count + 1
+            guest.save()
+            self.send_mail(self.mail_title, 'このメールアドレスで既にユーザー登録されています', [self.email])
+            return self.get_success_json_response()
         
-        user = User.objects.filter(email=self.email)
-        if user.exists():
-            message = 'このメールアドレスで既にユーザー登録されています'
+        guest = Guest.objects.get_or_none(email=self.email)
+        if guest is None:
+            guest = Guest.objects.create(email=self.email, one_time_id=self.get_one_time_id())
+            message = self.get_register_message(guest.one_time_id)
+            self.send_mail(self.mail_title, message, [self.email])
+            return self.get_success_json_response()
 
-        self.send_mail(
-            'YourRoom：ユーザ登録',
-            message,
-            [self.email], 
-        )
-        return JsonResponse(get_json_success_message(['【{}】から【{}】宛にメールを送信しました'.format(self.user_from, self.email)]))
+        if get_diff_seconds_from_now(guest.updated_at) > self.send_mail_interval:
+            guest.access_count = 0
 
-    def get_register_message(self, id):
+        if guest.access_count > self.max_access_count:
+            return JsonResponse(get_json_error_message([
+                '入力したメールアドレスに対してのアクセス回数が許容範囲を超えています', 
+                '登録するメールアドレスを変更するか，1日以上の間隔を空けて再度登録してください']))
+
+        message = self.get_register_message(guest.one_time_id)
+        access_count = guest.access_count
+        guest.access_count = access_count + 1
+        guest.one_time_id = self.get_one_time_id()
+        guest.is_deleted = False
+        guest.save()
+
+        self.send_mail(self.mail_title, message, [self.email])
+        return self.get_success_json_response()
+
+    def get_register_message(self, one_time_id):
         return '\
         以下のURLをクリックしてユーザー登録を完了してください．\
         \n{}/signup/{}/\
-        \n(期限：5分以内)'.format(settings.MY_URL, id)
+        \n(期限：5分以内)'.format(self.get_base_path(), one_time_id)
 
 #todo (低) 変更の回数制限は不要？
 class ChangePasswordView(LoginRequiredMixin, View):
@@ -235,7 +240,7 @@ class SendMailForResetPasswordView(SendMailView, ResetPasswordBaseView):
 
         ur = UserReset.objects.get_or_none(user=user)
         if ur is None:
-            ur = UserReset.objects.create(user=user, one_time_id=create_id(self.one_time_id_len))
+            ur = UserReset.objects.create(user=user, one_time_id=self.get_one_time_id())
             self.send_mail(self.mail_title, self.get_reset_message(ur.one_time_id), [user.email])
             return self.get_success_json_response()
 
@@ -250,7 +255,7 @@ class SendMailForResetPasswordView(SendMailView, ResetPasswordBaseView):
             self.send_mail(self.mail_title, message, [user.email])
             return self.get_success_json_response()
         
-        ur.update(one_time_id = create_id(self.one_time_id_len), is_deleted=False)
+        ur.update(one_time_id = self.get_one_time_id(), is_deleted=False)
         self.send_mail(self.mail_title, self.get_reset_message(ur.one_time_id), [user.email])
 
         return self.get_success_json_response()
@@ -258,7 +263,7 @@ class SendMailForResetPasswordView(SendMailView, ResetPasswordBaseView):
     def get_reset_message(self, one_time_id):
         return '以下のURLからパスワードをリセットしてください\
             \n{}/reset-password/{}/\
-            \n（期限：5分以内）'.format(settings.MY_URL, one_time_id)
+            \n（期限：5分以内）'.format(self.get_base_path(), one_time_id)
 
 class GetUserView(UserItemView, ListView):
     model = settings.AUTH_USER_MODEL
