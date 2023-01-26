@@ -31,7 +31,7 @@ class LoginView(LoginView):
     #todo (低) login with username, email, password
     def post(self, request, *args, **kwargs):
         user = self.get_user()
-        if user.exists() and user[0].fail_login_count > self.max_fail_login_count:
+        if user is not None and user.fail_login_count > self.max_fail_login_count:
             messages.error(self.request, 'ログイン失敗回数が許容範囲を超えました')
             messages.error(self.request, 'パスワードリセットを試してください')
             return render(self.request, self.template_name)
@@ -39,7 +39,6 @@ class LoginView(LoginView):
 
     def form_valid(self, form):
         user = self.get_user()
-        user = user[0]
         user.fail_login_count = 0
         user.save()
 
@@ -49,14 +48,13 @@ class LoginView(LoginView):
         messages.error(self.request, 'ユーザー名かパスワードが間違っています')
         
         user = self.get_user()
-        if user.exists():
-            user = user[0]
+        if user is not None:
             user.fail_login_count = user.fail_login_count + 1
             user.save()
         return super().form_invalid(form)
     
     def get_user(self):
-        return User.objects.filter(username=get_dict_item(self.request.POST, 'username'), is_active=True)
+        return User.objects.get_or_none(username=get_dict_item(self.request.POST, 'username'), is_active=True)
 
 class SignUpView(CreateView):
     form_class = SignUpForm

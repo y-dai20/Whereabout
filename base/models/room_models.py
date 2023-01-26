@@ -55,6 +55,7 @@ class RoomImgs(models.Model):
         return self.room
 
 class RoomRequestInformation(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     sequence = models.IntegerField(default=1)
@@ -78,6 +79,7 @@ class RoomInformation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class TabContent(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     title = models.CharField(default='title', max_length=32, blank=False, null=False)
     is_deleted = models.BooleanField(default=False)
@@ -101,6 +103,7 @@ class TabPermutation(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class TabContentItem(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     title = models.CharField(default='', max_length=255, blank=True)
     text = models.CharField(default='', max_length=1024, blank=True)
@@ -133,6 +136,7 @@ class RoomReplyType(models.Model):
         return self.room
 
 class RoomGuest(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     guest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="guest")
@@ -146,6 +150,7 @@ class RoomGuest(models.Model):
         ]
 
 class RoomUser(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user")
@@ -161,6 +166,7 @@ class RoomUser(models.Model):
         ]
 
 class RoomInviteUser(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="invite_user")

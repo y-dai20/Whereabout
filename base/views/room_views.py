@@ -183,23 +183,26 @@ class JoinRoomView(LoginRequiredMixin, CreateView):
         if UserBlock.objects.filter(blocker=room.admin, blockee=request.user, is_deleted=False):
             return JsonResponse(get_json_error_message(['管理者にブロックされています']))
 
-        room_user = RoomUser.objects.filter(user=request.user, room=room)
-        if room_user.exists() and not room_user[0].is_deleted:
+        room_user = RoomUser.objects.get_or_none(user=request.user, room=room)
+        if room_user is not None and not room_user.is_deleted:
             return JsonResponse(get_json_error_message(['すでに参加しています']))
 
-        room_guest = RoomGuest.objects.filter(guest=request.user, room=room)
-        if room_guest.exists() and not room_guest[0].is_deleted:
+        room_guest = RoomGuest.objects.get_or_none(guest=request.user, room=room)
+        if room_guest is not None and not room_guest.is_deleted:
             return JsonResponse(get_json_error_message(['参加申請中です']))
         
         if room.need_approval:
-            if room_guest.exists():
-                room_guest.update(is_deleted=False)
+            if room_guest is not None:
+                room_guest.is_deleted = False
+                room_guest.save()
             else:
                 room_guest.create(guest=request.user, room=room)
             return JsonResponse(get_json_success_message(['参加申請を出しました'], {'is_waiting':True}))
 
-        if room_user.exists():
-            room_user.update(is_deleted=False, is_blocked=False)
+        if room_user is not None:
+            room_user.is_deleted = False
+            room_user.is_blocked = False
+            room_user.save()
         else:
             RoomUser.objects.create(
                 room=room, 
@@ -224,11 +227,12 @@ class LeaveRoomView(LoginRequiredMixin, UpdateView):
             raise MyBadRequest('room is not exist.')
         
         room = vr.get_room()
-        room_user = RoomUser.objects.filter(user=request.user, room=room, is_blocked=False, is_deleted=False)
-        if not room_user.exists():
+        room_user = RoomUser.objects.get_or_none(user=request.user, room=room, is_blocked=False, is_deleted=False)
+        if room_user is None:
             raise MyBadRequest('RoomUser is not exist.')
 
-        room_user.update(is_deleted=True)
+        room_user.is_deleted = True
+        room_user.save()
         room.participant_count -= 1
         room.save()
 
@@ -251,12 +255,12 @@ class AcceptRoomInviteView(LoginRequiredMixin, CreateView):
         if is_accept is None:
             raise MyBadRequest('is_accept is None.')
         
-        room_user = RoomUser.objects.filter(room=room, user=request.user)
-        if room_user.exists() and not room_user[0].is_deleted:
+        room_user = RoomUser.objects.get_or_none(room=room, user=request.user)
+        if room_user is not None and not room_user.is_deleted:
             return JsonResponse(get_json_error_message(['エラーが発生しました．(E03)']))
 
         if is_accept:
-            if not room_user.exists():
+            if room_user is None:
                 RoomUser.objects.create(
                     room=room, 
                     user=request.user, 
@@ -267,7 +271,8 @@ class AcceptRoomInviteView(LoginRequiredMixin, CreateView):
                     ),
                 )
             else:
-                room_user.update(is_deleted=False)
+                room_user.is_deleted = False
+                room_user.save()
             room.participant_count += 1
             room.save()
 
@@ -302,11 +307,11 @@ class AcceptRoomGuestView(ManageRoomBaseView, CreateView):
         room = vr.get_room()
         room_guest = get_object_or_404(RoomGuest, room=room, guest=guest, is_deleted=False)
         
-        room_user = RoomUser.objects.filter(room=room, user=guest)
-        if room_user.exists() and not room_user[0].is_deleted:
+        room_user = RoomUser.objects.get_or_none(room=room, user=guest)
+        if room_user is not None and not room_user.is_deleted:
             return False
 
-        if not room_user.exists():
+        if room_user is None:
             RoomUser.objects.create(
                 room=room, 
                 user=guest,
@@ -318,7 +323,8 @@ class AcceptRoomGuestView(ManageRoomBaseView, CreateView):
                 ),
             )
         else:
-            room_user.update(is_deleted=False)
+            room_user.is_deleted = False
+            room_user.save()
 
         if not is_blocked: 
             room.participant_count += 1
@@ -714,11 +720,11 @@ class RoomInviteView(ManageRoomBaseView, TemplateView):
         if RoomUser.objects.filter(user=invite_user, room=room, is_deleted=False).exists():
             return JsonResponse(get_json_error_message(['既に参加しています']))
 
-        room_invite_obj = RoomInviteUser.objects.filter(room=room, user=invite_user)
-        if room_invite_obj.exists() and not room_invite_obj[0].is_deleted:
+        room_invite = RoomInviteUser.objects.get_or_none(room=room, user=invite_user)
+        if room_invite is not None and not room_invite.is_deleted:
             return JsonResponse(get_json_error_message(['すでに招待しています']))
         
-        if room_invite_obj.exists() and room_invite_obj[0].is_deleted:
+        if room_invite is not None and room_invite.is_deleted:
             return JsonResponse(get_json_error_message(['招待が拒否されています']))
 
         RoomInviteUser.objects.create(

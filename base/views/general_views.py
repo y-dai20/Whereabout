@@ -675,17 +675,18 @@ class ShowRoomBaseView(HeaderView):
             return context
 
         #todo (中) 基本的にobjects.filterは共通で書くようにする
-        room_user = RoomUser.objects.filter(room=room, user=self.request.user, is_deleted=False)
-        if room_user.exists():
-            if room_user[0].is_blocked:
+        room_user = RoomUser.objects.get_or_none(room=room, user=self.request.user, is_deleted=False)
+        if room_user is not None:
+            if room_user.is_blocked:
                 context['is_blocked'] = True
             else:
                 context['is_room_user'] = True
-        else:
-            room_guest = RoomGuest.objects.filter(room=room, guest=self.request.user, is_deleted=False)
-            if room_guest.exists():
-                context['is_waiting'] = True
+            return context
         
+        room_guest = RoomGuest.objects.get_or_none(room=room, guest=self.request.user, is_deleted=False)
+        if room_guest is not None:
+            context['is_waiting'] = True
+    
         return context
 
 class SendMailView(TemplateView):
