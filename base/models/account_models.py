@@ -1,10 +1,11 @@
-from email.policy import default
 from django.dispatch import receiver
 from django.db.models.signals import post_save
 from django.db import models
 from django.contrib.auth.models import BaseUserManager, AbstractBaseUser
 from django.conf import settings
 from base.models import create_id
+
+
 from base.models.functions import img_directory_path
 from base.models.general_models import BaseManager
 

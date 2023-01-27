@@ -1,5 +1,7 @@
 from django.db import models
 from django.conf import settings
+
+
 from base.models import create_id
 
 class BaseManager(models.Manager):

@@ -1,13 +1,15 @@
 from django.db import models
 from django.conf import settings
-from django.dispatch import receiver
-from django.db.models.signals import post_save
+
+
 from base.models import create_id
 from base.models.functions import post_directory_path, video_directory_path
 from base.models.room_models import Room
 from base.models.general_models import ObjectExpansion
+from base.models.general_models import BaseManager
 
 class Post(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     title = models.CharField(default='', max_length=50, blank=False)
     text = models.CharField(default='', max_length=255, blank=False)
@@ -33,6 +35,7 @@ class PostImgs(models.Model):
         return self.post
 
 class PostAgree(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     is_agree = models.BooleanField(null=False, blank=False)
     obj = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -45,6 +48,7 @@ class PostAgree(models.Model):
         return self.obj
 
 class PostFavorite(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     obj = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -56,6 +60,7 @@ class PostFavorite(models.Model):
         return self.obj
 
 class PostDemagogy(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     is_true = models.BooleanField(null=False, blank=False)
     obj = models.ForeignKey(Post, on_delete=models.CASCADE)

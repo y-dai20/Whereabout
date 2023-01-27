@@ -1,11 +1,12 @@
 from django.db import models
 from django.conf import settings
-from django.dispatch import receiver
-from django.db.models.signals import post_save
+
+
 from base.models import create_id
 from base.models.post_models import Post
 from base.models.functions import img_directory_path
 from base.models.general_models import ObjectExpansion
+from base.models.general_models import BaseManager
 
 class ReplyPosition(models.TextChoices):
     AGREE = 'Agree', '賛成'
@@ -13,6 +14,7 @@ class ReplyPosition(models.TextChoices):
     DISAGREE = 'Disagree', '反対'
 
 class ReplyPost(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     text = models.CharField(default='', max_length=255, blank=False)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -30,6 +32,7 @@ class ReplyPost(models.Model):
         ordering = ['-created_at']
 
 class ReplyReply(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     text = models.CharField(default='', max_length=255, blank=False)
     reply = models.ForeignKey(ReplyPost, on_delete=models.CASCADE)
@@ -46,6 +49,7 @@ class ReplyReply(models.Model):
         ordering = ['-created_at']
 
 class ReplyAgree(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     is_agree = models.BooleanField(null=False, blank=False)
     obj = models.ForeignKey(ReplyPost, on_delete=models.CASCADE)
@@ -58,6 +62,7 @@ class ReplyAgree(models.Model):
         return self.obj
 
 class ReplyFavorite(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     obj = models.ForeignKey(ReplyPost, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -69,6 +74,7 @@ class ReplyFavorite(models.Model):
         return self.obj
 
 class ReplyDemagogy(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     is_true = models.BooleanField(null=False, blank=False)
     obj = models.ForeignKey(ReplyPost, on_delete=models.CASCADE)
@@ -81,6 +87,7 @@ class ReplyDemagogy(models.Model):
         return self.obj
 
 class Reply2Agree(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     is_agree = models.BooleanField(null=False, blank=False)
     obj = models.ForeignKey(ReplyReply, on_delete=models.CASCADE)
@@ -93,6 +100,7 @@ class Reply2Agree(models.Model):
         return self.obj
 
 class Reply2Favorite(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     obj = models.ForeignKey(ReplyReply, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -104,6 +112,7 @@ class Reply2Favorite(models.Model):
         return self.obj
 
 class Reply2Demagogy(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     is_true = models.BooleanField(null=False, blank=False)
     obj = models.ForeignKey(ReplyReply, on_delete=models.CASCADE)
