@@ -168,7 +168,7 @@ class CreateRoomView(LoginRequiredMixin, CreateView):
                 img5 = img_list[4],
             )
 
-        return JsonResponse(get_json_success_message(['ルームを作成しました'], {'room_id':room.id}))
+        return JsonResponse(get_json_success_message(['ルームを作成しました'], {'room_id':room.id, 'room_title':room.title}))
 
 #todo (中) request informationがあれば表示するようにする
 class JoinRoomView(LoginRequiredMixin, CreateView):

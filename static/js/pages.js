@@ -400,6 +400,7 @@ $('#submit-create-room-button').on('click', function(event) {
         if (is_error(data)) {
             return false;
         }
+        create_myroom_dropdown(data.room_id, data.room_title);
         close_modal('modal-create-room');
         var footer = !is_empty(data.room_id) ? `<a href="/room/${data.room_id}/" role="button" class="btn btn-success">移動</a>` : "";
         show_modal_message(data.title, data.message, footer);
@@ -417,7 +418,6 @@ $('.cancel-confirm-button').on('click', function(){
 });
 
 //todo 複雑すぎない？？
-//todo for文をeach文にしたい
 $(document).on('click', '.save-display-button', function(){
     var form = 'manage-room-display-form';
     if (!form_valid(form)) {

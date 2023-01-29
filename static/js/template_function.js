@@ -383,3 +383,7 @@ function create_search_user_result(user) {
     ${get_item_user_area(user.username, user.user_img, 'white')}
     <button type="button" data-username="${user.username}" class="invite-user btn btn-secondary btn-sm">招待</button></div>`;
 }
+
+function create_myroom_dropdown(id, title) {
+    $('.myroom-list').prepend(`<a class="dropdown-item" href="/room/${id}/">${title}</a>`);
+}

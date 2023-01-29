@@ -31,7 +31,7 @@ class HeaderView(View):
             return context
         
         my_rooms = Room.objects.filter(admin=self.request.user, is_deleted=False).values(id_=F('id'), title_=F('title'))
-        context['my_rooms'] = my_rooms
+        context['my_rooms'] = list(my_rooms)
 
         other_rooms = RoomUser.objects.filter(user=self.request.user, is_deleted=False, is_blocked=False).values(
             id_=F('room__id'), title_=F('room__title'), admin_=F('room__admin__username'))

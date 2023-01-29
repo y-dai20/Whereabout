@@ -38,10 +38,16 @@
             <a class="dropdown-item" href="#">Room作成</a>
           {% endif %}
           <div class="dropdown-divider"></div>
-          <div class="div-scroll">
-            {% for room in my_rooms %}
+          <div class="div-scroll myroom-list">
+            <script>
+              var myrooms = [{{my_rooms | safe}}];
+              $.each(myrooms[0], function(idx, room) {
+                create_myroom_dropdown(room.id_, room.title_);
+              });
+            </script>
+            {% comment %} {% for room in my_rooms %}
               <a class="dropdown-item" href="/room/{{room.id_}}/">{{room.title_}}</a>
-            {% endfor %}
+            {% endfor %} {% endcomment %}
           </div>
         </div>
       </li>  
