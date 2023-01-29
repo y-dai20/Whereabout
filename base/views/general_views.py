@@ -9,7 +9,7 @@ from django.http import JsonResponse, Http404
 
 from base.views.exceptions import MyBadRequest
 from base.models.post_models import Post, PostImgs, PostAgree, PostFavorite, PostDemagogy
-from base.models.reply_models import ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy, ReplyPosition
+from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy, ReplyPosition
 from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, RoomReplyType, TabContentItem,\
     TabPermutation, RoomGood, RoomRequestInformation, RoomInformation
 from base.models.account_models import UserFollow, UserBlock, Profile
@@ -62,6 +62,11 @@ class IndexBaseView(HeaderView, ListView):
         if self.request.user.is_authenticated:
             return UserBlock.objects.filter(blocker=self.request.user ,is_deleted=False).values_list('blockee__id', flat=True)
         return []
+
+    def check_can_access(self, room):
+        vr = ValidateRoomView(room)
+        if vr.is_room_exist() and not vr.can_access(self.request.user):
+            raise PermissionError('ルームに対するアクセス権がありません')
 
     def get_dump_items(self):
         items = self.get_items()
@@ -422,6 +427,9 @@ class RoomItemView(View):
         
         return room_dict
 
+# class ItemBaseView(View):
+#     def get_item_footer(self):
+
 class PostItemView(View):
 
     def get_post_items(self, posts):
@@ -502,8 +510,106 @@ class UserItemView(View):
             queryset.append(self.get_user_item(profile))
         return queryset
 
-class DetailBaseView(PostItemView):
-    load_by = 3
+class ReplyItemView(View):
+
+    def get_reply_items(self, replies):
+        queryset = []
+        for reply in replies:
+            queryset.append(self.get_reply_item(reply))
+        return queryset
+
+    def get_reply_item(self, reply):
+        if not isinstance(reply, ReplyPost):
+            return {}
+
+        user_agree = ReplyAgree.objects.filter(obj=reply, user=self.request.user, is_deleted=False).values('is_agree')
+        user_demagogy = ReplyDemagogy.objects.filter(obj=reply, user=self.request.user, is_deleted=False).values('is_true')
+        favorite_state = ReplyFavorite.objects.filter(obj=reply, user=self.request.user, is_deleted=False)
+
+        vr = ValidateRoomView(reply.post.room)
+        room_base = RoomBase(vr.get_room())
+        dict_queryset = {
+            'obj_type':'reply',
+            'obj_id':reply.id,
+            'post_id':reply.post.id,
+            'url':reply.url,
+            'reply_count':get_number_unit(reply.expansion.reply_count),
+            'text':reply.text,
+            'username':reply.user.username,
+            'user_img':get_img_path(reply.user.profile.img),
+            'type':reply.type,
+            'type_id':get_list_index(room_base.get_room_reply_types(), reply.type),
+            'is_agree':True if reply.position == ReplyPosition.AGREE else False,
+            'is_neutral':True if reply.position == ReplyPosition.NEUTRAL else False,
+            'is_disagree':True if reply.position == ReplyPosition.DISAGREE else False,
+            'created_at':get_display_datetime(datetime.now() - make_naive(reply.created_at)),
+            'img_path':get_img_path(reply.img) if not is_empty(reply.img) else '',
+            'agree_count':get_number_unit(reply.expansion.agree_count),
+            'disagree_count':get_number_unit(reply.expansion.disagree_count),
+            'agree_state': user_agree[0]['is_agree'] if user_agree.exists() else None,
+            'true_count':get_number_unit(reply.expansion.true_count),
+            'false_count':get_number_unit(reply.expansion.false_count),
+            'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
+            'favorite_state':favorite_state.exists(),
+            'favorite_count':get_number_unit(reply.expansion.favorite_count),
+            'can_user_delete':reply.user == self.request.user,
+        }
+
+        if vr.is_room_exist():
+            dict_queryset['can_user_delete'] = vr.is_admin(self.request.user)
+            dict_queryset['room_id'] = reply.post.room.id
+
+        return dict_queryset
+
+class Reply2ItemView(View):
+
+    def get_reply2_items(self, reply2):
+        queryset = []
+        for reply in reply2:
+            queryset.append(self.get_reply2_item(reply))
+        return queryset
+
+    def get_reply2_item(self, reply2):
+        if not isinstance(reply2, ReplyReply):
+            return {}
+
+        user_agree = Reply2Agree.objects.filter(obj=reply2, user=self.request.user, is_deleted=False).values('is_agree')
+        user_demagogy = Reply2Demagogy.objects.filter(obj=reply2, user=self.request.user, is_deleted=False).values('is_true')
+        favorite_state = Reply2Favorite.objects.filter(obj=reply2, user=self.request.user, is_deleted=False)
+
+        vr = ValidateRoomView(reply2.reply.post.room)
+        room_base = RoomBase(vr.get_room())
+        dict_queryset = {
+            'obj_type':'reply2',
+            'obj_id':reply2.id,
+            'text':reply2.text,
+            'username':reply2.user.username,
+            'user_img':get_img_path(reply2.user.profile.img),
+            'type':reply2.type,
+            'type_id':get_list_index(room_base.get_room_reply_types(), reply2.type),
+            'is_agree':True if reply2.position == ReplyPosition.AGREE else False,
+            'is_neutral':True if reply2.position == ReplyPosition.NEUTRAL else False,
+            'is_disagree':True if reply2.position == ReplyPosition.DISAGREE else False,
+            'created_at':get_display_datetime(datetime.now() - make_naive(reply2.created_at)),
+            'img_path':get_img_path(reply2.img) if not is_empty(reply2.img) else '',
+            'agree_count':get_number_unit(reply2.expansion.agree_count),
+            'disagree_count':get_number_unit(reply2.expansion.disagree_count),
+            'agree_state': user_agree[0]['is_agree'] if user_agree.exists() else None,
+            'true_count':get_number_unit(reply2.expansion.true_count),
+            'false_count':get_number_unit(reply2.expansion.false_count),
+            'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
+            'favorite_state':favorite_state.exists(),
+            'favorite_count':get_number_unit(reply2.expansion.favorite_count),
+            'can_user_delete':reply2.user == self.request.user,
+        }
+
+        if vr.is_room_exist():
+            dict_queryset['can_user_delete'] = vr.is_admin(self.request.user)
+
+        return dict_queryset
+
+class DetailBaseView(SearchBaseView):
+    load_by = 1
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)
@@ -521,97 +627,10 @@ class DetailBaseView(PostItemView):
             'favorite_count':False,
         }
 
-    def check_can_access(self, room):
-        vr = ValidateRoomView(room)
-        if vr.is_room_exist() and not vr.can_access(self.request.user):
-            raise PermissionError('ルームに対するアクセス権がありません')
-
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['order'] = self.order
         return context
-
-    def get_post_detail_items(self, reply_posts):
-        queryset = []
-        for reply in reply_posts:
-            queryset.append(self.get_post_detail_item(reply))
-        return queryset
-
-    def get_post_detail_item(self, reply_post):
-        if is_empty(reply_post):
-            return {}
-
-        self.agree_model = ReplyAgree
-        self.demagogy_model = ReplyDemagogy
-        self.favorite_model = ReplyFavorite
-
-        dict_queryset = self.get_detail_item(reply_post, reply_post.post.room)
-        dict_queryset['obj_type'] = 'reply'
-        dict_queryset['obj_id'] = reply_post.id
-        dict_queryset['post_id'] = reply_post.post.id
-        dict_queryset['url'] = reply_post.url
-        dict_queryset['reply_count'] = get_number_unit(reply_post.expansion.reply_count)
-        if not is_empty(reply_post.post.room):        
-            dict_queryset['room_id'] = reply_post.post.room.id
-        return dict_queryset
-
-    def get_reply_detail_items(self, reply2):
-        queryset = []
-        for reply in reply2:
-            queryset.append(self.get_reply_detail_item(reply))
-        return queryset
-
-    def get_reply_detail_item(self, reply2):
-        if is_empty(reply2):
-            return {}
-
-        self.agree_model = Reply2Agree
-        self.demagogy_model = Reply2Demagogy
-        self.favorite_model = Reply2Favorite
-
-        dict_queryset = self.get_detail_item(reply2, reply2.reply.post.room)
-        dict_queryset['obj_type'] = 'reply2'
-        dict_queryset['obj_id'] = reply2.id
-        
-        return dict_queryset
-    
-    def get_detail_item(self, obj, room=None):
-        user_agree = self.agree_model.objects.filter(obj=obj.id, user=self.request.user, is_deleted=False).values('is_agree')
-        user_demagogy = self.demagogy_model.objects.filter(obj=obj, user=self.request.user, is_deleted=False).values('is_true')
-        favorite_state = self.favorite_model.objects.filter(obj=obj.id, user=self.request.user, is_deleted=False)
-
-        room_base = RoomBase(room)
-        dict_queryset = {
-            'text':obj.text,
-            'username':obj.user.username,
-            'user_img':get_img_path(obj.user.profile.img),
-            'type':obj.type,
-            'type_id':get_list_index(room_base.get_room_reply_types(), obj.type),
-            'is_agree':True if obj.position == ReplyPosition.AGREE else False,
-            'is_neutral':True if obj.position == ReplyPosition.NEUTRAL else False,
-            'is_disagree':True if obj.position == ReplyPosition.DISAGREE else False,
-            'created_at':get_display_datetime(datetime.now() - make_naive(obj.created_at)),
-            'img_path':get_img_path(obj.img) if not is_empty(obj.img) else '',
-
-            'agree_count':get_number_unit(obj.expansion.agree_count),
-            'disagree_count':get_number_unit(obj.expansion.disagree_count),
-            'agree_state': user_agree[0]['is_agree'] if user_agree.exists() else None,
-
-            'true_count':get_number_unit(obj.expansion.true_count),
-            'false_count':get_number_unit(obj.expansion.false_count),
-            'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
-
-            'favorite_state':favorite_state.exists(),
-            'favorite_count':get_number_unit(obj.expansion.favorite_count),
-
-            'can_user_delete':obj.user == self.request.user,
-        }
-
-        vr = ValidateRoomView(room)
-        if vr.is_room_exist():
-            dict_queryset['can_user_delete'] = vr.is_admin(self.request.user)
-
-        return dict_queryset
 
     #todo (中) 怪しい
     def get_replies_after_order(self, replies):

@@ -9,7 +9,8 @@ from base.models.general_models import ObjectExpansion
 from base.models.post_models import Post, PostAgree
 from base.models.room_models import RoomReplyType
 from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy, ReplyPosition
-from base.views.general_views import AgreeView, FavoriteView, DetailBaseView, DemagogyView, SearchBaseView, IndexBaseView, RoomBase, DeleteBaseView
+from base.views.general_views import AgreeView, FavoriteView, DetailBaseView, DemagogyView, SearchBaseView, IndexBaseView,\
+    RoomBase, DeleteBaseView, ReplyItemView, Reply2ItemView
 from base.views.validate_views import ValidateRoomView
 from base.views.functions import get_form_error_message, get_dict_item, is_empty, is_str, \
     get_file_size_by_unit, get_img_list, get_file_size, get_json_error_message, get_json_success_message
@@ -58,7 +59,7 @@ class ReplyPostView(LoginRequiredMixin, CreateView):
         post.expansion.reply_count += 1
         post.expansion.save()
 
-        return JsonResponse(get_json_success_message(['返信しました']))
+        return JsonResponse(get_json_success_message(['返信しました'], {''}))
 
 class ReplyReplyView(LoginRequiredMixin, CreateView):
     form_class = ReplyReplyForm
@@ -89,7 +90,7 @@ class ReplyReplyView(LoginRequiredMixin, CreateView):
 
         return JsonResponse(get_json_success_message(['返信しました']))
 
-class ReplyDetailView(DetailBaseView, SearchBaseView):
+class ReplyDetailView(ReplyItemView, Reply2ItemView, DetailBaseView, SearchBaseView):
     template_name = 'pages/reply_detail.html'
     model = ReplyPost
 
@@ -101,10 +102,10 @@ class ReplyDetailView(DetailBaseView, SearchBaseView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['object'] = self.get_post_detail_item(self.reply)
+        context['object'] = self.get_reply_item(self.reply)
         return context
 
-    def get_queryset(self):
+    def get_items(self):
         params = self.get_params()
         replies = ReplyReply.objects.filter(
             reply=get_dict_item(self.kwargs, 'reply_pk'),
@@ -120,7 +121,7 @@ class ReplyDetailView(DetailBaseView, SearchBaseView):
         if not is_empty(params['position']):
             replies2 = self.get_replies_after_order(replies.filter(position=params['position']))
             self.load_by *= 3
-            return self.get_reply_detail_items(self.get_items(replies2))
+            return self.get_reply2_items(self.get_idx_items(replies2))
 
         agree_reply = self.get_replies_after_order(replies.filter(position=ReplyPosition.AGREE))
         len_ar = len(agree_reply)
@@ -130,9 +131,9 @@ class ReplyDetailView(DetailBaseView, SearchBaseView):
         len_dr = len(disagree_reply)
 
         for idx in range(self.get_start_idx(), self.get_end_idx(max(len_ar, len_nr, len_dr))):
-            queryset.append(self.get_reply_detail_item(agree_reply[idx]) if idx < len_ar else None)
-            queryset.append(self.get_reply_detail_item(neutral_reply[idx]) if idx < len_nr else None)
-            queryset.append(self.get_reply_detail_item(disagree_reply[idx]) if idx < len_dr else None)
+            queryset.append(self.get_reply2_item(agree_reply[idx]) if idx < len_ar else None)
+            queryset.append(self.get_reply2_item(neutral_reply[idx]) if idx < len_nr else None)
+            queryset.append(self.get_reply2_item(disagree_reply[idx]) if idx < len_dr else None)
 
         return queryset
 
@@ -218,7 +219,7 @@ class Reply2DemagogyView(DemagogyView):
         
         return JsonResponse(json_data)
 
-class GetReplyView(DetailBaseView, IndexBaseView):
+class GetReplyView(ReplyItemView, IndexBaseView):
     load_by = 1
 
     def get(self, request, *args, **kwargs):
@@ -228,9 +229,9 @@ class GetReplyView(DetailBaseView, IndexBaseView):
         post = get_object_or_404(Post, id=get_dict_item(self.request.POST, 'obj_id'), is_deleted=False)
         self.check_can_access(post.room)
         replies = ReplyPost.objects.filter(post=post, is_deleted=False)
-        return self.get_post_detail_items(self.get_idx_items(replies))
+        return self.get_reply_items(self.get_idx_items(replies))
 
-class GetReply2View(DetailBaseView, IndexBaseView):
+class GetReply2View(Reply2ItemView, IndexBaseView):
     load_by = 1
 
     def get(self, request, *args, **kwargs):
@@ -240,4 +241,4 @@ class GetReply2View(DetailBaseView, IndexBaseView):
         reply = get_object_or_404(ReplyPost, id=get_dict_item(self.request.POST, 'obj_id'), is_deleted=False)
         self.check_can_access(reply.post.room)
         replies = ReplyReply.objects.filter(reply=reply, is_deleted=False)
-        return self.get_reply_detail_items(self.get_idx_items(replies))
+        return self.get_reply2_items(self.get_idx_items(replies))

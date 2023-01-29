@@ -10,7 +10,8 @@ from base.models.post_models import Post, PostAgree, PostFavorite, PostImgs
 from base.forms import PostForm
 from base.views.functions import get_form_error_message, get_file_size_by_unit, get_dict_item, is_empty,\
     get_img_list, get_file_size, get_video_list, get_json_success_message, get_json_error_message
-from base.views.general_views import SearchBaseView, DemagogyView, AgreeView, FavoriteView, DetailBaseView, PostItemView, PostDemagogy, RoomBase, DeleteBaseView
+from base.views.general_views import SearchBaseView, DemagogyView, AgreeView, FavoriteView, DetailBaseView,\
+    PostItemView, ReplyItemView, PostDemagogy, RoomBase, DeleteBaseView
 from base.views.validate_views import ValidateRoomView
 from base.views.mixins import LoginRequiredMixin
 
@@ -66,7 +67,7 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
 
         return JsonResponse(get_json_success_message(['投稿しました'], {'post':self.get_post_item(post)}))
 
-class PostDetailView(DetailBaseView, SearchBaseView):
+class PostDetailView(PostItemView, ReplyItemView, DetailBaseView):
     model = ReplyPost
     template_name = 'pages/post_detail.html'
         
@@ -90,9 +91,9 @@ class PostDetailView(DetailBaseView, SearchBaseView):
 
         if not is_empty(params['position']):
             #todo (中) search_reply.htmlと密結合になっている．Agreeなどが送られてこないと検索に引っかからない
-            post_replies = self.get_replies_after_order(replies.filter(position=params['position']))
+            replies = self.get_replies_after_order(replies.filter(position=params['position']))
             self.load_by *= 3
-            return self.get_post_detail_items(self.get_idx_items(post_replies))
+            return self.get_reply_items(self.get_idx_items(replies))
 
         agree_reply = self.get_replies_after_order(replies.filter(position=ReplyPosition.AGREE))
         len_ar = len(agree_reply)
@@ -103,9 +104,9 @@ class PostDetailView(DetailBaseView, SearchBaseView):
 
         items = []
         for idx in range(self.get_start_idx(), self.get_end_idx(max(len_ar, len_nr, len_dr))):
-            items.append(self.get_post_detail_item(agree_reply[idx]) if idx < len_ar else None)
-            items.append(self.get_post_detail_item(neutral_reply[idx]) if idx < len_nr else None)
-            items.append(self.get_post_detail_item(disagree_reply[idx]) if idx < len_dr else None)
+            items.append(self.get_reply_item(agree_reply[idx]) if idx < len_ar else None)
+            items.append(self.get_reply_item(neutral_reply[idx]) if idx < len_nr else None)
+            items.append(self.get_reply_item(disagree_reply[idx]) if idx < len_dr else None)
 
         return items
 

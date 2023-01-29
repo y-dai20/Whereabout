@@ -26,6 +26,10 @@ $(document).ready(function() {
 });
 
 function get_item_data(target) {
+    if (is_empty(target)) {
+        return {};
+    }
+
     if (!target.hasClass('footer-button')) {
         if (target.parents('.footer-button').length > 0) {
             target = target.parents('.footer-button');
@@ -339,6 +343,8 @@ $('#submit-reply-button').on('click', function(event) {
 
         close_modal('modal-reply');
         show_modal_message(data.title, data.message);
+        var item_data = get_item_data($('.right-sidebar').children('.post-item'));
+        
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
     });
