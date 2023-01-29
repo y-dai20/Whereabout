@@ -25,6 +25,7 @@
     <div class="tab-content">
       <div class="tab-pane container active" id="manage-profile-pane">
         <form id="manage-user-form">
+          {% csrf_token %}
           <div class="form-group">
             <button type="button" class="save-confirm-button btn btn-success" data-save-for="user">保存</button>
             <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
@@ -137,6 +138,7 @@
           </span>
         </p>
         <form id="change-password-form">
+          {% csrf_token %}
           <div class="form-group">
             <label for="">
               新しいパスワード

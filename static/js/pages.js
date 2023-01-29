@@ -372,7 +372,6 @@ $('#submit-post-button').on('click', function(event) {
             active_luminous(data.post.post_id);
         }
     }).fail(function (data) {
-        console.log(data);
         show_modal_message(data.status, [data.statusText]);
     });
 });
@@ -845,6 +844,8 @@ $(document).on('click', '.save-user-button', function() {
     });
 });
 
+
+//todo 取得したreplyを保存しておく？
 $(document).on('click', '.load-more-button', function() {
     var idx = $(this).data('idx');
     var type = $(this).data('type');
@@ -869,7 +870,7 @@ $(document).on('click', '.load-more-button', function() {
             return false;
         }
 
-        target.data('idx',data.idx);
+        target.data('idx', data.idx);
         if (type == 'post') {
             create_post_items('.post-list', data.items, true);
             hide_load_more('.post-list', data);
@@ -895,7 +896,6 @@ $(document).on('click', '.load-more-button', function() {
     });
 
     function hide_load_more(list_cls, data) {
-        console.log(data);
         if (data.is_end) {
             $(list_cls).siblings('.load-more').find('.load-more-button').hide();
         }
@@ -954,6 +954,7 @@ $(document).on('click', '.get-reply-link', function() {
 
     function create_replies(items) {
         create_reply_items('.reply-list', items, true);
+        $('.reply-list').parents('.sidebar-item').find('.load-more-button').show();
         $('.reply-list').parents('.sidebar-item').find('.load-more-button').data('idx', 1);
     }
 });
@@ -996,6 +997,7 @@ $(document).on('click', '.get-reply2-link', function() {
 
     function create_replies(items) {
         create_reply_items('.reply2-list', items, true);
+        $('.reply2-list').parents('.sidebar-item').find('.load-more-button').show();
         $('.reply2-list').parents('.sidebar-item').find('.load-more-button').data('idx', 1);
     }
 });

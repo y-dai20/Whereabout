@@ -15,7 +15,7 @@ from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, R
 from base.models.account_models import UserFollow, UserBlock, Profile
 from base.views.functions import get_number_unit, get_bool_or_str, get_list_index,\
     get_img_path, get_dict_item, is_empty, get_json_error_message, get_json_success_message,\
-    get_reply_types, get_boolean_or_none, get_display_datetime, create_id
+    get_reply_types, get_boolean_or_none, get_display_datetime, create_id, is_int
 from base.views.mixins import LoginRequiredMixin
 from base.views.validate_views import ValidateRoomView
 
@@ -51,29 +51,23 @@ class IndexBaseView(HeaderView, ListView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.idx = 0
-        self.items = []
+        self.is_end = False
 
     def post(self, request, *args, **kwargs):
         self.idx = get_dict_item(request.POST, 'idx')
-        if not self.idx.isdecimal():
-            self.idx = 0
-
-        self.idx = int(self.idx)
-        if self.idx < 0:
-            self.idx = 0
-
-        #todo (中) is_endのいい判定方法ないかな
-        return JsonResponse(get_json_success_message(add_dict={'idx':self.idx+1, 'items':self.get_dump_items(), 'is_end':True if is_empty(self.items) else False}))
+        self.repair_idx_to_int()
+        return JsonResponse(get_json_success_message(add_dict={'idx':self.idx+1, 'items':self.get_dump_items(), 'is_end':self.is_end}))
     
     def get_blocked_user_list(self):
         if self.request.user.is_authenticated:
             return UserBlock.objects.filter(blocker=self.request.user ,is_deleted=False).values_list('blockee__id', flat=True)
         return []
 
-    #todo (中) self.itemsっている？
     def get_dump_items(self):
-        self.items = self.get_items()
-        return json.dumps(self.items)
+        items = self.get_items()
+        if self.load_by > len(items):
+            self.is_end = True
+        return json.dumps(items)
 
     @abstractmethod
     def get_items(self):
@@ -91,10 +85,25 @@ class IndexBaseView(HeaderView, ListView):
 
         return items[start_idx : end_idx]
 
+    def repair_idx_to_int(self):
+        if type(self.idx) is int:
+            return
+
+        if not self.idx.isdecimal():
+            self.idx = 0
+            return
+
+        self.idx = int(self.idx)
+        if self.idx < 0:
+            self.idx = 0
+        return
+
     def get_start_idx(self):
+        self.repair_idx_to_int()
         return self.idx * self.load_by
 
     def get_end_idx(self, len_items=None):
+        self.repair_idx_to_int()
         if is_empty(len_items):
             return (self.idx + 1) * self.load_by
         return min((self.idx + 1) * self.load_by, len_items)

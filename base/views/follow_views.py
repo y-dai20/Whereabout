@@ -23,8 +23,7 @@ class FollowView(LoginRequiredMixin, DetailView):
 
         if UserBlock.objects.filter(blocker=request.user, blockee=target_user, is_deleted=False).exists():
             raise MyBadRequest('user is blocked.')
-            
-        #todo (低) 綺麗に書けそう
+        
         follow = UserFollow.objects.get_or_none(follower=request.user, followee=target_user)
         if follow is None:
             follow.create(follower=request.user, followee=target_user)
@@ -46,7 +45,6 @@ class BlockView(LoginRequiredMixin, DetailView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        #todo (中) followでも使われている
         target_user = get_object_or_404(User, username=get_dict_item(self.kwargs, 'username'), is_active=True)
         if request.user.username == target_user.username:
             return JsonResponse(get_json_error_message(['自身をブロックできません']))

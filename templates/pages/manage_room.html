@@ -302,6 +302,7 @@
         <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
         <p class="manage-headline">返信タイプの管理</p>
         <form id="manage-reply-types-form">
+          {% csrf_token %}
           <div class="manage-reply-types row">
           {% for reply_type in reply_types %}
             <div class="col-6">
