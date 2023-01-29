@@ -490,7 +490,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         room.video = video_list[0]
         room.save()
 
-        #todo (中) self.filesのkeyとvalueがjs側と一致しないといけない
+        #todo (中) self.filesのkeyとvalueの構成がjs側と一致しないといけない
         room_imgs = room.roomimgs
         for room_img in [room_imgs.img1, room_imgs.img2, room_imgs.img3, room_imgs.img4, room_imgs.img5]:
             if not bool(room_img):

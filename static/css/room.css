@@ -292,3 +292,9 @@ label.form-check-label {
 .request-information-length {
     max-width: 3em;
 }
+
+.show-room-container {
+    max-width: 600px;
+    width: 100%;
+    margin: auto;
+}

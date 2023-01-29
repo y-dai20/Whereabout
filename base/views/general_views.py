@@ -683,7 +683,7 @@ class ShowRoomBaseView(HeaderView):
             context['is_admin'] = True
             return context
 
-        #todo (中) 基本的にobjects.filterは共通で書くようにする
+        #todo (低) 基本的にobjects.filterは共通で書くようにする
         room_user = RoomUser.objects.get_or_none(room=room, user=self.request.user, is_deleted=False)
         if room_user is not None:
             if room_user.is_blocked:
