@@ -667,7 +667,7 @@ $(document).on('click', '.show-modal-room-button', function() {
 
 var room_reply_types = {'room':[], 'reply_types':[]};
 $(document).on('click', '.show-modal-reply-button', function() {
-	var obj = get_item_obj_info($(this));
+	var obj = get_item_data($(this));
 	if (room_reply_types.room.includes(obj.roomId)) {
 		show_reply_types(obj, room_reply_types.reply_types[room_reply_types.room.indexOf(obj.roomId)]);
 		return false;

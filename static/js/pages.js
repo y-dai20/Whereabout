@@ -5,7 +5,7 @@ $(document).ready(function(){
     });
 
     $('.luminous-group').each(function(){
-        var obj = get_item_obj_info($(this));
+        var obj = get_item_data($(this));
         active_luminous(obj.id);
     });
 });
@@ -25,7 +25,7 @@ $(document).ready(function() {
     toggle_is_public($('#manage-room-public'), 'manage-room-public-label');
 });
 
-function get_item_obj_info(target) {
+function get_item_data(target) {
     if (!target.hasClass('footer-button')) {
         if (target.parents('.footer-button').length > 0) {
             target = target.parents('.footer-button');
@@ -37,6 +37,7 @@ function get_item_obj_info(target) {
     }
     var res = target.data();
     res.footer = target;
+    res.item = target.parents('.item-object');
     return res;
 }
 
@@ -49,7 +50,7 @@ function is_error(data) {
 }
 
 function ajax_agree(target, is_agree) {
-    var obj = get_item_obj_info(target);
+    var obj = get_item_data(target);
     $.ajax({
         url: `/${obj.type}/agree/${obj.id}/`,
         type:'GET',
@@ -77,6 +78,7 @@ function ajax_agree(target, is_agree) {
         show_modal_message(data.status, [data.statusText]);
     });
 }
+//todo 複製しているなら同期を取るようにする
 $(document).on('click', '.agree-button', function(){
     ajax_agree($(this), true);
 });
@@ -85,7 +87,7 @@ $(document).on('click', '.disagree-button', function(){
 });
 
 function ajax_good(target, is_good) {
-    var obj = get_item_obj_info(target);
+    var obj = get_item_data(target);
     $.ajax({
         url: `/${obj.type}/good/${obj.id}/`,
         type:'GET',
@@ -120,7 +122,7 @@ $(document).on('click', '.bad-button', function(){
 });
 
 function ajax_demagogy(target, is_true) {
-    var obj = get_item_obj_info(target);
+    var obj = get_item_data(target);
     $.ajax({
         url: `/${obj.type}/demagogy/${obj.id}/`,
         type:'GET',
@@ -157,7 +159,7 @@ $(document).on('click', '.disdemagogy-button', function(){
 
 $(document).on('click', '.favorite-button', function(){
     var img = $(this).children('.favorite-img');
-    var obj = get_item_obj_info($(this));
+    var obj = get_item_data($(this));
 
     $.ajax({
         url: `/${obj.type}/favorite/${obj.id}/`,
@@ -185,7 +187,7 @@ $(document).on('click', '.favorite-button', function(){
 });
 
 $(document).on('click', '.follow-button', function(){
-    var obj = get_item_obj_info($(this));
+    var obj = get_item_data($(this));
     var btn = $(this);
     $.ajax({
         url: `/follow/${obj.username}/`,
@@ -210,7 +212,7 @@ $(document).on('click', '.follow-button', function(){
 });
 
 $(document).on('click', '.block-button', function(){
-    var obj = get_item_obj_info($(this));
+    var obj = get_item_data($(this));
     $.ajax({
         url: `/block/${obj.username}/`,
         type:'POST',
@@ -313,6 +315,7 @@ $('.search-button').on('click', function(){
     search($(this));
 });
 
+//todo サイドバーに表示するようにする
 $('#submit-reply-button').on('click', function(event) {
     event.preventDefault();
     var form = `reply-form`;
@@ -691,7 +694,7 @@ $(document).on('click', '.reply-img-delete-button', function(){
     delete_img_preview($(this), 'reply', MAX_REPLY_IMG_BYTE, false);
 });
 
-var delete_obj;
+var deleteObject;
 $(document).on('click', '.delete-button', function(){
     var url = $(this).data('url');
 
@@ -705,15 +708,16 @@ $(document).on('click', '.delete-button', function(){
 
         close_modal('modal-message');
         show_modal_message(data.title, data.message);
-        delete_obj.hide();
+        deleteObject.hide();
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
     });
 });
 
 $(document).on('click', '.delete-confirm-button', function() {
-    var obj = get_item_obj_info($(this));
+    var obj = get_item_data($(this));
     var url = `/${obj.type}/delete/${obj.id}/`;
+    deleteObject = obj.item;
     var footer = `<button type="button" class="delete-button btn btn-danger" data-url="${url}">削除</button>`;
     show_modal_message('確認', ['削除しますか'], footer);
 });
@@ -916,7 +920,7 @@ function close_sidebar() {
 
 var post_replies = {'post':[], 'replies':[]};
 $(document).on('click', '.get-reply-link', function() {
-    var obj = get_item_obj_info($(this));
+    var obj = get_item_data($(this));
     if ($('.post-detail-link').data('obj-id') == obj.id) {
         return false;
     }
@@ -961,7 +965,7 @@ $(document).on('click', '.get-reply-link', function() {
 
 var reply_reply2 = {'reply':[], 'reply2':[]};
 $(document).on('click', '.get-reply2-link', function() {
-    var obj = get_item_obj_info($(this));
+    var obj = get_item_data($(this));
     if ($('.reply-detail-link').data('obj-id') == obj.id) {
         return false;
     }
@@ -1184,7 +1188,6 @@ $('.request-information-type').on('change', function() {
     add_class(target, 'not-display');
 });
 
-//todo validateがchangeの場合しか聞いてない
 $(document).on('click', '#submit-room-information', function(){
     if (!form_valid('room-information-form')) {
         return false;
@@ -1203,6 +1206,7 @@ $(document).on('click', '#submit-room-information', function(){
         processData:false,
         contentType:false,
     }).done(function (data) {
+        close_modal('modal-room-request-information');
         show_modal_message(data.title, data.message);
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
