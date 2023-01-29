@@ -16,7 +16,7 @@ from base.views.functions import get_form_error_message, get_dict_item, is_empty
     get_file_size_by_unit, get_img_list, get_file_size, get_json_error_message, get_json_success_message
 from base.views.mixins import LoginRequiredMixin
 
-class ReplyPostView(LoginRequiredMixin, CreateView):
+class ReplyPostView(LoginRequiredMixin, ReplyItemView, CreateView):
     form_class = ReplyPostForm
     template_name = 'pages/post_detail.html'
     max_img_size = 2 * 1024 * 1024
@@ -59,19 +59,22 @@ class ReplyPostView(LoginRequiredMixin, CreateView):
         post.expansion.reply_count += 1
         post.expansion.save()
 
-        return JsonResponse(get_json_success_message(['返信しました'], {''}))
+        return JsonResponse(get_json_success_message(['返信しました'], {'reply':self.get_reply_item(reply)}))
 
-class ReplyReplyView(LoginRequiredMixin, CreateView):
+class ReplyReplyView(LoginRequiredMixin, Reply2ItemView, CreateView):
     form_class = ReplyReplyForm
     template_name = 'pages/reply_detail.html'
+    max_img_size = 2 * 1024 * 1024
+    max_img = 1
 
     def get(self, request, *args, **kwargs):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        reply_post = get_object_or_404(ReplyPost, id=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
+        reply = get_object_or_404(ReplyPost, id=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
+        files = request.FILES
 
-        vr = ValidateRoomView(reply_post.post.room)
+        vr = ValidateRoomView(reply.post.room)
         if not vr.validate_reply(request.user):
             return JsonResponse(get_json_error_message(vr.get_error_messages()))
             
@@ -79,16 +82,25 @@ class ReplyReplyView(LoginRequiredMixin, CreateView):
         if not form.is_valid():
             return get_json_error_message(get_form_error_message(form))
 
-        reply = form.save(commit=False)
-        reply.user = request.user
-        reply.reply = reply_post
-        reply.expansion = ObjectExpansion.objects.create()
-        reply.save()
+        room_base = RoomBase(vr.get_room())
+        reply2 = form.save(commit=False)
+        if reply2.type not in room_base.get_room_reply_types():
+            raise MyBadRequest('reply_type is not exist.')
 
-        reply_post.expansion.reply_count += 1
-        reply_post.expansion.save()
+        img_list = get_img_list(request.POST, files, self.max_img)
+        if get_file_size(img_list) > self.max_img_size:
+            return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
+        reply2.img = img_list[0]
+        
+        reply2.user = request.user
+        reply2.reply = reply
+        reply2.expansion = ObjectExpansion.objects.create()
+        reply2.save()
 
-        return JsonResponse(get_json_success_message(['返信しました']))
+        reply.expansion.reply_count += 1
+        reply.expansion.save()
+
+        return JsonResponse(get_json_success_message(['返信しました'], {'reply':self.get_reply2_item(reply2)}))
 
 class ReplyDetailView(ReplyItemView, Reply2ItemView, DetailBaseView, SearchBaseView):
     template_name = 'pages/reply_detail.html'

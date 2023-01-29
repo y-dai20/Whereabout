@@ -319,7 +319,6 @@ $('.search-button').on('click', function(){
     search($(this));
 });
 
-//todo サイドバーに表示するようにする
 $('#submit-reply-button').on('click', function(event) {
     event.preventDefault();
     var form = `reply-form`;
@@ -340,11 +339,22 @@ $('#submit-reply-button').on('click', function(event) {
         if (is_error(data)) {
             return false;
         }
-
         close_modal('modal-reply');
         show_modal_message(data.title, data.message);
-        var item_data = get_item_data($('.right-sidebar').children('.post-item'));
         
+        if (data.reply.obj_type == 'reply') {
+            var item_data = get_item_data($('.index-post-reply-sidebar').find(`.reply-list`).find(`.post-item`));
+            if (is_empty(item_data) | item_data.id != data.reply.post_id) {
+                return true;
+            }
+            $('.index-post-reply-sidebar').find(`.reply-list`).append(get_reply_item(data.reply, true));
+        } else if (data.reply.obj_type == 'reply2') {
+            var item_data = get_item_data($('.index-post-reply2-sidebar').find(`.reply2-list`).find(`.reply-item`));
+            if (is_empty(item_data) | item_data.id != data.reply.reply_id) {
+                return true;
+            }
+            $('.index-post-reply2-sidebar').find(`.reply2-list`).append(get_reply_item(data.reply, true));
+        }
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
     });

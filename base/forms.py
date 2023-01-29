@@ -100,13 +100,8 @@ class PostForm(ValidationForm, forms.ModelForm):
             raise ValidationError(('本文は{}文字以下で入力してください'.format(POST_TEXT_MAX_LENGTH)))
         return text
 
-#todo (中) urlってどうする？？
-class ReplyPostForm(ValidationForm, forms.ModelForm):
-    
-    class Meta:
-        model = ReplyPost
-        fields = ('text', 'url', 'type', )
-    
+class ReplyForm(ValidationForm, forms.ModelForm):
+
     def clean_text(self):
         text = self.cleaned_data.get('text')
         if REPLY_TEXT_MAX_LENGTH < len(text):
@@ -120,17 +115,18 @@ class ReplyPostForm(ValidationForm, forms.ModelForm):
             raise ValidationError(('URLは{}文字以下で入力してください'.format(REPLY_URL_MAX_LENGTH)))
         return url
 
-class ReplyReplyForm(ValidationForm, forms.ModelForm):
+#todo (中) urlってどうする？？
+class ReplyPostForm(ReplyForm):
+    
+    class Meta:
+        model = ReplyPost
+        fields = ('text', 'url', 'type', )
+
+class ReplyReplyForm(ReplyForm):
     
     class Meta:
         model = ReplyReply
-        fields = ('text',)
-
-    def clean_text(self):
-        text = self.cleaned_data.get('text')
-        if REPLY_TEXT_MAX_LENGTH < len(text):
-            raise ValidationError(('本文は{}文字以下で入力してください'.format(REPLY_TEXT_MAX_LENGTH)))
-        return text
+        fields = ('text', 'url', 'type', )
 
 class CreateRoomForm(ValidationForm, forms.ModelForm):
 

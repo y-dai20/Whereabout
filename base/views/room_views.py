@@ -455,6 +455,7 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
         invite_obj.save()
         return True
 
+#todo (高) タブを作成する際にinfoをつけて操作をアシストする
 class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     model = Room
     form_class = UpdateRoomForm

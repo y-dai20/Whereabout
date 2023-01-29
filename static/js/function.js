@@ -39,7 +39,7 @@ function is_empty(str) {
     if (typeof str == 'string' && str.trim() === "") {
         return true;
     }
-    if (Array.isArray(str) && str.length === 0) {
+    if (str.length === 0) {
         return true;
     }
 

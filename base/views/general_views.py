@@ -582,6 +582,7 @@ class Reply2ItemView(View):
         dict_queryset = {
             'obj_type':'reply2',
             'obj_id':reply2.id,
+            'reply_id':reply2.reply.id,
             'text':reply2.text,
             'username':reply2.user.username,
             'user_img':get_img_path(reply2.user.profile.img),
