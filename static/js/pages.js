@@ -344,6 +344,7 @@ $('#submit-reply-button').on('click', function(event) {
     });
 });
 
+//todo 投稿したら入力内容をクリアにする
 $('#submit-post-button').on('click', function(event) {
     event.preventDefault();
     var form = 'post-form';
@@ -379,6 +380,7 @@ $('#submit-post-button').on('click', function(event) {
     });
 });
 
+//todo htmlでscriptを使用する際にエラーになるないようにする（横展開）
 $('#submit-create-room-button').on('click', function(event) {
     event.preventDefault();
     var form = 'create-room-form';
@@ -849,7 +851,6 @@ $(document).on('click', '.save-user-button', function() {
 });
 
 
-//todo 取得したreplyを保存しておく？
 $(document).on('click', '.load-more-button', function() {
     var idx = $(this).data('idx');
     var type = $(this).data('type');
@@ -918,7 +919,6 @@ function close_sidebar() {
     });
 }
 
-var post_replies = {'post':[], 'replies':[]};
 $(document).on('click', '.get-reply-link', function() {
     var obj = get_item_data($(this));
     if ($('.post-detail-link').data('obj-id') == obj.id) {
@@ -935,11 +935,6 @@ $(document).on('click', '.get-reply-link', function() {
     $('.reply-list').html($(this).clone());
     $('.post-detail-link').html(`<a href="/post/${obj.id}/" role="button" type="button" class="sidebar-button btn btn-secondary">投稿へ移動</a>`)
     $('.post-detail-link').data('obj-id', obj.id);
-
-    if (post_replies.post.includes(obj.id)) {
-        create_replies(post_replies.replies[post_replies.post.indexOf(obj.id)]);
-        return false;
-    }
     $.ajax({
         url: `/get/reply/`,
         type:'POST',
@@ -949,8 +944,6 @@ $(document).on('click', '.get-reply-link', function() {
         if (is_error(data)) {
             return false;
         }
-        post_replies.post.push(obj.id);
-        post_replies.replies.push(data.items);
         create_replies(data.items);
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
@@ -963,7 +956,6 @@ $(document).on('click', '.get-reply-link', function() {
     }
 });
 
-var reply_reply2 = {'reply':[], 'reply2':[]};
 $(document).on('click', '.get-reply2-link', function() {
     var obj = get_item_data($(this));
     if ($('.reply-detail-link').data('obj-id') == obj.id) {
@@ -979,10 +971,6 @@ $(document).on('click', '.get-reply2-link', function() {
     $('.reply-detail-link').html(`<a href="/reply/${obj.id}/" role="button" type="button" class="btn btn-secondary sidebar-button">返信へ移動</a>`)
     $('.reply-detail-link').data('obj-id', obj.id);
 
-    if (reply_reply2.reply.includes(obj.id)) {
-        create_replies(reply_reply2.reply2[reply_reply2.reply.indexOf(obj.id)]);
-        return false;
-    }
     $.ajax({
         url: `/get/reply2/`,
         type:'POST',
@@ -992,8 +980,6 @@ $(document).on('click', '.get-reply2-link', function() {
         if (is_error(data)) {
             return false;
         }
-        reply_reply2.reply.push(obj.id);
-        reply_reply2.reply2.push(data.items);
         create_replies(data.items);
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
