@@ -75,7 +75,7 @@
               <input type="file" class="form-control manage-room-img-preview-uploader file-uploader" name="img" accept="image/*" multiple>
             </label>
             <span id="manage-room-img-upload-size" data-size="{{total_img_size.b}}">{{total_img_size.mb}}</span>
-            <div class="manage-room-img-preview-list">
+            <div class="manage-room-img-preview-list" data-bs-toggle="tooltip" data-bs-placement="top" title="画像はドラッグで順番を変更することができます">
               {% for img in img_path_and_size %}
               <div class="manage-room-img-preview" file-name="{{img.path}}" data-size="{{img.size}}">
                 <img src="{{img.path}}" class="img-fluid">
@@ -114,12 +114,20 @@
 
           <p for="text" class="manage-headline">タブ</p>
           <div class="tab-operation-area">
-            <div class="addable-object-list"></div>
-            <div class="trash-area droppable">
+            <div class="addable-object-area" data-bs-toggle="tooltip" data-bs-placement="top" title="オブジェクトをドラッグ&amp;ドロップして配置します">
+              <div class="my-row">オブジェクト</div>
+              <div class="my-row addable-object-list">
+              </div>
+            </div>
+            <div class="trash-area droppable" data-bs-toggle="tooltip" data-bs-placement="top" title="この上にオブジェクトをドロップすると削除できます">
               <img src="{% static "images/trash.svg" %}" class="trash-img">
             </div>
-            <button class="btn btn-secondary expand-object-button" type="button">右へ拡大</button>
-            <button class="btn btn-secondary add-row-button" type="button">行の追加</button>
+            <div data-bs-toggle="tooltip" data-bs-placement="top" title="クリックしたオブジェクトを右へ拡大します">
+              <button class="btn btn-secondary expand-object-button" type="button">右へ拡大</button>
+            </div>
+            <div data-bs-toggle="tooltip" data-bs-placement="top" title="一番下に行を追加します">
+              <button class="btn btn-secondary add-row-button" type="button">行の追加</button>
+            </div>
           </div>
 
           <div class="form-group">

@@ -35,8 +35,9 @@ img.tab-delete-button {
     max-height: 150px;
 }
 
-.trash-img {
-    width: 50%;
+img.trash-img {
+    width: auto;
+    height: 100%;
 }
 
 img.house {
@@ -44,3 +45,7 @@ img.house {
     height: auto;
 }
 
+img.image {
+    width: 100%;
+    height: 100%;
+}

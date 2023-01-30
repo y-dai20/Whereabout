@@ -427,9 +427,6 @@ class RoomItemView(View):
         
         return room_dict
 
-# class ItemBaseView(View):
-#     def get_item_footer(self):
-
 class PostItemView(View):
 
     def get_post_items(self, posts):

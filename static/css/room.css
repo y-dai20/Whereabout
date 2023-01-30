@@ -69,17 +69,18 @@
     padding-left: 10px;
 }
 
-.addable-object-list {
-    width: 50%;
-    display: flex;
-    text-align: center;
+.addable-object-area {
+    width: 30%;
+    border: 1px solid white;
+    margin-right: 10px;
 }
 
 .addable-object { 
-    border:1px solid white;
-    max-width: 30%;
-    width: 30%;
+    z-index: 10;
+    border: 2px solid grey;
     cursor: grab;
+    height: 90%;
+    background-color: white;
 }
 
 .added-object {
@@ -99,13 +100,13 @@
 }
 
 .trash-area {
+    padding: 5px;
     background-color: white;
     width: 20%;
     text-align: center;
     border: 1px solid red;
+    margin: 0 5px;
 }
-
-
 
 .droppable {
     min-height: 70px;
@@ -283,6 +284,7 @@ label.form-check-label {
 .tab-operation-area {
     display: flex;
     margin-bottom: 10px;
+    max-height: 100px;
 }
 
 .manage-room-video-preview-list {

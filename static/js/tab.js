@@ -92,14 +92,20 @@ function get_tab_col_name(tab, row, column) {
 function get_addable_object_list() {
     now_drag_object = null;
     $('.addable-object-list').html(`
+        <div class="my-col">
         <div class="draggable addable-object" id="addable-object-title">
-            <p>title</p>
+        <img src="${title}" class="image">
         </div>
+        </div>
+        <div class="my-col">
         <div class="draggable addable-object" id="addable-object-textarea">
-            <p>textarea</p>
+        <img src="${text}" class="image">
         </div>
+        </div>
+        <div class="my-col">
         <div class="draggable addable-object" id="addable-object-img">
-            <p>image</p>
+            <img src="${image}" class="image">
+        </div>
         </div>
     `);
     bind_droppable();
@@ -149,11 +155,13 @@ function bind_droppable() {
         start:function() {
             $(this).css('max-width', '50px');
             $(this).css('max-height', '50px');
+            $(this).css('z-index', 100);
             now_drag_object = $(this);
         },
         stop: function() {
-            $(this).css('max-width', '100%');
-            $(this).css('max-height', '100%');
+            $(this).css('max-width', '');
+            $(this).css('max-height', '');
+            $(this).css('z-index', 10);
             now_drag_object = null;
         },
         cursor:"grab",
