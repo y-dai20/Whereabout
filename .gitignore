@@ -130,7 +130,7 @@ dmypy.json
 
 
 # My gitignore
-log/app/*
+log/app/*.log
 media/
 secrets/
 *.sqlite3
