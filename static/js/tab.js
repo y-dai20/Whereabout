@@ -364,6 +364,7 @@ $(document).on('click', '.room-tab-title', function(){
         url: `/get/tab-contents/`,
         type:'POST',
         data:{'content_id':content_id},
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;

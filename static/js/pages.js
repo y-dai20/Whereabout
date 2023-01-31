@@ -59,7 +59,8 @@ function ajax_agree(target, is_agree) {
         url: `/${obj.type}/agree/${obj.id}/`,
         type:'GET',
         data:{is_agree:is_agree},
-        dataType:'json'
+        dataType:'json',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -96,7 +97,8 @@ function ajax_good(target, is_good) {
         url: `/${obj.type}/good/${obj.id}/`,
         type:'GET',
         data:{is_good:is_good},
-        dataType:'json'
+        dataType:'json',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -131,7 +133,8 @@ function ajax_demagogy(target, is_true) {
         url: `/${obj.type}/demagogy/${obj.id}/`,
         type:'GET',
         data:{is_true:is_true},
-        dataType:'json'
+        dataType:'json',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -168,7 +171,8 @@ $(document).on('click', '.favorite-button', function(){
     $.ajax({
         url: `/${obj.type}/favorite/${obj.id}/`,
         type:'GET',
-        dataType:'json'  
+        dataType:'json',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -196,7 +200,8 @@ $(document).on('click', '.follow-button', function(){
     $.ajax({
         url: `/follow/${obj.username}/`,
         type:'POST',
-        dataType:'json'
+        dataType:'json',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -220,7 +225,8 @@ $(document).on('click', '.block-button', function(){
     $.ajax({
         url: `/block/${obj.username}/`,
         type:'POST',
-        dataType:'json'
+        dataType:'json',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -239,7 +245,8 @@ $('.accept-invite-button').on('click', function(){
         url: '/accept/invite/' + target.data('room') + '/',
         type:'POST',
         data:{is_accept: $(this).data('is-accept')},
-        dataType:'json'
+        dataType:'json',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -256,7 +263,8 @@ $('.profile-accept-button').on('click', function(){
         url: `/accept/${target.data('room')}/${target.data('username')}/`,
         type:'POST',
         data:{is_blocked: $(this).data('is-blocked')},
-        dataType:'json'
+        dataType:'json',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -335,6 +343,7 @@ $('#submit-reply-button').on('click', function(event) {
         dataType:false,
         processData:false,
         contentType:false,
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -379,6 +388,7 @@ $('#submit-post-button').on('click', function(event) {
         processData:false,
         contentType:false,
         enctype:'multipart/form-data',
+        timeout:60000,
     }).done(function(data){
         if (is_error(data)) {
             return false;
@@ -414,6 +424,7 @@ $('#submit-create-room-button').on('click', function(event) {
         dataType:false,
         processData:false,
         contentType:false,
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -515,6 +526,7 @@ $(document).on('click', '.save-display-button', function(){
         dataType:false,
         processData:false,
         contentType:false,
+        timeout:60000,
     }).done(function (data) {
         show_modal_message(data.title, data.message);
     }).fail(function (data) {
@@ -538,6 +550,7 @@ $(document).on('click', '.save-participant-button', function(){
         data:JSON.stringify(data),
         dataType:'json',
         contentType:'application/json; charset=utf-8',
+        timeout:60000,
     }).done(function (data) {
         show_modal_message(data.title, data.message);
     }).fail(function (data) {
@@ -553,6 +566,7 @@ $(document).on('click', '.save-reply-type-button', function(){
         dataType:false,
         processData:false,
         contentType:false,
+        timeout:60000,
     }).done(function (data) {
         show_modal_message(data.title, data.message);
     }).fail(function (data) {
@@ -579,6 +593,7 @@ $(document).on('click', '.save-information-button', function(){
             dataType:false,
             processData:false,
             contentType:false,
+            timeout:60000,
         }).done(function(data) {
             data_list.push(data);
         }).fail(function(data){
@@ -633,6 +648,7 @@ $(document).on('click', '.save-authority-button', function(){
         data:JSON.stringify(data),
         dataType:'json',
         contentType:'application/json; charset=utf-8',
+        timeout:60000,
     }).done(function (data) {
         show_modal_message(data.title, data.message);
     }).fail(function (data) {
@@ -719,6 +735,7 @@ $(document).on('click', '.delete-button', function(){
     $.ajax({
         url:url,
         type:'POST',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -767,6 +784,7 @@ $(document).on('click', '.invite-user', function() {
         data:JSON.stringify(data),
         dataType:'json',
         contentType:'application/json; charset=utf-8',
+        timeout:60000,
     }).done(function (data) {
         show_modal_message(data.title, data.message);
     }).fail(function (data) {
@@ -787,6 +805,7 @@ $(document).on('click', '.join-room-button', function(){
     $.ajax({
         url:url,
         type:'GET',
+        timeout:60000,
     }).done(function(data){
         show_modal_message(data.title, data.message);
         if (!data.is_success) {
@@ -859,6 +878,7 @@ $(document).on('click', '.save-user-button', function() {
         processData:false,
         contentType:false,
         enctype:'multipart/form-data',
+        timeout:60000,
     }).done(function(data){
         show_modal_message(data.title, data.message);
     }).fail(function (data) {
@@ -886,6 +906,7 @@ $(document).on('click', '.load-more-button', function() {
         url:url,
         type:'POST',
         data:data,
+        timeout:60000,
     }).done(function(data){
         if (is_error(data)) {
             return false;
@@ -952,7 +973,8 @@ $(document).on('click', '.get-reply-link', function() {
         url: `/get/reply/`,
         type:'POST',
         data:{obj_id:obj.id},
-        dataType:'json'
+        dataType:'json',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -984,7 +1006,8 @@ $(document).on('click', '.get-reply2-link', function() {
         url: `/get/reply2/`,
         type:'POST',
         data:{obj_id:obj.id},
-        dataType:'json'
+        dataType:'json',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
@@ -1051,13 +1074,16 @@ $('#send-mail-for-signup-button').on('click', function(){
         url:`/signup/`,
         type:'POST',
         data:get_form_input_data(form),
-        dataType:'json'
+        dataType:false,
+        processData:false,
+        contentType:false,
+        timeout:60000,
     }).done(function (data) {
-        remove_spinner();
         show_modal_message(data.title, data.message);
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
     });
+    remove_spinner();
 });
 
 $('#send-mail-for-reset-password-button').on('click', function(){
@@ -1074,12 +1100,13 @@ $('#send-mail-for-reset-password-button').on('click', function(){
         dataType:false,
         processData:false,
         contentType:false,
+        timeout:60000,
     }).done(function (data) {
-        remove_spinner();
         show_modal_message(data.title, data.message);
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
     });
+    remove_spinner();
 });
 
 $('#change-password-button').on('click', function(){
@@ -1095,6 +1122,7 @@ $('#change-password-button').on('click', function(){
         dataType:false,
         processData:false,
         contentType:false,
+        timeout:60000,
     }).done(function (data) {
         var footer = '';
         if (data.is_success) {
@@ -1119,6 +1147,7 @@ $('#signup-button').on('click', function(){
         dataType:false,
         processData:false,
         contentType:false,
+        timeout:60000,
     }).done(function (data) {
         show_modal_message(data.title, data.message);
         if (data.is_success) {
@@ -1142,6 +1171,7 @@ $('#reset-password-button').on('click', function(){
         dataType:false,
         processData:false,
         contentType:false,
+        timeout:60000,
     }).done(function (data) {
         show_modal_message(data.title, data.message);
     }).fail(function (data) {
@@ -1164,6 +1194,7 @@ $('#room-request-information-demo-button').on('click', function(){
     $.ajax({
         url: `/get/room-request-information/${room_id}/`,
         type:'POST',
+        timeout:60000,
     }).done(function (data) {
         var rris = data.rri;
         show_room_request_information(rris, '');
@@ -1200,6 +1231,7 @@ $(document).on('click', '#submit-room-information', function(){
         dataType:false,
         processData:false,
         contentType:false,
+        timeout:60000,
     }).done(function (data) {
         close_modal('modal-room-request-information');
         show_modal_message(data.title, data.message);

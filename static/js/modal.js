@@ -638,6 +638,7 @@ $(document).on('click', '.show-modal-user-button', function() {
     $.ajax({
         url:`/get/user/${$(this).data('username')}/`,
         type:'POST',
+		timeout:60000,
     }).done(function (data) {
 		if (is_error(data)) {
             return false;
@@ -653,6 +654,7 @@ $(document).on('click', '.show-modal-room-button', function() {
     $.ajax({
         url:`/get/room/${$(this).data('roomid')}/`,
         type:'POST',
+		timeout:60000,
     }).done(function (data) {
 		if (is_error(data)) {
             return false;
@@ -676,7 +678,8 @@ $(document).on('click', '.show-modal-reply-button', function() {
 	$.ajax({
         url: `/get/reply-types/${obj.type}/${obj.id}/`,
         type:'GET',
-        dataType:'json'  
+        dataType:'json',
+		timeout:60000,
     }).done(function (data) {
 		if (is_error(data)) {
             return false;

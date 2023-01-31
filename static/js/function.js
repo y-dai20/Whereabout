@@ -301,7 +301,8 @@ function search(target) {
         url: target.data('action'),
         type:'GET',
         data:{search_word: search_word},
-        dataType:'json'
+        dataType:'json',
+        timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
             return false;
