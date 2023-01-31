@@ -18,7 +18,7 @@ from base.models.account_models import User, Guest, UserReset
 from base.views.functions import \
     get_diff_seconds_from_now, create_id, get_dict_item, get_img_path, is_empty,\
     get_json_success_message, get_json_error_message, get_file_size_by_unit, get_form_error_message,\
-    get_img_list, get_file_size
+    get_img_list, get_file_size, get_exist_files_dict
 from base.views.general_views import UserItemView, SendMailView, HeaderView
 from base.views.mixins import LoginRequiredMixin
 
@@ -287,11 +287,13 @@ class UserProfileView(LoginRequiredMixin, HeaderView, TemplateView):
             return JsonResponse(get_json_error_message(get_form_error_message(form)))
 
         files = request.FILES
-        img_list = get_img_list(form_data, files, self.max_img)
+        profile = request.user.profile
+        img_list = get_img_list(form_data, files, self.max_img, [profile.img])
+
         if get_file_size(img_list) > self.max_img_size:
             return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
-        profile = request.user.profile
-        profile.img = img_list[0]
+        if not is_empty(img_list[0]):
+            profile.img = img_list[0]
 
         profile.profession = form.clean_profession()
         profile.description = form.clean_description()

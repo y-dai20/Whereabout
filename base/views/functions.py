@@ -233,10 +233,20 @@ def get_first_decimal_point(num):
         return math.ceil(num)
     return math.ceil(num * 10) / 10
 
-def get_img_list(form_data, files,  max_img=1):
+def get_exist_files_dict(files):
+    exist_files = {}
+    for file in files:
+        if not bool(file):
+            continue
+        exist_files[get_img_path(file.name)] = file.file
+    return exist_files
+
+def get_img_list(form_data, files, max_img=1, exist_files={}):
+    files.update(get_exist_files_dict(exist_files))
     return get_file_list('img', form_data, files, max_img)
 
-def get_video_list(form_data, files,  max_video=1):
+def get_video_list(form_data, files, max_video=1, exist_files={}):
+    files.update(get_exist_files_dict(exist_files))
     return get_file_list('video', form_data, files, max_video)
 
 def get_file_list(type, form_data, files, max_files=1):

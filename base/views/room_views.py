@@ -15,7 +15,7 @@ from base.views.validate_views import ValidateRoomView
 from base.views.functions import get_form_error_message, get_combined_list, get_file_size_by_unit, \
     get_img_list, get_video_list, get_file_size, is_uploaded_file_img, is_same_empty_count, is_str, \
     get_boolean_or_none, get_dict_item, get_list_item, is_empty, is_all_none, get_dict_item_list, literal_eval, \
-    get_img_path, is_int, get_json_success_message, get_json_error_message
+    get_img_path, is_int, get_json_success_message, get_json_error_message, get_exist_files_dict
 from base.forms import CreateRoomForm, UpdateRoomForm, RoomRequestInformationForm
 from base.views.mixins import LoginRequiredMixin, RoomAdminRequiredMixin
 
@@ -461,7 +461,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     form_class = UpdateRoomForm
     template_name = 'pages/manage_room.html'
     max_img_size = 2 * 1024 * 1024
-    max_video_size = 2 * 1024 * 1024
+    max_video_size = 11 * 1024 * 1024
     max_video = 1
 
     def get(self, request, *args, **kwargs):
@@ -485,20 +485,15 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         room.title = form.clean_title()
         room.subtitle = form.clean_subtitle()
 
-        video_list = get_video_list(form_data, self.files, self.max_video)
+        video_list = get_video_list(form_data, self.files, self.max_video, [room.video])
         if get_file_size(video_list) > self.max_video_size:
             return JsonResponse(get_json_error_message(['動画サイズが{}を超えています'.format(get_file_size_by_unit(self.max_video_size, unit='MB'))]))
         room.video = video_list[0]
         room.save()
 
-        #todo (中) self.filesのkeyとvalueの構成がjs側と一致しないといけない
         room_imgs = room.roomimgs
-        for room_img in [room_imgs.img1, room_imgs.img2, room_imgs.img3, room_imgs.img4, room_imgs.img5]:
-            if not bool(room_img):
-                continue
-            self.files[get_img_path(room_img.name)] = room_img.file
+        img_list = get_img_list(form_data, self.files, self.max_img, [room_imgs.img1, room_imgs.img2, room_imgs.img3, room_imgs.img4, room_imgs.img5])
 
-        img_list = get_img_list(form_data, self.files, self.max_img)
         if get_file_size(img_list) > self.max_img_size:
             return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
 
