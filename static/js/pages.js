@@ -1149,10 +1149,10 @@ $('#signup-button').on('click', function(){
         contentType:false,
         timeout:60000,
     }).done(function (data) {
-        show_modal_message(data.title, data.message);
         if (data.is_success) {
             window.location.href = '/';
         }
+        show_modal_message(data.title, data.message);
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
     });

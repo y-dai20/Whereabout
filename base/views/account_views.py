@@ -145,13 +145,13 @@ class SendMailForSignupView(SendMailView):
                 '入力したメールアドレスに対してのアクセス回数が許容範囲を超えています', 
                 '登録するメールアドレスを変更するか，1日以上の間隔を空けて再度登録してください']))
 
-        message = self.get_register_message(guest.one_time_id)
         access_count = guest.access_count
         guest.access_count = access_count + 1
         guest.one_time_id = self.get_one_time_id()
         guest.is_deleted = False
         guest.save()
 
+        message = self.get_register_message(guest.one_time_id)
         self.send_mail(self.mail_title, message, [self.email])
         return self.get_success_json_response()
 
