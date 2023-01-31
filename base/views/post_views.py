@@ -1,16 +1,15 @@
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.views.generic import TemplateView, CreateView
 from django.http import JsonResponse, Http404
 
 
+import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.models.general_models import ObjectExpansion
 from base.models.reply_models import ReplyPost, ReplyPosition
 from base.models.post_models import Post, PostAgree, PostFavorite, PostImgs
 from base.forms import PostForm
-from base.views.functions import get_form_error_message, get_file_size_by_unit, get_dict_item, is_empty,\
-    get_img_list, get_file_size, get_video_list, get_json_success_message, get_json_error_message
-from base.views.general_views import SearchBaseView, DemagogyView, AgreeView, FavoriteView, DetailBaseView,\
+from base.views.general_views import DemagogyView, AgreeView, FavoriteView, DetailBaseView,\
     PostItemView, ReplyItemView, PostDemagogy, RoomBase, DeleteBaseView
 from base.views.validate_views import ValidateRoomView
 from base.views.mixins import LoginRequiredMixin
@@ -29,14 +28,14 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        vr = ValidateRoomView(get_dict_item(request.POST, 'room_id'))
+        vr = ValidateRoomView(f.get_dict_item(request.POST, 'room_id'))
 
         if not vr.validate_post(request.user):
-            return JsonResponse(get_json_error_message(vr.get_error_messages()))
+            return JsonResponse(f.get_json_error_message(vr.get_error_messages()))
 
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_error_message(get_form_error_message(form)))
+            return JsonResponse(f.get_json_error_message(f.get_form_error_message(form)))
 
         post = form.save(commit=False)
         post.user = request.user
@@ -44,16 +43,16 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
         post.expansion = ObjectExpansion.objects.create()
 
         files = request.FILES
-        video_list = get_video_list(request.POST, files, self.max_video)
-        if get_file_size(video_list) > self.max_video_size:
-                return JsonResponse(get_json_error_message(['動画サイズが{}を超えています'.format(get_file_size_by_unit(self.max_video_size, unit='MB'))]))
+        video_list = f.get_video_list(request.POST, files, self.max_video)
+        if f.get_file_size(video_list) > self.max_video_size:
+                return JsonResponse(f.get_json_error_message(['動画サイズが{}を超えています'.format(f.get_file_size_by_unit(self.max_video_size, unit='MB'))]))
         post.video = video_list[0]
         
-        img_list = get_img_list(request.POST, files, self.max_img)
-        if get_file_size(img_list) > self.max_img_size:
-            return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
+        img_list = f.get_img_list(request.POST, files, self.max_img)
+        if f.get_file_size(img_list) > self.max_img_size:
+            return JsonResponse(f.get_json_error_message(['画像サイズが{}を超えています'.format(f.get_file_size_by_unit(self.max_img_size, unit='MB'))]))
         
-        if get_file_size(video_list) > 0 and get_file_size(img_list) > 0:
+        if f.get_file_size(video_list) > 0 and f.get_file_size(img_list) > 0:
             raise MyBadRequest('only img or video.')
 
         post.save()
@@ -65,14 +64,14 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
             img4 = img_list[3],
         )
 
-        return JsonResponse(get_json_success_message(['投稿しました'], {'post':self.get_post_item(post)}))
+        return JsonResponse(f.get_json_success_message(['投稿しました'], {'post':self.get_post_item(post)}))
 
 class PostDetailView(PostItemView, ReplyItemView, DetailBaseView):
     model = ReplyPost
     template_name = 'pages/post_detail.html'
         
     def get(self, request, *args, **kwargs):
-        self.post = get_object_or_404(Post, id=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
+        self.post = get_object_or_404(Post, id=f.get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         self.check_can_access(self.post.room)
 
         return super().get(request, *args, **kwargs)
@@ -80,7 +79,7 @@ class PostDetailView(PostItemView, ReplyItemView, DetailBaseView):
     def get_items(self):
         params = self.get_params()
         replies = ReplyPost.objects.filter(
-            post=get_dict_item(self.kwargs, 'post_pk'),
+            post=f.get_dict_item(self.kwargs, 'post_pk'),
             user__username__icontains=params['username'],
             text__icontains=params['text'], 
             created_at__gte=params['date_from'], 
@@ -89,7 +88,7 @@ class PostDetailView(PostItemView, ReplyItemView, DetailBaseView):
             is_deleted=False,
         )
 
-        if not is_empty(params['position']):
+        if not f.is_empty(params['position']):
             #todo (中) search_reply.htmlと密結合になっている．Agreeなどが送られてこないと検索に引っかからない
             replies = self.get_replies_after_order(replies.filter(position=params['position']))
             self.load_by *= 3
@@ -139,19 +138,19 @@ class PostDeleteView(LoginRequiredMixin, DeleteBaseView):
     model = Post
 
     def post(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
+        post = get_object_or_404(Post, pk=f.get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         self.validate_delete(post.room, post.user)
         post.is_deleted = True
         post.save()
 
-        return JsonResponse(get_json_success_message(['削除しました']))
+        return JsonResponse(f.get_json_success_message(['削除しました']))
 
 class PostAgreeView(AgreeView):
     model = PostAgree
     template_name = 'pages/index.html'
     
     def get(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
+        post = get_object_or_404(Post, pk=f.get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=post, room=post.room)
 
         return JsonResponse(json_data)
@@ -161,7 +160,7 @@ class PostFavoriteView(FavoriteView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
+        post = get_object_or_404(Post, pk=f.get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=post, room=post.room)
         
         return JsonResponse(json_data)
@@ -171,19 +170,19 @@ class PostDemagogyView(DemagogyView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, pk=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
+        post = get_object_or_404(Post, pk=f.get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         json_data = self.get_json_data(obj=post, room=post.room)
         
         return JsonResponse(json_data)
 
 class GetPostReplyTypesView(TemplateView):
     def get(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, id=get_dict_item(kwargs, 'post_pk'), is_deleted=False)
+        post = get_object_or_404(Post, id=f.get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         room_base = RoomBase(post.room)
-        return JsonResponse(get_json_success_message(add_dict={'reply_types':room_base.get_room_reply_types()}))
+        return JsonResponse(f.get_json_success_message(add_dict={'reply_types':room_base.get_room_reply_types()}))
 
 class GetReplyReplyTypesView(TemplateView):
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyPost, id=get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
+        reply = get_object_or_404(ReplyPost, id=f.get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
         room_base = RoomBase(reply.post.room)
-        return JsonResponse(get_json_success_message(add_dict={'reply_types':room_base.get_room_reply_types()}))
+        return JsonResponse(f.get_json_success_message(add_dict={'reply_types':room_base.get_room_reply_types()}))

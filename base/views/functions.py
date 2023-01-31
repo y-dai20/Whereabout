@@ -1,6 +1,6 @@
 from django.conf import settings
 from django.utils.crypto import get_random_string
-from django.utils.timezone import make_aware, make_naive
+from django.utils.timezone import make_naive
 from django.http import JsonResponse
 
 import ast

@@ -1,11 +1,11 @@
 from django.db.models import Q
 
+
+import base.views.functions as f
 from base.models.post_models import Post, PostFavorite
 from base.models.room_models import Room
 from base.models.account_models import Profile, User
-
 from base.views.general_views import PostItemView, RoomItemView, UserItemView, SearchBaseView, RoomBase
-from base.views.functions import is_empty, get_boolean_or_none, is_int
 
 class IndexPostListView(SearchBaseView, PostItemView):
     template_name = 'pages/index.html'
@@ -30,7 +30,7 @@ class IndexPostListView(SearchBaseView, PostItemView):
         }
 
     def get_items(self):
-        if is_empty(dict(self.request.GET)):
+        if f.is_empty(dict(self.request.GET)):
             if self.request.user.is_authenticated:
                 self.search['my_room_check'] = self.checked_label
             else:
@@ -87,10 +87,10 @@ class IndexRoomListView(SearchBaseView, RoomItemView):
             title__icontains=params['title'], 
             created_at__gte=params['date_from'], 
             created_at__lte=params['date_to'],
-            participant_count__gte=params['participant_from'] if is_int(params['participant_from']) else 0,
+            participant_count__gte=params['participant_from'] if f.is_int(params['participant_from']) else 0,
         ).exclude(admin__id__in=self.get_blocked_user_list())
 
-        if is_int(params['participant_to']):
+        if f.is_int(params['participant_to']):
             rooms = rooms.filter(participant_count__lte=params['participant_to'])
         
         return self.get_room_items(self.get_idx_items(rooms))
@@ -123,7 +123,7 @@ class IndexUserListView(SearchBaseView, UserItemView):
             user__created_at__lte=params['date_to'],
         )
 
-        if get_boolean_or_none(params['is_blocked']) == True:
+        if f.get_boolean_or_none(params['is_blocked']) == True:
             profile = profile.filter(user__id__in=self.get_blocked_user_list())
         else:
             profile = profile.exclude(user__id__in=self.get_blocked_user_list())

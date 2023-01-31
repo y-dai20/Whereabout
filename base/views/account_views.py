@@ -10,15 +10,12 @@ from django.contrib import messages
 from django.shortcuts import render
 
 
+import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.forms import SignUpForm, ChangePasswordForm, SendMailForm, UserProfileForm
-from base.models import Room, RoomGuest, Profile
+from base.models import Room, RoomGuest
 from base.models.room_models import RoomInviteUser, RoomUser, RoomAuthority
 from base.models.account_models import User, Guest, UserReset
-from base.views.functions import \
-    get_diff_seconds_from_now, create_id, get_dict_item, get_img_path, is_empty,\
-    get_json_success_message, get_json_error_message, get_file_size_by_unit, get_form_error_message,\
-    get_img_list, get_file_size, get_exist_files_dict
 from base.views.general_views import UserItemView, SendMailView, HeaderView
 from base.views.mixins import LoginRequiredMixin
 
@@ -54,7 +51,7 @@ class LoginView(LoginView):
         return super().form_invalid(form)
     
     def get_user(self):
-        return User.objects.get_or_none(username=get_dict_item(self.request.POST, 'username'), is_active=True)
+        return User.objects.get_or_none(username=f.get_dict_item(self.request.POST, 'username'), is_active=True)
 
 class SignUpView(CreateView):
     form_class = SignUpForm
@@ -70,14 +67,14 @@ class SignUpView(CreateView):
 
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_error_message(get_form_error_message(form)))
+            return JsonResponse(f.get_json_error_message(f.get_form_error_message(form)))
 
         user = User.objects.get_or_none(email=self.guest.email)
         if user is not None:
             raise MyBadRequest('user is exist.')
 
-        if get_diff_seconds_from_now(self.guest.updated_at) > self.registrable_seconds:
-            return JsonResponse(get_json_error_message(['時間切れです', 'メールアドレスの登録からやり直してください']))
+        if f.get_diff_seconds_from_now(self.guest.updated_at) > self.registrable_seconds:
+            return JsonResponse(f.get_json_error_message(['時間切れです', 'メールアドレスの登録からやり直してください']))
 
         user = form.save()
         self.guest.is_deleted = True
@@ -97,7 +94,7 @@ class SignUpView(CreateView):
             )
 
         login(request, user)
-        return JsonResponse(get_json_success_message(['ユーザー登録しました']))
+        return JsonResponse(f.get_json_success_message(['ユーザー登録しました']))
     
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -105,7 +102,7 @@ class SignUpView(CreateView):
         return context
 
     def get_guest(self):
-        return get_object_or_404(Guest, one_time_id=get_dict_item(self.kwargs, 'one_time_id'), is_deleted=False)
+        return get_object_or_404(Guest, one_time_id=f.get_dict_item(self.kwargs, 'one_time_id'), is_deleted=False)
 
 class SendMailForSignupView(SendMailView):
     form_class = SendMailForm
@@ -118,7 +115,7 @@ class SendMailForSignupView(SendMailView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_error_message(get_form_error_message(form)))
+            return JsonResponse(f.get_json_error_message(f.get_form_error_message(form)))
 
         self.email = form.clean_email()
         user = User.objects.get_or_none(email=self.email)
@@ -137,11 +134,11 @@ class SendMailForSignupView(SendMailView):
             self.send_mail(self.mail_title, message, [self.email])
             return self.get_success_json_response()
 
-        if get_diff_seconds_from_now(guest.updated_at) > self.send_mail_interval:
+        if f.get_diff_seconds_from_now(guest.updated_at) > self.send_mail_interval:
             guest.access_count = 0
 
         if guest.access_count > self.max_access_count:
-            return JsonResponse(get_json_error_message([
+            return JsonResponse(f.get_json_error_message([
                 '入力したメールアドレスに対してのアクセス回数が許容範囲を超えています', 
                 '登録するメールアドレスを変更するか，1日以上の間隔を空けて再度登録してください']))
 
@@ -171,7 +168,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_error_message(get_form_error_message(form)))
+            return JsonResponse(f.get_json_error_message(f.get_form_error_message(form)))
         
         user = request.user
         user.password = make_password(form.clean_password())
@@ -180,7 +177,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
 
         login(request, user)
 
-        return JsonResponse(get_json_success_message(['パスワードを変更しました']))
+        return JsonResponse(f.get_json_success_message(['パスワードを変更しました']))
 
 class ResetPasswordBaseView(View):
     resettable_seconds = 5 * 60
@@ -198,10 +195,10 @@ class ResetPasswordView(ResetPasswordBaseView, TemplateView):
         ur = self.get_user_reset()
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_error_message(get_form_error_message(form)))
+            return JsonResponse(f.get_json_error_message(f.get_form_error_message(form)))
 
-        if get_diff_seconds_from_now(ur.updated_at) > self.resettable_seconds:
-            return JsonResponse(get_json_error_message(['時間切れです', 'もう一度メール送信からやり直してください']))
+        if f.get_diff_seconds_from_now(ur.updated_at) > self.resettable_seconds:
+            return JsonResponse(f.get_json_error_message(['時間切れです', 'もう一度メール送信からやり直してください']))
 
         user = ur.user
         ur.prev_password = user.password
@@ -213,10 +210,10 @@ class ResetPasswordView(ResetPasswordBaseView, TemplateView):
         ur.is_success = True
         ur.save()
 
-        return JsonResponse(get_json_success_message(['パスワードをリセットしました','続けてログインしてください']))
+        return JsonResponse(f.get_json_success_message(['パスワードをリセットしました','続けてログインしてください']))
     
     def get_user_reset(self):
-        return get_object_or_404(UserReset, one_time_id=get_dict_item(self.kwargs, 'one_time_id'), is_deleted=False)
+        return get_object_or_404(UserReset, one_time_id=f.get_dict_item(self.kwargs, 'one_time_id'), is_deleted=False)
 
 class SendMailForResetPasswordView(SendMailView, ResetPasswordBaseView):
     form_class = SendMailForm
@@ -226,9 +223,9 @@ class SendMailForResetPasswordView(SendMailView, ResetPasswordBaseView):
     def post(self, request, *args, **kwargs):
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return JsonResponse(get_json_error_message(get_form_error_message(form)))
+            return JsonResponse(f.get_json_error_message(f.get_form_error_message(form)))
 
-        username = get_dict_item(request.POST, 'username')
+        username = f.get_dict_item(request.POST, 'username')
         email = form.clean_email()
         
         user = User.objects.get_or_none(username=username ,email=email, is_active=True)
@@ -242,11 +239,11 @@ class SendMailForResetPasswordView(SendMailView, ResetPasswordBaseView):
             self.send_mail(self.mail_title, self.get_reset_message(ur.one_time_id), [user.email])
             return self.get_success_json_response()
 
-        if get_diff_seconds_from_now(ur.updated_at) < self.resettable_seconds:
-            return JsonResponse(get_json_error_message(['間隔を空けてください']))
+        if f.get_diff_seconds_from_now(ur.updated_at) < self.resettable_seconds:
+            return JsonResponse(f.get_json_error_message(['間隔を空けてください']))
 
         #todo (低) メールを送信するなら回数制限，モーダルエラーなら登録しているメールアドレスがバレないように．．．
-        if get_diff_seconds_from_now(user.updated_at) < self.resettable_interval:
+        if f.get_diff_seconds_from_now(user.updated_at) < self.resettable_interval:
             next_reset = make_naive(user.updated_at) + timedelta(seconds=self.resettable_interval)
             message = '前回パスワードリセットした時刻と間隔が短すぎます．\
                 \n次回パスワードリセットできるのは{}以降です．'.format(next_reset.strftime('%Y年%m月%d日 %H:%M'))
@@ -270,7 +267,7 @@ class GetUserView(UserItemView, ListView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        target_user = get_object_or_404(User, username=get_dict_item(self.kwargs, 'username'), is_active=True)
+        target_user = get_object_or_404(User, username=f.get_dict_item(self.kwargs, 'username'), is_active=True)
         return JsonResponse(self.get_user_item(target_user.profile))
 
 class UserProfileView(LoginRequiredMixin, HeaderView, TemplateView):
@@ -284,27 +281,27 @@ class UserProfileView(LoginRequiredMixin, HeaderView, TemplateView):
         form_data = request.POST
         form = self.form_class(form_data)
         if not form.is_valid():
-            return JsonResponse(get_json_error_message(get_form_error_message(form)))
+            return JsonResponse(f.get_json_error_message(f.get_form_error_message(form)))
 
         files = request.FILES
         profile = request.user.profile
-        img_list = get_img_list(form_data, files, self.max_img, [profile.img])
+        img_list = f.get_img_list(form_data, files, self.max_img, [profile.img])
 
-        if get_file_size(img_list) > self.max_img_size:
-            return JsonResponse(get_json_error_message(['画像サイズが{}を超えています'.format(get_file_size_by_unit(self.max_img_size, unit='MB'))]))
-        if not is_empty(img_list[0]):
+        if f.get_file_size(img_list) > self.max_img_size:
+            return JsonResponse(f.get_json_error_message(['画像サイズが{}を超えています'.format(f.get_file_size_by_unit(self.max_img_size, unit='MB'))]))
+        if not f.is_empty(img_list[0]):
             profile.img = img_list[0]
 
         profile.profession = form.clean_profession()
         profile.description = form.clean_description()
         profile.save()
 
-        return JsonResponse(get_json_success_message(['保存しました']))
+        return JsonResponse(f.get_json_success_message(['保存しました']))
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         profile = self.request.user.profile
-        context['img_path'] = get_img_path(profile.img)
+        context['img_path'] = f.get_img_path(profile.img)
         context['profession'] = profile.profession
         context['description'] = profile.description
 

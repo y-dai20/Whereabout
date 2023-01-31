@@ -1,21 +1,19 @@
 from django.views.generic import View, TemplateView, UpdateView, ListView
 from django.db.models import F
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import get_object_or_404
 from django.utils.timezone import make_aware, make_naive
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import JsonResponse, Http404
 
 
+import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.models.post_models import Post, PostImgs, PostAgree, PostFavorite, PostDemagogy
 from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy, ReplyPosition
 from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, RoomReplyType, TabContentItem,\
-    TabPermutation, RoomGood, RoomRequestInformation, RoomInformation
+    RoomGood, RoomRequestInformation, RoomInformation
 from base.models.account_models import UserFollow, UserBlock, Profile
-from base.views.functions import get_number_unit, get_bool_or_str, get_list_index,\
-    get_img_path, get_dict_item, is_empty, get_json_error_message, get_json_success_message,\
-    get_reply_types, get_boolean_or_none, get_display_datetime, create_id, is_int
 from base.views.mixins import LoginRequiredMixin
 from base.views.validate_views import ValidateRoomView
 
@@ -54,9 +52,9 @@ class IndexBaseView(HeaderView, ListView):
         self.is_end = False
 
     def post(self, request, *args, **kwargs):
-        self.idx = get_dict_item(request.POST, 'idx')
+        self.idx = f.get_dict_item(request.POST, 'idx')
         self.repair_idx_to_int()
-        return JsonResponse(get_json_success_message(add_dict={'idx':self.idx+1, 'items':self.get_dump_items(), 'is_end':self.is_end}))
+        return JsonResponse(f.get_json_success_message(add_dict={'idx':self.idx+1, 'items':self.get_dump_items(), 'is_end':self.is_end}))
     
     def get_blocked_user_list(self):
         if self.request.user.is_authenticated:
@@ -109,7 +107,7 @@ class IndexBaseView(HeaderView, ListView):
 
     def get_end_idx(self, len_items=None):
         self.repair_idx_to_int()
-        if is_empty(len_items):
+        if f.is_empty(len_items):
             return (self.idx + 1) * self.load_by
         return min((self.idx + 1) * self.load_by, len_items)
 
@@ -132,7 +130,7 @@ class SearchBaseView(IndexBaseView):
         request_params = dict(self.request.GET)
         params = {}
         for key in self.search.keys():
-            if key not in request_params or is_empty(request_params[key][0]):
+            if key not in request_params or f.is_empty(request_params[key][0]):
                 if key == 'date_from':
                     params[key] = make_aware(datetime(2000, 1, 1))
                 elif key == 'date_to':
@@ -140,7 +138,7 @@ class SearchBaseView(IndexBaseView):
                 else:
                     params[key] = ''
             else:
-                self.search[key] = get_bool_or_str(request_params[key][0])
+                self.search[key] = f.get_bool_or_str(request_params[key][0])
                 if key == 'date_from':
                     params[key] = make_aware(datetime.strptime(self.search[key], '%Y-%m-%d'))
                 elif key == 'date_to':
@@ -171,8 +169,8 @@ class UpdateBaseView(LoginRequiredMixin, UpdateView):
 
 class GoodView(UpdateBaseView):
     def get_json_data(self, obj):
-        is_good = get_boolean_or_none(get_dict_item(self.request.GET, 'is_good'))
-        if is_empty(obj) or is_good is None:
+        is_good = f.get_boolean_or_none(f.get_dict_item(self.request.GET, 'is_good'))
+        if f.is_empty(obj) or is_good is None:
             raise MyBadRequest('good obj is empty.')
 
         good_obj = self.model.objects.filter(user=self.request.user, obj=obj)
@@ -188,21 +186,21 @@ class GoodView(UpdateBaseView):
         obj.bad_count = self.model.objects.filter(obj=obj, is_good=False, is_deleted=False).count()
         obj.save()
 
-        return get_json_success_message(add_dict={
+        return f.get_json_success_message(add_dict={
             'is_good':is_good,
             'is_deleted':good_obj[0].is_deleted,
-            'good_count':get_number_unit(obj.good_count),
-            'bad_count':get_number_unit(obj.bad_count),
+            'good_count':f.get_number_unit(obj.good_count),
+            'bad_count':f.get_number_unit(obj.bad_count),
         })
 
 class AgreeView(UpdateBaseView):
     def get_json_data(self, obj, room):
-        is_agree = get_boolean_or_none(get_dict_item(self.request.GET, 'is_agree'))
-        if is_empty(obj) or is_agree is None:
+        is_agree = f.get_boolean_or_none(f.get_dict_item(self.request.GET, 'is_agree'))
+        if f.is_empty(obj) or is_agree is None:
             raise MyBadRequest('agree obj is empty.')
         
         if not self.can_access_room(room):
-            return get_json_error_message(self.error_messages)
+            return f.get_json_error_message(self.error_messages)
 
         agree_obj = self.model.objects.filter(user=self.request.user, obj=obj)
         if agree_obj.exists():
@@ -217,21 +215,21 @@ class AgreeView(UpdateBaseView):
         obj.expansion.disagree_count = self.model.objects.filter(obj=obj, is_agree=False, is_deleted=False).count()
         obj.expansion.save()
 
-        return get_json_success_message(add_dict={
+        return f.get_json_success_message(add_dict={
             'is_agree':is_agree,
             'is_deleted':agree_obj[0].is_deleted,
-            'agree_count':get_number_unit(obj.expansion.agree_count),
-            'disagree_count':get_number_unit(obj.expansion.disagree_count),
+            'agree_count':f.get_number_unit(obj.expansion.agree_count),
+            'disagree_count':f.get_number_unit(obj.expansion.disagree_count),
         })
 
 class DemagogyView(UpdateBaseView):
     def get_json_data(self, obj, room):
-        is_true = get_boolean_or_none(get_dict_item(self.request.GET, 'is_true'))
-        if is_empty(obj) or is_true is None:
+        is_true = f.get_boolean_or_none(f.get_dict_item(self.request.GET, 'is_true'))
+        if f.is_empty(obj) or is_true is None:
             raise MyBadRequest('demagogy obj is empty.')
 
         if not self.can_access_room(room):
-            return get_json_error_message(self.error_messages)
+            return f.get_json_error_message(self.error_messages)
 
         demagogy = self.model.objects.filter(user=self.request.user, obj=obj)        
         if demagogy.exists():
@@ -246,20 +244,20 @@ class DemagogyView(UpdateBaseView):
         obj.expansion.false_count = self.model.objects.filter(obj=obj, is_true=False, is_deleted=False).count()
         obj.expansion.save()
 
-        return get_json_success_message(add_dict={
+        return f.get_json_success_message(add_dict={
             'is_true':is_true,
             'is_deleted':(demagogy[0].is_deleted),
-            'true_count':get_number_unit(obj.expansion.true_count),
-            'false_count':get_number_unit(obj.expansion.false_count),
+            'true_count':f.get_number_unit(obj.expansion.true_count),
+            'false_count':f.get_number_unit(obj.expansion.false_count),
         })
 
 class FavoriteView(UpdateBaseView):
     def get_json_data(self, obj, room):
-        if is_empty(obj):
+        if f.is_empty(obj):
             raise MyBadRequest('favorite obj is empty.')
 
         if not self.can_access_room(room):
-            return get_json_error_message(self.error_messages)
+            return f.get_json_error_message(self.error_messages)
             
         favorite = self.model.objects.filter(obj=obj, user=self.request.user)
         if favorite.exists():
@@ -270,9 +268,9 @@ class FavoriteView(UpdateBaseView):
         obj.expansion.favorite_count = self.model.objects.filter(obj=obj, is_deleted=False).count()
         obj.expansion.save()
 
-        return get_json_success_message(add_dict={
+        return f.get_json_success_message(add_dict={
             'is_favorite':not favorite[0].is_deleted,
-            'favorite_count':get_number_unit(obj.expansion.favorite_count),
+            'favorite_count':f.get_number_unit(obj.expansion.favorite_count),
         })
 
 class RoomBase(object):
@@ -285,7 +283,7 @@ class RoomBase(object):
     def get_room_img_paths(self):
         img_paths = []
         for img_field in self.get_room_img_list():
-            img_path = get_img_path(img_field)
+            img_path = f.get_img_path(img_field)
             if img_path is None:
                 continue
             img_paths.append(img_path)
@@ -336,7 +334,7 @@ class RoomBase(object):
 
     def get_room_reply_types(self, is_unique=True):
         if not self.vr.is_room_exist():
-            return get_reply_types()
+            return f.get_reply_types()
 
         reply_type_obj = get_object_or_404(RoomReplyType, room=self.room, room__is_deleted=False)
         reply_types = [
@@ -361,7 +359,7 @@ class RoomBase(object):
             return []
 
         rri_list = [None for _ in range(self.max_request_information)]
-        is_active = get_boolean_or_none(is_active)
+        is_active = f.get_boolean_or_none(is_active)
         if is_active is None:
             rri_objects = RoomRequestInformation.objects.filter(room=self.room, is_deleted=False).values(
                 'id', 'sequence', 'title', 'type', 'choice', 'min_length', 'max_length', 'is_active', 'is_deleted')
@@ -379,14 +377,14 @@ class RoomBase(object):
 
     @staticmethod
     def get_my_room_list(user):
-        if not is_empty(user) and user.is_authenticated:
+        if not f.is_empty(user) and user.is_authenticated:
             return list(Room.objects.filter(is_deleted=False, admin=user).values_list('id', flat=True))
         
         return []
 
     @staticmethod
     def get_attend_room_list(user):
-        if not is_empty(user) and user.is_authenticated:
+        if not f.is_empty(user) and user.is_authenticated:
             return list(RoomUser.objects.filter(is_deleted=False, is_blocked=False, user=user).values_list('room', flat=True))
         return []
 
@@ -416,13 +414,13 @@ class RoomItemView(View):
             'title':room.title,
             'subtitle':room.subtitle,
             'admin':room.admin.username,
-            'admin_img':get_img_path(room.admin.profile.img),
-            'user_count':get_number_unit(room.participant_count),
+            'admin_img':f.get_img_path(room.admin.profile.img),
+            'user_count':f.get_number_unit(room.participant_count),
             'img_paths':room_base.get_room_img_paths(),
-            'video_path':get_img_path(room.video),
-            'created_at':get_display_datetime(datetime.now() - make_naive(room.created_at)),
-            'good_count':get_number_unit(room.good_count),
-            'bad_count':get_number_unit(room.bad_count),
+            'video_path':f.get_img_path(room.video),
+            'created_at':f.get_display_datetime(datetime.now() - make_naive(room.created_at)),
+            'good_count':f.get_number_unit(room.good_count),
+            'bad_count':f.get_number_unit(room.bad_count),
             'good_state':user_good[0]['is_good'] if user_good.exists() else None,
         }
         
@@ -448,7 +446,7 @@ class PostItemView(View):
         img_paths = []
         if post_imgs.exists():
             for img_field in [post_imgs[0].img1, post_imgs[0].img2, post_imgs[0].img3, post_imgs[0].img4]:
-                img_paths.append(get_img_path(img_field))
+                img_paths.append(f.get_img_path(img_field))
         
         post_dict = {
             'obj_type':'post',
@@ -456,18 +454,18 @@ class PostItemView(View):
             'title':post.title,
             'text':post.text,
             'img_paths':img_paths,
-            'video_path':get_img_path(post.video),
+            'video_path':f.get_img_path(post.video),
             'username':post.user.username,
-            'user_img':get_img_path(post.user.profile.img),
-            'created_at':get_display_datetime(datetime.now() - make_naive(post.created_at)),
-            'agree_count':get_number_unit(post.expansion.agree_count),
-            'disagree_count':get_number_unit(post.expansion.disagree_count),
+            'user_img':f.get_img_path(post.user.profile.img),
+            'created_at':f.get_display_datetime(datetime.now() - make_naive(post.created_at)),
+            'agree_count':f.get_number_unit(post.expansion.agree_count),
+            'disagree_count':f.get_number_unit(post.expansion.disagree_count),
             'agree_state':user_agree[0]['is_agree'] if user_agree.exists() else None,
-            'reply_count':get_number_unit(post.expansion.reply_count),
+            'reply_count':f.get_number_unit(post.expansion.reply_count),
             'favorite_state':favorite_state.exists(),
-            'favorite_count':get_number_unit(post.expansion.favorite_count),
-            'true_count':get_number_unit(post.expansion.true_count),
-            'false_count':get_number_unit(post.expansion.false_count),
+            'favorite_count':f.get_number_unit(post.expansion.favorite_count),
+            'true_count':f.get_number_unit(post.expansion.true_count),
+            'false_count':f.get_number_unit(post.expansion.false_count),
             'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
             'can_user_delete':post.user == user
         }
@@ -485,14 +483,14 @@ class UserItemView(View):
         if not isinstance(profile, Profile):
             return {}
             
-        user_dict = get_json_success_message(add_dict={
+        user_dict = f.get_json_success_message(add_dict={
             'username':profile.user.username,
-            'created_at':get_display_datetime(datetime.now() - make_naive(profile.user.created_at)),
-            'img':get_img_path(profile.img),
+            'created_at':f.get_display_datetime(datetime.now() - make_naive(profile.user.created_at)),
+            'img':f.get_img_path(profile.img),
             'profession':profile.profession,
             'description':profile.description,
-            'followed_count':get_number_unit(profile.followed_count),
-            'blocked_count':get_number_unit(profile.blocked_count),
+            'followed_count':f.get_number_unit(profile.followed_count),
+            'blocked_count':f.get_number_unit(profile.blocked_count),
         })
 
         if not self.request.user.is_authenticated:
@@ -533,25 +531,25 @@ class ReplyItemView(View):
             'obj_id':reply.id,
             'post_id':reply.post.id,
             'url':reply.url,
-            'reply_count':get_number_unit(reply.expansion.reply_count),
+            'reply_count':f.get_number_unit(reply.expansion.reply_count),
             'text':reply.text,
             'username':reply.user.username,
-            'user_img':get_img_path(reply.user.profile.img),
+            'user_img':f.get_img_path(reply.user.profile.img),
             'type':reply.type,
-            'type_id':get_list_index(room_base.get_room_reply_types(), reply.type),
+            'type_id':f.get_list_index(room_base.get_room_reply_types(), reply.type),
             'is_agree':True if reply.position == ReplyPosition.AGREE else False,
             'is_neutral':True if reply.position == ReplyPosition.NEUTRAL else False,
             'is_disagree':True if reply.position == ReplyPosition.DISAGREE else False,
-            'created_at':get_display_datetime(datetime.now() - make_naive(reply.created_at)),
-            'img_path':get_img_path(reply.img) if not is_empty(reply.img) else '',
-            'agree_count':get_number_unit(reply.expansion.agree_count),
-            'disagree_count':get_number_unit(reply.expansion.disagree_count),
+            'created_at':f.get_display_datetime(datetime.now() - make_naive(reply.created_at)),
+            'img_path':f.get_img_path(reply.img) if not f.is_empty(reply.img) else '',
+            'agree_count':f.get_number_unit(reply.expansion.agree_count),
+            'disagree_count':f.get_number_unit(reply.expansion.disagree_count),
             'agree_state': user_agree[0]['is_agree'] if user_agree.exists() else None,
-            'true_count':get_number_unit(reply.expansion.true_count),
-            'false_count':get_number_unit(reply.expansion.false_count),
+            'true_count':f.get_number_unit(reply.expansion.true_count),
+            'false_count':f.get_number_unit(reply.expansion.false_count),
             'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
             'favorite_state':favorite_state.exists(),
-            'favorite_count':get_number_unit(reply.expansion.favorite_count),
+            'favorite_count':f.get_number_unit(reply.expansion.favorite_count),
             'can_user_delete':reply.user == user,
         }
 
@@ -586,22 +584,22 @@ class Reply2ItemView(View):
             'reply_id':reply2.reply.id,
             'text':reply2.text,
             'username':reply2.user.username,
-            'user_img':get_img_path(reply2.user.profile.img),
+            'user_img':f.get_img_path(reply2.user.profile.img),
             'type':reply2.type,
-            'type_id':get_list_index(room_base.get_room_reply_types(), reply2.type),
+            'type_id':f.get_list_index(room_base.get_room_reply_types(), reply2.type),
             'is_agree':True if reply2.position == ReplyPosition.AGREE else False,
             'is_neutral':True if reply2.position == ReplyPosition.NEUTRAL else False,
             'is_disagree':True if reply2.position == ReplyPosition.DISAGREE else False,
-            'created_at':get_display_datetime(datetime.now() - make_naive(reply2.created_at)),
-            'img_path':get_img_path(reply2.img) if not is_empty(reply2.img) else '',
-            'agree_count':get_number_unit(reply2.expansion.agree_count),
-            'disagree_count':get_number_unit(reply2.expansion.disagree_count),
+            'created_at':f.get_display_datetime(datetime.now() - make_naive(reply2.created_at)),
+            'img_path':f.get_img_path(reply2.img) if not f.is_empty(reply2.img) else '',
+            'agree_count':f.get_number_unit(reply2.expansion.agree_count),
+            'disagree_count':f.get_number_unit(reply2.expansion.disagree_count),
             'agree_state': user_agree[0]['is_agree'] if user_agree.exists() else None,
-            'true_count':get_number_unit(reply2.expansion.true_count),
-            'false_count':get_number_unit(reply2.expansion.false_count),
+            'true_count':f.get_number_unit(reply2.expansion.true_count),
+            'false_count':f.get_number_unit(reply2.expansion.false_count),
             'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
             'favorite_state':favorite_state.exists(),
-            'favorite_count':get_number_unit(reply2.expansion.favorite_count),
+            'favorite_count':f.get_number_unit(reply2.expansion.favorite_count),
             'can_user_delete':reply2.user == user,
         }
 
@@ -653,7 +651,7 @@ class DetailBaseView(SearchBaseView):
 
 class ShowRoomBaseView(HeaderView):
     def validate_room(self):
-        self.vr = ValidateRoomView(get_dict_item(self.kwargs, 'room_pk'))
+        self.vr = ValidateRoomView(f.get_dict_item(self.kwargs, 'room_pk'))
         if not self.vr.is_room_exist():
             raise Http404
         if not self.vr.is_public() and not self.vr.is_room_user(self.request.user):
@@ -679,7 +677,7 @@ class ShowRoomBaseView(HeaderView):
         context['is_public'] = room.is_public
         context['need_approval'] = room.need_approval
 
-        context['video_path'] = get_img_path(room.video)
+        context['video_path'] = f.get_img_path(room.video)
         context['img_paths'] = self.room_base.get_room_img_paths()
         context['tab_contents'] = json.dumps(self.room_base.get_tab_contents())
         context['tab_content1_items'] = json.dumps(self.room_base.get_tab_content_items(self.room.tabpermutation.tab_content1))
@@ -692,7 +690,7 @@ class ShowRoomBaseView(HeaderView):
             context['do_pass_request_information'] = True
         
         profile = room.admin.profile
-        context['admin_img'] = get_img_path(profile.img)
+        context['admin_img'] = f.get_img_path(profile.img)
         context['username'] = profile.user.username
         context['profession'] = profile.profession
         context['description'] = profile.description
@@ -736,10 +734,10 @@ class SendMailView(TemplateView):
         return settings.MY_URL
 
     def get_success_json_response(self):
-        return JsonResponse(get_json_success_message(['メールを送信しました']))
+        return JsonResponse(f.get_json_success_message(['メールを送信しました']))
 
     def get_one_time_id(self):
-        return create_id(self.one_time_id_len)
+        return f.create_id(self.one_time_id_len)
 
 class DeleteBaseView(TemplateView):
     template_name = 'pages/index.html'
