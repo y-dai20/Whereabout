@@ -50,10 +50,6 @@
     z-index: 10;
 }
 
-.index-post-content {
-    flex: 3;
-}
-
 .post-item {
     padding: 10px;
 }
@@ -64,4 +60,14 @@
 
 .post-file-content {
     padding-bottom: 10px;
+}
+
+.index-post-reply-sidebar {
+    flex:2;
+}
+.index-post-reply2-sidebar {
+    flex:2;
+}
+.index-post-content {
+    flex:3;
 }

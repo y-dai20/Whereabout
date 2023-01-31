@@ -408,7 +408,8 @@ class RoomItemView(View):
             return {}
 
         room = vr.get_room()
-        user_good = RoomGood.objects.filter(obj=room, user=self.request.user, is_deleted=False).values('is_good')
+        user = self.request.user if self.request.user.is_authenticated else None
+        user_good = RoomGood.objects.filter(obj=room, user=user, is_deleted=False).values('is_good')
         room_base = RoomBase(room)
         room_dict = {
             'id':room.id,
@@ -439,9 +440,10 @@ class PostItemView(View):
         if not isinstance(post, Post):
             return {}
         
-        user_agree = PostAgree.objects.filter(obj=post, user=self.request.user, is_deleted=False).values('is_agree')
-        user_demagogy = PostDemagogy.objects.filter(obj=post, user=self.request.user, is_deleted=False).values('is_true')        
-        favorite_state = PostFavorite.objects.filter(obj=post, user=self.request.user, is_deleted=False)
+        user = self.request.user if self.request.user.is_authenticated else None
+        user_agree = PostAgree.objects.filter(obj=post, user=user, is_deleted=False).values('is_agree')
+        user_demagogy = PostDemagogy.objects.filter(obj=post, user=user, is_deleted=False).values('is_true')        
+        favorite_state = PostFavorite.objects.filter(obj=post, user=user, is_deleted=False)
         post_imgs = PostImgs.objects.filter(post=post)
         img_paths = []
         if post_imgs.exists():
@@ -467,13 +469,13 @@ class PostItemView(View):
             'true_count':get_number_unit(post.expansion.true_count),
             'false_count':get_number_unit(post.expansion.false_count),
             'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
-            'can_user_delete':post.user == self.request.user
+            'can_user_delete':post.user == user
         }
 
         if post.room is not None:
             post_dict['room_title'] = post.room.title
             post_dict['room_id'] = post.room.id
-            post_dict['can_user_delete'] =(post.room.admin == self.request.user)
+            post_dict['can_user_delete'] =(post.room.admin == user)
 
         return post_dict
 
@@ -519,9 +521,10 @@ class ReplyItemView(View):
         if not isinstance(reply, ReplyPost):
             return {}
 
-        user_agree = ReplyAgree.objects.filter(obj=reply, user=self.request.user, is_deleted=False).values('is_agree')
-        user_demagogy = ReplyDemagogy.objects.filter(obj=reply, user=self.request.user, is_deleted=False).values('is_true')
-        favorite_state = ReplyFavorite.objects.filter(obj=reply, user=self.request.user, is_deleted=False)
+        user = self.request.user if self.request.user.is_authenticated else None
+        user_agree = ReplyAgree.objects.filter(obj=reply, user=user, is_deleted=False).values('is_agree')
+        user_demagogy = ReplyDemagogy.objects.filter(obj=reply, user=user, is_deleted=False).values('is_true')
+        favorite_state = ReplyFavorite.objects.filter(obj=reply, user=user, is_deleted=False)
 
         vr = ValidateRoomView(reply.post.room)
         room_base = RoomBase(vr.get_room())
@@ -549,11 +552,11 @@ class ReplyItemView(View):
             'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
             'favorite_state':favorite_state.exists(),
             'favorite_count':get_number_unit(reply.expansion.favorite_count),
-            'can_user_delete':reply.user == self.request.user,
+            'can_user_delete':reply.user == user,
         }
 
         if vr.is_room_exist():
-            dict_queryset['can_user_delete'] = vr.is_admin(self.request.user)
+            dict_queryset['can_user_delete'] = vr.is_admin(user)
             dict_queryset['room_id'] = reply.post.room.id
 
         return dict_queryset
@@ -570,9 +573,10 @@ class Reply2ItemView(View):
         if not isinstance(reply2, ReplyReply):
             return {}
 
-        user_agree = Reply2Agree.objects.filter(obj=reply2, user=self.request.user, is_deleted=False).values('is_agree')
-        user_demagogy = Reply2Demagogy.objects.filter(obj=reply2, user=self.request.user, is_deleted=False).values('is_true')
-        favorite_state = Reply2Favorite.objects.filter(obj=reply2, user=self.request.user, is_deleted=False)
+        user = self.request.user if self.request.user.is_authenticated else None
+        user_agree = Reply2Agree.objects.filter(obj=reply2, user=user, is_deleted=False).values('is_agree')
+        user_demagogy = Reply2Demagogy.objects.filter(obj=reply2, user=user, is_deleted=False).values('is_true')
+        favorite_state = Reply2Favorite.objects.filter(obj=reply2, user=user, is_deleted=False)
 
         vr = ValidateRoomView(reply2.reply.post.room)
         room_base = RoomBase(vr.get_room())
@@ -598,11 +602,11 @@ class Reply2ItemView(View):
             'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
             'favorite_state':favorite_state.exists(),
             'favorite_count':get_number_unit(reply2.expansion.favorite_count),
-            'can_user_delete':reply2.user == self.request.user,
+            'can_user_delete':reply2.user == user,
         }
 
         if vr.is_room_exist():
-            dict_queryset['can_user_delete'] = vr.is_admin(self.request.user)
+            dict_queryset['can_user_delete'] = vr.is_admin(user)
 
         return dict_queryset
 

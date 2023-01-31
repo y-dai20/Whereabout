@@ -186,10 +186,6 @@ div.accordion-collapse, .accordion-button.collapsed {
     padding: 5px 3px;
 }
 
-.index-post-reply-sidebar {
-    flex: 2;
-}
-
 @media screen and (max-width: 1200px) {
     .index-post-reply2-sidebar {
         display: none;
