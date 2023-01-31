@@ -133,7 +133,7 @@ USE_TZ = True
 STATIC_URL = 'static/'
 
 STATICFILES_DIRS = (
-    os.path.join(BASE_DIR, "static"),
+    os.path.join(BASE_DIR, 'static'),
 )
 
 # Default primary key field type
@@ -141,7 +141,7 @@ STATICFILES_DIRS = (
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
-TITLE="YourRoom"
+TITLE='YourRoom'
 
 # スキーマ＆ドメイン
 MY_URL = env.str('MY_URL')
@@ -167,7 +167,7 @@ ID_LENGTH=30
 
 MEDIA_URL = '/media/'
 if DEBUG:
-    MEDIA_ROOT = os.path.join(BASE_DIR, "media")
+    MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 else:
     MEDIA_ROOT = f'/var/www/{BASE_DIR.name}/media'
 
@@ -178,33 +178,44 @@ EMAIL_PORT = 587
 EMAIL_HOST_USER = 'yourroominformation@gmail.com'
 EMAIL_HOST_PASSWORD = 'hontvezdpcrpnjac'
 
-LOG_BASE_DIR = os.path.join(BASE_DIR, "log", "app")
+LOG_BASE_DIR = os.path.join(BASE_DIR, 'log', 'app')
+os.makedirs(LOG_BASE_DIR, exist_ok=True)
+LOG_INFO_PATH = os.path.join(LOG_BASE_DIR, 'info.log')
+if not os.path.exists(LOG_INFO_PATH):
+    f = open(LOG_INFO_PATH, 'a').close()
+LOG_WARNING_PATH = os.path.join(LOG_BASE_DIR, 'warning.log')
+if not os.path.exists(LOG_WARNING_PATH):
+    f = open(LOG_WARNING_PATH, 'a').close()
+LOG_ERROR_PATH = os.path.join(LOG_BASE_DIR, 'error.log')
+if not os.path.exists(LOG_ERROR_PATH):
+    f = open(LOG_ERROR_PATH, 'a').close()
+
 LOGGING = {
-    "version": 1,
-    "disable_existing_loggers": False,
-    "formatters": {"simple": {"format": "%(asctime)s [%(levelname)s] %(message)s"}},
-    "handlers": {
-        "info": {
-            "level": "INFO",
-            "class": "logging.FileHandler",
-            "filename": os.path.join(LOG_BASE_DIR, "info.log"),
-            "formatter": "simple",
+    'version': 1,
+    'disable_existing_loggers': False,
+    'formatters': {'simple': {'format': '%(asctime)s [%(levelname)s] %(message)s'}},
+    'handlers': {
+        'info': {
+            'level': 'INFO',
+            'class': 'logging.FileHandler',
+            'filename': LOG_INFO_PATH,
+            'formatter': 'simple',
         },
-        "warning": {
-            "level": "WARNING",
-            "class": "logging.FileHandler",
-            "filename": os.path.join(LOG_BASE_DIR, "warning.log"),
-            "formatter": "simple",
+        'warning': {
+            'level': 'WARNING',
+            'class': 'logging.FileHandler',
+            'filename': LOG_WARNING_PATH,
+            'formatter': 'simple',
         },
-        "error": {
-            "level": "ERROR",
-            "class": "logging.FileHandler",
-            "filename": os.path.join(LOG_BASE_DIR, "error.log"),
-            "formatter": "simple",
+        'error': {
+            'level': 'ERROR',
+            'class': 'logging.FileHandler',
+            'filename': LOG_ERROR_PATH,
+            'formatter': 'simple',
         },
     },
-    "root": {
-        "handlers": ["info", "warning", "error"],
-        "level": "INFO",
+    'root': {
+        'handlers': ['info', 'warning', 'error'],
+        'level': 'INFO',
     },
 }
