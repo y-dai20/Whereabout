@@ -76,6 +76,7 @@ nav.navbar a, .modal-title, .dropdown-item {
 
 .content {
     padding-top: 10px;
+    padding-bottom: 50px;
     height: 100%;
     width: 100%;
     overflow-y: auto;
