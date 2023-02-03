@@ -1,6 +1,7 @@
 from django.shortcuts import get_object_or_404
 from django.views.generic import CreateView
 from django.http import JsonResponse, Http404
+from django.db.models import F
 
 
 import base.views.functions as f
@@ -239,6 +240,7 @@ class GetReplyView(ReplyItemView, IndexBaseView):
         post = get_object_or_404(Post, id=f.get_dict_item(self.request.POST, 'obj_id'), is_deleted=False)
         self.check_can_access(post.room)
         replies = ReplyPost.objects.filter(post=post, is_deleted=False)
+        replies = replies.annotate(reaction_count=F('expansion__agree_count')+F('expansion__disagree_count')).order_by('-reaction_count')
         return self.get_reply_items(self.get_idx_items(replies))
 
 class GetReply2View(Reply2ItemView, IndexBaseView):
@@ -251,4 +253,5 @@ class GetReply2View(Reply2ItemView, IndexBaseView):
         reply = get_object_or_404(ReplyPost, id=f.get_dict_item(self.request.POST, 'obj_id'), is_deleted=False)
         self.check_can_access(reply.post.room)
         replies = ReplyReply.objects.filter(reply=reply, is_deleted=False)
+        replies = replies.annotate(reaction_count=F('expansion__agree_count')+F('expansion__disagree_count')).order_by('-reaction_count')
         return self.get_reply2_items(self.get_idx_items(replies))

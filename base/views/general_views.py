@@ -620,6 +620,7 @@ class DetailBaseView(SearchBaseView):
             'date_to':'', 
             'position':'',
             'type':'',
+            'order':'',
         }
         self.order = {
             'created_at':True,
@@ -632,21 +633,20 @@ class DetailBaseView(SearchBaseView):
         context['order'] = self.order
         return context
 
-    #todo (中) 怪しい
     def get_replies_after_order(self, replies):
-        params = self.request.GET
-        if ('order' not in params) or (params['order'] not in self.order.keys()):
+        params = self.get_params()
+        if params['order'] not in self.order.keys():
             return replies
 
         for key in self.order.keys():
             self.order[key] = False
         self.order[params['order']] = True
 
-        if params['order'] == 'favorite_count':
+        if self.order['favorite_count']:
             return replies.order_by('-expansion__favorite_count')
-        if params['order'] == 'reaction_count':
+        if self.order['reaction_count']:
             return replies.annotate(reaction_count=F('expansion__agree_count')+F('expansion__disagree_count')).order_by('-reaction_count')
-            
+        
         return replies
 
 class ShowRoomBaseView(HeaderView):
