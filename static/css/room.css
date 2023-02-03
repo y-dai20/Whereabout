@@ -79,8 +79,9 @@
     z-index: 10;
     border: 2px solid grey;
     cursor: grab;
-    height: 90%;
     background-color: white;
+    height: 50px;
+    width: auto;
 }
 
 .added-object {

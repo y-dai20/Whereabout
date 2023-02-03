@@ -153,11 +153,11 @@ function get_reply_item(reply, is_link=false) {
 function get_reply_header(reply) {
     var html = `<div class="reply-item-header item-header">`;
     if (reply.is_agree) {
-        html += `<img src="${traffic_green}" class="traffic-light">`;
+        html += `<img src="${trafficGreenImg}" class="traffic-light">`;
     } else if (reply.is_disagree) {
-        html += `<img src="${traffic_red}" class="traffic-light">`;
+        html += `<img src="${trafficRedImg}" class="traffic-light">`;
     } else if (reply.is_neutral) {
-        html += `<img src="${traffic_yellow}" class="traffic-light">`;
+        html += `<img src="${trafficYellowImg}" class="traffic-light">`;
     }
     if (reply.type) {
         html += `<span>#${reply.type}</span>`
@@ -196,9 +196,9 @@ function get_item_footer(data) {
     
     html += `<a class="favorite-button">`;
     if (!data.favorite_state) {
-        html += `<img src="${white_star}" alt="" class="favorite-img">`;
+        html += `<img src="${whiteStarImg}" alt="" class="favorite-img">`;
     } else {
-        html += `<img src="${yellow_star}" alt="" class="favorite-img">`
+        html += `<img src="${yellowStarImg}" alt="" class="favorite-img">`
     }
     html += `</a><span class="favorite-count">${data.favorite_count}</span>`;
 
@@ -247,7 +247,7 @@ function get_user_content(user){
 	if (!is_empty(user.img)) {
 		html += `<img src="${user.img}" alt="" class="user-img">`;
 	} else {
-		html += `<img src="${human_img}" alt="" class="user-img">`;
+		html += `<img src="${humanImg}" alt="" class="user-img">`;
     }
 	html += `</div><div class="username"><div class="headline">ユーザー名</div>${user.username}</div>
 	<div class="user-profession"><div class="headline">職業</div>${user.profession}</div>
@@ -354,7 +354,7 @@ function get_slider_imgs_html(cls, img_paths) {
 function get_item_user_area(name, img=null, color='black') {
     var html = `<div class="item-user-img user-img-area">`;
     if (is_empty(img)) {
-        html += `<img src="${human_img}" alt="" class="user-img">`;
+        html += `<img src="${humanImg}" alt="" class="user-img">`;
     } else {
         html += `<img src="${img}" alt="" class="user-img">`;
     }
@@ -364,7 +364,7 @@ function get_item_user_area(name, img=null, color='black') {
 
 function get_item_room_area(room_id, title, color='black') {
     if (!is_empty(room_id)) {
-        return `<img src="${house}" class="house"><a class="c-${color} show-modal-room-button" href="#" data-roomid="${room_id}">${title}</a>`;
+        return `<img src="${houseImg}" class="house"><a class="c-${color} show-modal-room-button" href="#" data-roomid="${room_id}">${title}</a>`;
     }
     return '';
 }
