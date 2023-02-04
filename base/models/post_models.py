@@ -14,6 +14,7 @@ class Post(models.Model):
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     title = models.CharField(default='', max_length=50, blank=False)
     text = models.CharField(default='', max_length=255, blank=False)
+    source = models.CharField(default='', max_length=255)
     video = models.FileField(null=True, blank=True, upload_to=video_directory_path)
     room = models.ForeignKey(Room, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)

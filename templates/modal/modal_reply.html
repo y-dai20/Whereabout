@@ -21,12 +21,12 @@
             <textarea class="form-control input-reply-text" rows="3" name="text" placeholder="Text"></textarea>
           </div>
           <div class="form-group">
-            <label for="url">
-              <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
-                URL<img src="{% static "images/black_question.svg" %}" class="question-img">
+            <label for="source">
+              <span data-bs-toggle="tooltip" data-bs-placement="right" title="255文字以内">
+                ソース<img src="{% static "images/black_question.svg" %}" class="question-img">
               </span>
             </label>
-            <input type="url" name="url">
+            <input class="form-control" name="source" placeholder="https://xxxx.com">
           </div>
           {% include "form/img.html" with action="reply" is_multi=False %}
         </div>

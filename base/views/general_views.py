@@ -21,6 +21,8 @@ import json
 from datetime import datetime, timedelta
 from abc import abstractmethod
 
+
+#todo (高) sourceを画面に表示する方法を考える
 class HeaderView(View):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
@@ -453,6 +455,7 @@ class PostItemView(View):
             'obj_id':post.id,
             'title':post.title,
             'text':post.text,
+            'source':post.source,
             'img_paths':img_paths,
             'video_path':f.get_img_path(post.video),
             'username':post.user.username,
@@ -530,7 +533,7 @@ class ReplyItemView(View):
             'obj_type':'reply',
             'obj_id':reply.id,
             'post_id':reply.post.id,
-            'url':reply.url,
+            'source':reply.source,
             'reply_count':f.get_number_unit(reply.expansion.reply_count),
             'text':reply.text,
             'username':reply.user.username,
@@ -583,6 +586,7 @@ class Reply2ItemView(View):
             'obj_id':reply2.id,
             'reply_id':reply2.reply.id,
             'text':reply2.text,
+            'source':reply2.source,
             'username':reply2.user.username,
             'user_img':f.get_img_path(reply2.user.profile.img),
             'type':reply2.type,

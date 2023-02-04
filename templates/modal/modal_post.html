@@ -58,6 +58,14 @@
               </optgroup>
             </select>
           </div>
+          <div class="form-group">
+            <label for="source">
+              <span data-bs-toggle="tooltip" data-bs-placement="right" title="255文字以内">
+                ソース<img src="{% static "images/black_question.svg" %}" class="question-img">
+              </span>
+            </label>
+            <input class="form-control" name="source" placeholder="https://xxxx.com">
+          </div>
           {% include "form/img.html" with action="post" is_multi=True %}
           <div class="form-group" id="post-form-video">
             <span>

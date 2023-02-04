@@ -18,7 +18,7 @@ PASSWORD_MAX_LENGTH = 255
 POST_TITLE_MAX_LENGTH = 50
 POST_TEXT_MAX_LENGTH = 255
 REPLY_TEXT_MAX_LENGTH = 255
-REPLY_URL_MAX_LENGTH = 255
+SOURCE_MAX_LENGTH = 255
 ROOM_TITLE_MAX_LENGTH = 50
 ROOM_SUBTITLE_MAX_LENGTH = 255
 ROOM_INFORMATION_MAX_LENGTH = 255
@@ -44,6 +44,15 @@ class ValidationForm:
         if PASSWORD_MIN_LENGTH > len(password) or PASSWORD_MAX_LENGTH < len(password):
             raise ValidationError(('パスワードは{}文字以上{}文字以下で入力してください'.format(PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH)))
         return password
+
+    
+    def clean_source(self):
+        source = self.cleaned_data.get('source')
+
+        if source is not None and SOURCE_MAX_LENGTH < len(source):
+            raise ValidationError(('ソースは{}文字以下で入力してください'.format(SOURCE_MAX_LENGTH)))
+        return source
+
 
 class SignUpForm(ValidationForm, forms.ModelForm):
     class Meta:
@@ -86,7 +95,7 @@ class PostForm(ValidationForm, forms.ModelForm):
     
     class Meta:
         model = Post
-        fields = ('title', 'text',)
+        fields = ('title', 'text', 'source', )
     
     def clean_title(self):
         title = self.cleaned_data.get('title')
@@ -108,25 +117,17 @@ class ReplyForm(ValidationForm, forms.ModelForm):
             raise ValidationError(('本文は{}文字以下で入力してください'.format(REPLY_TEXT_MAX_LENGTH)))
         return text
 
-    def clean_url(self):
-        url = self.cleaned_data.get('url')
-
-        if url is not None and REPLY_URL_MAX_LENGTH < len(url):
-            raise ValidationError(('URLは{}文字以下で入力してください'.format(REPLY_URL_MAX_LENGTH)))
-        return url
-
-#todo (中) urlってどうする？？
 class ReplyPostForm(ReplyForm):
     
     class Meta:
         model = ReplyPost
-        fields = ('text', 'url', 'type', )
+        fields = ('text', 'source', 'type', )
 
 class ReplyReplyForm(ReplyForm):
     
     class Meta:
         model = ReplyReply
-        fields = ('text', 'url', 'type', )
+        fields = ('text', 'source', 'type', )
 
 class CreateRoomForm(ValidationForm, forms.ModelForm):
 
