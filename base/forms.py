@@ -1,4 +1,3 @@
-from dataclasses import field
 from django import forms
 from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
@@ -45,7 +44,6 @@ class ValidationForm:
             raise ValidationError(('パスワードは{}文字以上{}文字以下で入力してください'.format(PASSWORD_MIN_LENGTH, PASSWORD_MAX_LENGTH)))
         return password
 
-    
     def clean_source(self):
         source = self.cleaned_data.get('source')
 

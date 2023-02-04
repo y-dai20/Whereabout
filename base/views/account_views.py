@@ -107,7 +107,7 @@ class SignUpView(CreateView):
 class SendMailForSignupView(SendMailView):
     form_class = SendMailForm
     template_name = 'pages/send_mail_for_signup.html'
-    mail_title = 'YourRoom：ユーザー登録'
+    mail_title = settings.TITLE + '：ユーザー登録'
     max_access_count = 3
     send_mail_interval = 24 * 60 * 60
 
