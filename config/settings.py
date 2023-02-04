@@ -176,11 +176,11 @@ else:
     MEDIA_ROOT = f'/var/www/{BASE_DIR.name}/media'
 
 EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
 EMAIL_USE_TLS = True
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'yourroominformation@gmail.com'
-EMAIL_HOST_PASSWORD = 'hontvezdpcrpnjac'
+EMAIL_HOST = env.str('EMAIL_HOST')
+EMAIL_PORT = env.str('EMAIL_PORT')
+EMAIL_HOST_USER = env.str('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = env.str('EMAIL_HOST_PASSWORD')
 
 LOG_BASE_DIR = os.path.join(BASE_DIR, 'log', 'app')
 os.makedirs(LOG_BASE_DIR, exist_ok=True)
