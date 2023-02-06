@@ -131,7 +131,8 @@ dmypy.json
 
 # My gitignore
 *.log
-media/
+media/*
 secrets/
 *.sqlite3
-migrations/
+migrations/*
+!migrations/__init__.py
