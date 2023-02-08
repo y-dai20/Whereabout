@@ -114,7 +114,7 @@ class PostDetailView(PostItemView, ReplyItemView, DetailBaseView):
         obj = self.get_post_item(self.post)
         context['dumps_post'] = json.dumps(obj)
         context['obj_id'] = obj['obj_id']
-        room_base = RoomBase(obj['room_id'])
+        room_base = RoomBase(obj['obj_id'])
         context['reply_types'] = room_base.get_room_reply_types()
 
         return context

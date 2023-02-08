@@ -453,6 +453,7 @@ class PostItemView(View):
         post_dict = {
             'obj_type':'post',
             'obj_id':post.id,
+            'room_id':None,
             'title':post.title,
             'text':post.text,
             'source':post.source,
@@ -532,6 +533,7 @@ class ReplyItemView(View):
         dict_queryset = {
             'obj_type':'reply',
             'obj_id':reply.id,
+            'room_id':None,
             'post_id':reply.post.id,
             'source':reply.source,
             'reply_count':f.get_number_unit(reply.expansion.reply_count),
@@ -584,6 +586,7 @@ class Reply2ItemView(View):
         dict_queryset = {
             'obj_type':'reply2',
             'obj_id':reply2.id,
+            'room_id':None,
             'reply_id':reply2.reply.id,
             'text':reply2.text,
             'source':reply2.source,
