@@ -22,7 +22,7 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
     max_img = 4
     max_video = 1
     max_img_size = 2 * 1024 * 1024
-    max_video_size = 11 * 1024 * 1024
+    max_video_size = 5 * 1024 * 1024
 
     def get(self, request, *args, **kwargs):
         raise Http404

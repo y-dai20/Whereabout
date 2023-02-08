@@ -10,7 +10,7 @@ from base.views.general_views import PostItemView, RoomItemView, UserItemView, S
 class IndexPostListView(SearchBaseView, PostItemView):
     template_name = 'pages/index.html'
     model = Post
-    load_by = 2
+    load_by = 20
     checked_label = 'on'
 
     def __init__(self, **kwargs):
@@ -65,7 +65,7 @@ class IndexPostListView(SearchBaseView, PostItemView):
 class IndexRoomListView(SearchBaseView, RoomItemView):
     template_name = 'pages/index_room.html'
     model = Room
-    load_by = 3
+    load_by = 15
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -98,7 +98,7 @@ class IndexRoomListView(SearchBaseView, RoomItemView):
 class IndexUserListView(SearchBaseView, UserItemView):
     template_name = 'pages/index_user.html'
     model = User
-    load_by = 2
+    load_by = 20
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)

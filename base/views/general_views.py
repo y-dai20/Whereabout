@@ -46,7 +46,7 @@ class HeaderView(View):
 
 class IndexBaseView(HeaderView, ListView):
     template_name = 'pages/index.html'
-    load_by = 2
+    load_by = 20
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -613,7 +613,7 @@ class Reply2ItemView(View):
         return dict_queryset
 
 class DetailBaseView(SearchBaseView):
-    load_by = 1
+    load_by = 20
 
     def __init__(self, **kwargs) -> None:
         super().__init__(**kwargs)

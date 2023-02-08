@@ -20,7 +20,7 @@ import json
 class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
     template_name = 'pages/room.html'
     model = Room
-    load_by = 2
+    load_by = 20
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -49,11 +49,11 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
         return self.get_post_items(self.get_idx_items(posts))
 
 class ManageRoomBaseView(LoginRequiredMixin, RoomAdminRequiredMixin, View):
+    max_img = 5
     
     def __init__(self):
         super().__init__()
         self.vr = None
-        self.max_img = 5
         self.error_messages = []
 
     def get_validate_room(self):

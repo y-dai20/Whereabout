@@ -231,7 +231,7 @@ class Reply2DemagogyView(DemagogyView):
         return JsonResponse(json_data)
 
 class GetReplyView(ReplyItemView, IndexBaseView):
-    load_by = 1
+    load_by = 10
 
     def get(self, request, *args, **kwargs):
         raise Http404
@@ -244,7 +244,7 @@ class GetReplyView(ReplyItemView, IndexBaseView):
         return self.get_reply_items(self.get_idx_items(replies))
 
 class GetReply2View(Reply2ItemView, IndexBaseView):
-    load_by = 1
+    load_by = 10
 
     def get(self, request, *args, **kwargs):
         raise Http404
