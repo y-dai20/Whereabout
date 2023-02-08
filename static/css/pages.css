@@ -183,7 +183,6 @@ div.accordion-collapse, .accordion-button.collapsed {
 .reply-item-col {
     flex: 33%;
     max-width: 33%;
-    padding: 5px 3px;
 }
 
 @media screen and (max-width: 1200px) {

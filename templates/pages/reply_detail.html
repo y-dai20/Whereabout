@@ -5,10 +5,10 @@
   <div class="my-container">
     <a href="/" class="btn btn-secondary" role="button">&lt;&lt;前へ戻る</a>
     <div class="my-row">
-      <div class="my-col">
+      <div class="my-col target-reply">
         <script>
-          var replies = [{{object | safe}}];
-          create_reply_items('.target-post', replies);
+          var replies = [{{dumps_reply | safe}}];
+          create_reply_items('.target-reply', replies);
         </script>
       </div>
       <div class="my-col">
@@ -16,8 +16,8 @@
       </div>
       <div class="reply-detail-list reply-list my-row">
         <script>
-          var replies = {{object_list | safe}};
-          create_post_detail_items('.reply-list', replies, true);
+          var replies = {{dumps_object_list | safe}};
+          create_post_detail_items('.reply-detail-list', replies, true);
         </script>
       </div>
     </div>

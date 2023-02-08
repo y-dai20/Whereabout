@@ -290,6 +290,10 @@ input {
     margin: auto 1px;
 }
 
+.item-footer {
+    padding-top: 10px;
+}
+
 .search-result {
     display: flex;
     margin-top: 5px;
@@ -318,6 +322,9 @@ input {
 }
 
 .lum-lightbox {
-    z-index: 100;
-    margin-top: 55px;
+    z-index: 9999;
+}
+
+.lum-lightbox-inner img.lum-img {
+    max-width: 90%;
 }

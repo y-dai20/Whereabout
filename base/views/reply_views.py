@@ -15,6 +15,8 @@ from base.views.general_views import AgreeView, FavoriteView, DetailBaseView, De
 from base.views.validate_views import ValidateRoomView
 from base.views.mixins import LoginRequiredMixin
 
+import json
+
 class ReplyPostView(LoginRequiredMixin, ReplyItemView, CreateView):
     form_class = ReplyPostForm
     template_name = 'pages/post_detail.html'
@@ -101,7 +103,7 @@ class ReplyReplyView(LoginRequiredMixin, Reply2ItemView, CreateView):
 
         return JsonResponse(f.get_json_success_message(['返信しました'], {'reply':self.get_reply2_item(reply2)}))
 
-class ReplyDetailView(ReplyItemView, Reply2ItemView, DetailBaseView, SearchBaseView):
+class ReplyDetailView(ReplyItemView, Reply2ItemView, DetailBaseView):
     template_name = 'pages/reply_detail.html'
     model = ReplyPost
 
@@ -113,7 +115,12 @@ class ReplyDetailView(ReplyItemView, Reply2ItemView, DetailBaseView, SearchBaseV
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        context['object'] = self.get_reply_item(self.reply)
+        obj = self.get_reply_item(self.reply)
+        context['dumps_reply'] = json.dumps(obj)
+        context['obj_id'] = obj['obj_id']
+        room_base = RoomBase(obj['obj_id'])
+        context['reply_types'] = room_base.get_room_reply_types()
+
         return context
 
     def get_items(self):
@@ -128,7 +135,7 @@ class ReplyDetailView(ReplyItemView, Reply2ItemView, DetailBaseView, SearchBaseV
             is_deleted=False,
         )
         
-        queryset = []
+        items = []
         if not f.is_empty(params['position']):
             replies2 = self.get_replies_after_order(replies.filter(position=params['position']))
             self.load_by *= 3
@@ -142,11 +149,11 @@ class ReplyDetailView(ReplyItemView, Reply2ItemView, DetailBaseView, SearchBaseV
         len_dr = len(disagree_reply)
 
         for idx in range(self.get_start_idx(), self.get_end_idx(max(len_ar, len_nr, len_dr))):
-            queryset.append(self.get_reply2_item(agree_reply[idx]) if idx < len_ar else None)
-            queryset.append(self.get_reply2_item(neutral_reply[idx]) if idx < len_nr else None)
-            queryset.append(self.get_reply2_item(disagree_reply[idx]) if idx < len_dr else None)
+            items.append(self.get_reply2_item(agree_reply[idx]) if idx < len_ar else None)
+            items.append(self.get_reply2_item(neutral_reply[idx]) if idx < len_nr else None)
+            items.append(self.get_reply2_item(disagree_reply[idx]) if idx < len_dr else None)
 
-        return queryset
+        return items
 
 class ReplyDeleteView(LoginRequiredMixin, DeleteBaseView):
     model = ReplyPost

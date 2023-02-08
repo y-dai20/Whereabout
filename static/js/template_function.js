@@ -25,10 +25,13 @@ function create_reply_items(appendTo, replies, is_link=false) {
 
 function create_post_detail_items(appendTo, replies, is_link=false) {
     replies = get_parsed_str(replies);
+    console.log(replies);
     $.each(replies, function(idx, reply) {
         var html = `<div class="reply-item-col">` + get_reply_item(reply, is_link) + `</div>`;
         $(appendTo).append(html);
-        active_luminous(reply.obj_id);
+        if (!is_empty(reply)) {
+            active_luminous(reply.obj_id);
+        }
     });
 }
 

@@ -352,12 +352,14 @@ $('#submit-reply-button').on('click', function(event) {
                 return true;
             }
             $('.index-post-reply-sidebar').find(`.reply-list`).append(get_reply_item(data.reply, true));
+            active_luminous(data.reply.obj_id);
         } else if (data.reply.obj_type == 'reply2') {
             var item_data = get_item_data($('.index-post-reply2-sidebar').find(`.reply2-list`).find(`.reply-item`));
             if (is_empty(item_data) | item_data.id != data.reply.reply_id) {
                 return true;
             }
-            $('.index-post-reply2-sidebar').find(`.reply2-list`).append(get_reply_item(data.reply, true));
+            $('.index-post-reply2-sidebar').find(`.reply2-list`).append(get_reply_item(data.reply));
+            active_luminous(data.reply.obj_id);
         }
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
@@ -394,7 +396,7 @@ $('#submit-post-button').on('click', function(event) {
         if (!is_empty(data.post)) {
             var html = get_post_item(data.post, true);
             $('.post-list').prepend(html);
-            active_luminous(data.post.post_id);
+            active_luminous(data.post.obj_id);
         }
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
