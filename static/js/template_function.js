@@ -10,6 +10,7 @@ function create_post_items(appendTo, posts, is_link=false) {
     $.each(posts, function(idx, post) {
         var html = get_post_item(post, is_link);
         $(appendTo).append(html);
+        active_luminous(post.obj_id);
     });
 }
 
@@ -18,6 +19,7 @@ function create_reply_items(appendTo, replies, is_link=false) {
     $.each(replies, function(idx, reply) {
         var html = get_reply_item(reply, is_link);
         $(appendTo).append(html);
+        active_luminous(reply.obj_id);
     });
 }
 
@@ -26,6 +28,7 @@ function create_post_detail_items(appendTo, replies, is_link=false) {
     $.each(replies, function(idx, reply) {
         var html = `<div class="reply-item-col">` + get_reply_item(reply, is_link) + `</div>`;
         $(appendTo).append(html);
+        active_luminous(reply.obj_id);
     });
 }
 
@@ -104,16 +107,16 @@ function get_post_content(post) {
             <span class="post-title">${post.title}</span><br>
             <span class="post-text">${adapt_linebreaks(post.text)}</span>
         </div>
-        <div class="post-file-content text-center">
+        <div class="file-content text-center">
         <div class="luminous-group">`;
     $.each(post.img_paths, function(idx, path) {
         if (!is_empty(path)) {
-            html += `<a href="${path}" class="luminous-list-${post.post_id} luminous-link">
+            html += `<a href="${path}" class="luminous-list-${post.obj_id} luminous-link">
                 <img src="${path}" alt="" class="post-img"></a>`;
         }
     });
     html += '</div>';
-    if (!is_empty(post.video_path)) {
+    if (is_empty(post.img_paths) & !is_empty(post.video_path)) {
         html += `<video controls src="${post.video_path}" class="post-video"></video>`;
     }
     html += '</div>';
@@ -171,10 +174,14 @@ function get_reply_header(reply) {
 }
 
 function get_reply_content(reply) {
-    var html = `<div class="reply-content">${adapt_linebreaks(reply.text)}</div>`;
+    var html = `<div class="reply-content">${adapt_linebreaks(reply.text)}</div>
+        <div class="file-content text-center">
+        <div class="luminous-group">`;
     if (!is_empty(reply.img_path)) {
-        html += `<img src="${reply.img_path}" alt="" class="reply-img">`;
+        html += `<a href="${reply.img_path}" class="luminous-list-${reply.obj_id} luminous-link">
+            <img src="${reply.img_path}" alt="" class="reply-img"></a>`;
     }
+    html += '</div></div>';
     return html;
 }
 

@@ -316,3 +316,8 @@ input {
 .tooltip.bs-tooltip-top .tooltip-arrow::before {
     border-top-color: #0e72cf !important;
 }
+
+.lum-lightbox {
+    z-index: 100;
+    margin-top: 55px;
+}

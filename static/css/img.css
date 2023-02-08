@@ -35,6 +35,13 @@ img.tab-delete-button {
     max-height: 150px;
 }
 
+.reply-img {
+    cursor: zoom-in;
+    max-width: 50%;
+    height: auto;
+    max-height: 150px;
+}
+
 img.trash-img {
     width: auto;
     height: 100%;

@@ -3,11 +3,6 @@ $(document).ready(function(){
         dropdownParent: $('#modal-post'),
         language: 'ja',
     });
-
-    $('.luminous-group').each(function(){
-        var obj = get_item_data($(this));
-        active_luminous(obj.id);
-    });
 });
 
 $(function () {
