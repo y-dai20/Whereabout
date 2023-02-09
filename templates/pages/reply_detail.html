@@ -12,12 +12,12 @@
         </script>
       </div>
       <div class="my-col">
-        {% include '../snippets/search_reply.html' with type="reply" obj_id=object.reply_id %}
+        {% include '../snippets/search_reply.html' with type="reply"%}
       </div>
       <div class="reply-detail-list reply-list my-row">
         <script>
           var replies = {{dumps_object_list | safe}};
-          create_post_detail_items('.reply-detail-list', replies, true);
+          create_post_detail_items('.reply-detail-list', replies);
         </script>
       </div>
     </div>
