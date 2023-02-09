@@ -66,6 +66,14 @@ nav.navbar, .modal-header, .dropdown-menu {
     background-color: rgb(37, 58, 86);
 }
 
+.dropdown-menu {
+    border: 2px ridge black;
+}
+
+.dropdown-divider {
+    border: 2px solid black;
+}
+
 nav.navbar a, .modal-title, .dropdown-item {
     color: rgb(206, 210, 153);
 }
@@ -164,7 +172,7 @@ a.sidebar-button {
     cursor: pointer;
     width: 30px;
     height: 25px;
-    margin: 10px 5px;
+    margin: 5px;
 }
 
 .menu-wrapper .hamburger-menu span {
@@ -327,4 +335,8 @@ input {
 
 .lum-lightbox-inner img.lum-img {
     max-width: 90%;
+}
+
+.navbar-toggler {
+    padding: 0;
 }

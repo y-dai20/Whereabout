@@ -204,7 +204,7 @@ div.accordion-collapse, .accordion-button.collapsed {
 }
 
 @media screen and (max-width: 900px) {
-    .index-post-reply-sidebar {
+    .left-sidebar, .right-sidebar, .pc-menu {
         display: none;
     }
 }
