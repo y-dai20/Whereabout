@@ -264,3 +264,7 @@ div.accordion-collapse, .accordion-button.collapsed {
     width: 100%;
     padding: 5px;
 }
+
+.load-more {
+    margin: auto;
+}

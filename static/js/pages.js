@@ -929,6 +929,9 @@ $(document).on('click', '.load-more-button', function() {
         } else if (type == 'post-detail') {
             create_post_detail_items('.post-detail-list', data.items, true);
             hide_load_more('.post-detail-list', data);
+        } else if (type == 'reply-detail') {
+            create_post_detail_items('.reply-detail-list', data.items, true);
+            hide_load_more('.reply-detail-list', data);
         }
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
