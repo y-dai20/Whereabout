@@ -5,8 +5,9 @@
     {% include "../snippets/search_user.html" %}
 
     <div class="user-list my-row">
+      {{dumps_object_list | json_script:'dumps_object_list'}}
       <script>
-        var users = {{dumps_object_list | safe}};
+        var users = JSON.parse(document.getElementById('dumps_object_list').textContent);
         create_user_items('.user-list', users, true);
       </script>
     </div>

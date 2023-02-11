@@ -43,6 +43,10 @@ span.error, p.error {
     color: black;
 }
 
+.c-blue {
+    color: #0090ff;
+}
+
 .c-orange {
     color: #ffaf58;
 }

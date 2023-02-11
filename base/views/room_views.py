@@ -146,7 +146,7 @@ class CreateRoomView(LoginRequiredMixin, CreateView):
             return JsonResponse(f.get_json_error_message(['{}個以上のRoomは作成できません'.format(self.max_room_count)]))
 
         room.admin = request.user
-        room.authority = RoomAuthority.objects.create()
+        room.authority = RoomAuthority.objects.create(can_reply=True)
 
         files = request.FILES
         img_list = f.get_img_list(request.POST, files, self.max_img)

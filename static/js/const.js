@@ -24,8 +24,3 @@ const ROOM_TITLE_MAX_LENGTH = 50;
 const ROOM_SUBTITLE_MAX_LENGTH = 255;
 const IMAGE_EXTENSION = "jpg|jpeg|png|ico|bmp";
 const VIDEO_EXTENSION = "mp4";
-
-const BASE_URL = "http://127.0.0.1:8000";
-
-const WHITE_STAR_IMG = "images/white_star.svg";
-const YELLOW_STAR_IMG = "images/yellow_star.svg";

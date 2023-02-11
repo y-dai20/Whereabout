@@ -25,7 +25,6 @@ function create_reply_items(appendTo, replies, is_link=false) {
 
 function create_post_detail_items(appendTo, replies, is_link=false) {
     replies = get_parsed_str(replies);
-    console.log(replies);
     $.each(replies, function(idx, reply) {
         var html = `<div class="reply-item-col">` + get_reply_item(reply, is_link) + `</div>`;
         $(appendTo).append(html);
@@ -107,8 +106,9 @@ function get_post_header(post) {
 
 function get_post_content(post) {
     var html = `<div class="post-content">
-            <span class="post-title">${post.title}</span><br>
-            <span class="post-text">${adapt_linebreaks(post.text)}</span>
+            <span class="post-title">${escapeHTML(post.title)}</span><br>
+            <span class="post-text">${escapeHTML(adapt_linebreaks(post.text))}</span><br>
+            <span class="post-source">${get_item_source(post.source)}</span>
         </div>
         <div class="file-content text-center">
         <div class="luminous-group">`;
@@ -166,7 +166,7 @@ function get_reply_header(reply) {
         html += `<img src="${trafficYellowImg}" class="traffic-light">`;
     }
     if (reply.type) {
-        html += `<span>#${reply.type}</span>`
+        html += `<span>#${escapeHTML(reply.type)}</span>`
     }
     html += `</div><div class="reply-item-header item-header">`;
     html += get_item_user_area(reply.username, reply.user_img);
@@ -177,7 +177,10 @@ function get_reply_header(reply) {
 }
 
 function get_reply_content(reply) {
-    var html = `<div class="reply-content">${adapt_linebreaks(reply.text)}</div>
+    var html = `<div class="reply-content">
+        <span class="reply-text">${escapeHTML(adapt_linebreaks(reply.text))}</span><br>
+        <span class="reply-source">${get_item_source(reply.source)}</span>
+        </div>
         <div class="file-content text-center">
         <div class="luminous-group">`;
     if (!is_empty(reply.img_path)) {
@@ -259,9 +262,9 @@ function get_user_content(user){
 	} else {
 		html += `<img src="${humanImg}" alt="" class="user-img">`;
     }
-	html += `</div><div class="username"><div class="headline">ユーザー名</div>${user.username}</div>
-	<div class="user-profession"><div class="headline">職業</div>${user.profession}</div>
-	<div class="user-description"><div class="headline">詳細</div>${adapt_linebreaks(user.description)}</div></div>`;
+	html += `</div><div class="username"><div class="headline">ユーザー名</div>${escapeHTML(user.username)}</div>
+	<div class="user-profession"><div class="headline">職業</div>${escapeHTML(user.profession)}</div>
+	<div class="user-description"><div class="headline">詳細</div>${escapeHTML(adapt_linebreaks(user.description))}</div></div>`;
 
 	return html;
 }
@@ -309,10 +312,10 @@ function get_room_header(room) {
 function get_room_content(room) {
     var html = `<div class="room-item-content">
         <div class="room-item-title">
-            <span>${room.title}</span>
+            <span>${escapeHTML(room.title)}</span>
         </div>
         <div class="room-item-subtitle">
-            <span>${adapt_linebreaks(room.subtitle)}</span>
+            <span>${escapeHTML(adapt_linebreaks(room.subtitle))}</span>
         </div>`;
     if (!is_empty(room.video_path)) {
         html += `<div class="video-area px-1">
@@ -379,6 +382,13 @@ function get_item_room_area(room_id, title, color='black') {
     return '';
 }
 
+function get_item_source(source, color='blue') {
+    if (!is_empty(source)) {
+        return `<a class="c-${color}" href="${escapeHTML(source)}">source</a>`; 
+    }
+    return '';
+}
+
 function create_search_room_result(room) {
     room = get_parsed_str(room);
     return `<div class="search-result">
@@ -395,5 +405,5 @@ function create_search_user_result(user) {
 }
 
 function create_myroom_dropdown(id, title) {
-    $('.myroom-list').prepend(`<a class="dropdown-item" href="/room/${id}/">${title}</a>`);
+    $('.myroom-list').prepend(`<a class="dropdown-item" href="/room/${id}/">${escapeHTML(title)}</a>`);
 }

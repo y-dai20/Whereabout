@@ -418,7 +418,7 @@ function get_int(value, defa=0) {
     if (is_int(value)) {
         return parseInt(value.trim());
     }
-    return defa
+    return defa;
 }
 
 function validate_length(target, text, min_length=0, max_length=255) {
@@ -509,7 +509,7 @@ function show_room_request_information(rris, room_id) {
         if (!rri.is_active) {
             return true;
         }
-        form_content += `<div class="form-group"><div class="headline">${rri.title}</div>`;
+        form_content += `<div class="form-group"><div class="headline">${escapeHTML(rri.title)}</div>`;
         if (rri.type == 'choice') {
             form_content += get_choice_html(rri.choice, rri.sequence);
         } else if (rri.type == 'char') {
@@ -538,6 +538,7 @@ function get_choice_html(text, name, divider='&') {
     var choices = text.split(divider);
     var html = `<select name="${name}">`;
     $.each(choices, function(idx, choice) {
+        choice = escapeHTML(choice);
         html += `<option value="${choice}">${choice}</option>`
     });
     html += `</select>`;
@@ -559,4 +560,12 @@ function show_modal(id) {
 
 function close_modal(id) {
     $(`#${id}`).modal('hide');
+}
+
+function escapeHTML(string){
+    return string.replace(/&/g, '&lt;')
+    .replace(/</g, '&lt;')
+    .replace(/>/g, '&gt;')
+    .replace(/"/g, '&quot;')
+    .replace(/'/g, "&#x27;");
 }

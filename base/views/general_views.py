@@ -6,7 +6,6 @@ from django.core.mail import send_mail
 from django.conf import settings
 from django.http import JsonResponse, Http404
 
-
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.models.post_models import Post, PostImgs, PostAgree, PostFavorite, PostDemagogy
@@ -92,16 +91,16 @@ class IndexBaseView(HeaderView, ListView):
 
     def repair_idx_to_int(self):
         if type(self.idx) is int:
-            return
+            return True
 
         if not self.idx.isdecimal():
             self.idx = 0
-            return
+            return True
 
         self.idx = int(self.idx)
         if self.idx < 0:
             self.idx = 0
-        return
+        return True
 
     def get_start_idx(self):
         self.repair_idx_to_int()
@@ -428,6 +427,7 @@ class RoomItemView(View):
         
         return room_dict
 
+#todo (中) sourceの値が内部か外部かで色・挙動を変えたい
 class PostItemView(View):
 
     def get_post_items(self, posts):

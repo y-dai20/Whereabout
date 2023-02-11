@@ -175,11 +175,11 @@ $(document).on('click', '.favorite-button', function(){
 
         if (data['is_favorite']) {
             img.attr('src', function(i, e){
-                return e.replace(WHITE_STAR_IMG, YELLOW_STAR_IMG)
+                return e.replace(whiteStarImg, yellowStarImg)
             });
         } else {
             img.attr('src', function(i, e){
-                return e.replace(YELLOW_STAR_IMG, WHITE_STAR_IMG)
+                return e.replace(yellowStarImg, whiteStarImg)
             });
         }
 

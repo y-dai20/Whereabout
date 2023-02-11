@@ -42,9 +42,10 @@
             {% endif %}
             <div class="dropdown-divider"></div>
             <div class="div-scroll myroom-list">
+              {{my_rooms | json_script:'my_rooms'}}
               <script>
-                var myrooms = [{{my_rooms | safe}}];
-                $.each(myrooms[0], function(idx, room) {
+                var myrooms = JSON.parse(document.getElementById('my_rooms').textContent);
+                $.each(myrooms, function(idx, room) {
                   create_myroom_dropdown(room.id_, room.title_);
                 });
               </script>

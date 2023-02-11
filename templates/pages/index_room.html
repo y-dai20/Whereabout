@@ -5,8 +5,9 @@
     {% include "../snippets/search_room.html" %}
 
     <div class="room-list my-row">
+      {{dumps_object_list | json_script:'dumps_object_list'}}
       <script>
-        var rooms = {{dumps_object_list | safe}};
+        var rooms = JSON.parse(document.getElementById('dumps_object_list').textContent);
         create_room_items('.room-list', rooms, true);
       </script>
     </div>

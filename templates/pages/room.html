@@ -3,9 +3,10 @@
 {% block main %}
 {% load static %}
 {% if do_pass_request_information %}
+  {{dumps_request_information | json_script:'dumps_request_information'}}
   <script>
-    var rris = {{dumps_request_information | safe}};
-    var room_id = '{{room_id | safe}}';
+    var rris = JSON.parse(JSON.parse(document.getElementById('dumps_request_information').textContent));
+    var room_id = '{{room_id}}';
     show_room_request_information(rris, room_id);
   </script>
 {% endif %}
@@ -28,7 +29,7 @@
           <img src="{% static "images/lock.svg" %}" class="lock-room">
           <br>
         {% endif %}
-        {{title | safe}}
+        {{title}}
       </div>
       <div class="room-subtitle c-white">
         {{subtitle | linebreaks}}
@@ -52,8 +53,9 @@
       {% include "../snippets/search_post_in_room.html" %}
       
       <div class="post-list">
+        {{dumps_object_list | json_script:'dumps_object_list'}}
         <script>
-          var posts = {{dumps_object_list | safe}};
+          var posts = JSON.parse(document.getElementById('dumps_object_list').textContent);
           create_post_items('.post-list', posts, true);
         </script>
       </div>

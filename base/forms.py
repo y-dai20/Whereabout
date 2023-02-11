@@ -25,6 +25,7 @@ IMAGE_EXTENSION = "jpg|jpeg|png|ico|bmp"
 VIDEO_EXTENSION = "mp4"
 
 class ValidationForm:
+    #todo (高)　使用できる記号を制限
     def clean_username(self):
         username = self.cleaned_data.get('username')
         if USERNAME_MAX_LENGTH < len(username):
@@ -49,6 +50,7 @@ class ValidationForm:
 
         if source is not None and SOURCE_MAX_LENGTH < len(source):
             raise ValidationError(('ソースは{}文字以下で入力してください'.format(SOURCE_MAX_LENGTH)))
+
         return source
 
 

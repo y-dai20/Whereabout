@@ -7,8 +7,9 @@
     <a href="/" class="btn btn-secondary" role="button">&lt;&lt;前へ戻る</a>
     <div class="my-row">
       <div class="my-col target-post">
+        {{dumps_post | json_script:'dumps_post'}}
         <script>
-          var posts = [{{dumps_post | safe}}];
+          var posts = [JSON.parse(document.getElementById('dumps_post').textContent)];
           create_post_items('.target-post', posts);
         </script>
       </div>
@@ -16,8 +17,9 @@
         {% include '../snippets/search_reply.html' with type="post" %}
       </div>
       <div class="post-detail-list reply-list my-row">
+        {{dumps_object_list | json_script:'dumps_object_list'}}
         <script>
-          var replies = {{dumps_object_list | safe}};
+          var replies = JSON.parse(document.getElementById('dumps_object_list').textContent);
           create_post_detail_items('.post-detail-list', replies);
         </script>
       </div>

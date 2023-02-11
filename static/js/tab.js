@@ -38,9 +38,9 @@ function create_room_tab_title(id="None" ,title="title", is_editable=true, is_ac
     html += `" data-tab="${tab}" data-content-id="${id}" data-bs-toggle="pill" data-bs-target="#room-tab-pane${tab}" type="button" role="pill">`;
     if (is_editable) {
         // html += `<textarea class="input-room-tab-title" id="input-room-tab-title${tab}">${title}</textarea>`;
-        html += `<input class="input-room-tab-title" id="input-room-tab-title${tab}" value="${title}">`;
+        html += `<input class="input-room-tab-title" id="input-room-tab-title${tab}" value="${escapeHTML(title)}">`;
     } else {
-        html += `${title}`;
+        html += `${escapeHTML(title)}`;
     }
     html += `</a>`;
     if (is_editable) {
@@ -209,11 +209,11 @@ function get_added_area() {
 }
 
 function get_title_object(text="タイトル") {
-    return `<textarea class="added-object-title tab-title-style">${text}</textarea>`;
+    return `<textarea class="added-object-title tab-title-style">${escapeHTML(text)}</textarea>`;
 }
 
 function get_textarea_object(text="テキスト") {
-    return `<textarea class="added-object-textarea tab-text-font">${text}</textarea>`;
+    return `<textarea class="added-object-textarea tab-text-font">${escapeHTML(text)}</textarea>`;
 }
 
 function get_img_object(file_name='') {
@@ -268,14 +268,14 @@ function set_added_object(tab, row, column, data) {
 
 function set_object(tab, row, column, data) {
     var drop_area = $('#'+get_tab_col_name(tab, row, column));
-    if (data['title'] != '') {
+    if (data.title != '') {
         drop_area.addClass('tab-title-content');
-        drop_area.append(`<span class="break-word tab-title-style">${data['title']}</span>`);
-    } else if (data['text'] != '') {
+        drop_area.append(`<span class="break-word tab-title-style">${escapeHTML(data.title)}</span>`);
+    } else if (escapeHTML(data.text) != '') {
         drop_area.addClass('tab-text-content');
-        drop_area.append(`<pre class="break-word tab-text-font">${data['text']}</pre>`);
-    } else if (data['img'] != '') {
-        drop_area.append(`<img class="img-fluid" src="/media/${data['img']}">`);
+        drop_area.append(`<pre class="break-word tab-text-font">${escapeHTML(data.text)}</pre>`);
+    } else if (escapeHTML(data.img) != '') {
+        drop_area.append(`<img class="img-fluid" src="/media/${escapeHTML(data.img)}">`);
     }
 }
 
