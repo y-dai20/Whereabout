@@ -120,7 +120,7 @@ class SendMailForSignupView(SendMailView):
         self.email = form.clean_email()
         user = User.objects.get_or_none(email=self.email)
         if user is not None:
-            guest = Guest.objects.get_or_404(email=self.email)
+            guest = get_object_or_404(Guest, email=self.email)
             access_count = guest.access_count
             guest.access_count = access_count + 1
             guest.save()

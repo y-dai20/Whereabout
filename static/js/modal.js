@@ -1,10 +1,19 @@
 $.validator.addMethod("dateFormat",
 	function (value, element) {
-		if (value.trim() == '') {
+		if (is_empty(value)) {
 			return true;
 		}
 		return value.match(/^[0-9]{4}\-[0-9]{2}\-[0-9]{2}$/);
 	},"yyyy-mm-ddの形式で入力してください");
+
+$.validator.addMethod("isalnum",
+	function (value, element) {
+		if (is_empty(value)) {
+			return true;
+		}
+	
+		return value.match(/^[A-Za-z0-9]*$/);
+	},"英数字のみで入力してください");
 
 $(document).ready(function() {
 	$("form[id='signup-form']").validate({
@@ -27,6 +36,7 @@ $(document).ready(function() {
 					}
 				},
 				maxlength:USERNAME_MAX_LENGTH,
+				isalnum:true,
 			},
 			password:{
 				required:{
@@ -160,6 +170,7 @@ $(document).ready(function() {
 					}
 				},
 				maxlength:USERNAME_MAX_LENGTH,
+				isalnum:true,
 			},
 			email:{
 				required:{
@@ -369,6 +380,7 @@ $(document).ready(function() {
 		rules:{
 			username:{
 				maxlength:USERNAME_MAX_LENGTH,
+				isalnum:true,
 			},
 			title:{
 				maxlength:POST_TITLE_MAX_LENGTH,
@@ -399,6 +411,7 @@ $(document).ready(function() {
 		rules:{
 			username:{
 				maxlength:USERNAME_MAX_LENGTH,
+				isalnum:true,
 			},
 			title:{
 				maxlength:POST_TITLE_MAX_LENGTH,
@@ -429,6 +442,7 @@ $(document).ready(function() {
 		rules:{
 			username:{
 				maxlength:USERNAME_MAX_LENGTH,
+				isalnum:true,
 			},
 			test:{
 				maxlength:REPLY_TEXT_MAX_LENGTH,
@@ -459,6 +473,7 @@ $(document).ready(function() {
 		rules:{
 			username:{
 				maxlength:USERNAME_MAX_LENGTH,
+				isalnum:true,
 			},
 			title:{
 				maxlength:ROOM_TITLE_MAX_LENGTH,
@@ -489,6 +504,7 @@ $(document).ready(function() {
 		rules:{
 			username:{
 				maxlength:USERNAME_MAX_LENGTH,
+				isalnum:true,
 			},
 			profession:{
 				maxlength:PROFESSION_MAX_LENGTH,

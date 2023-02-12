@@ -30,6 +30,10 @@ class ValidationForm:
         username = self.cleaned_data.get('username')
         if USERNAME_MAX_LENGTH < len(username):
             raise ValidationError(('ユーザー名は{}文字以下で入力してください'.format(USERNAME_MAX_LENGTH)))
+        
+        if not username.isalnum():
+            raise ValidationError('英数字のみで入力してください')
+
         return username
 
     def clean_email(self):
@@ -51,8 +55,10 @@ class ValidationForm:
         if source is not None and SOURCE_MAX_LENGTH < len(source):
             raise ValidationError(('ソースは{}文字以下で入力してください'.format(SOURCE_MAX_LENGTH)))
 
-        return source
+        if not source.startswith('http://') and not source.startswith('https://'):
+            raise ValidationError('適切なソースを入力してください')
 
+        return source
 
 class SignUpForm(ValidationForm, forms.ModelForm):
     class Meta:
