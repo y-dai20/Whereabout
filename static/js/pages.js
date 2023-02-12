@@ -1239,3 +1239,19 @@ $(document).on('click', '#submit-room-information', function(){
         show_modal_message(data.status, [data.statusText]);
     });
 });
+
+$(document).on('click', '.copy-link', function() {
+    navigator.clipboard.writeText($(this).data('link'));
+
+    $(this).tooltip({
+        title: 'リンクをコピーしました',
+        placement: 'top',
+        trigger: 'manual'
+    }).on('shown.bs.tooltip', function(){
+        setTimeout((function(){
+            $(this).tooltip('hide');
+        }).bind(this), 2000);
+    }).on('click', function() {
+        $(this).tooltip('show');
+    });
+});

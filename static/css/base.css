@@ -344,3 +344,11 @@ input {
 .navbar-toggler {
     padding: 0;
 }
+
+.margin-left {
+    margin-left: auto;
+}
+
+.copy-link {
+    cursor: pointer;
+}

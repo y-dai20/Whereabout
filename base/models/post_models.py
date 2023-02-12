@@ -8,7 +8,6 @@ from base.models.room_models import Room
 from base.models.general_models import ObjectExpansion
 from base.models.general_models import BaseManager
 
-#todo (高) 投稿の元ソースがどこかの情報を付与
 class Post(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)

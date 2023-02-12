@@ -45,7 +45,7 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
         files = request.FILES
         video_list = f.get_video_list(request.POST, files, self.max_video)
         if f.get_file_size(video_list) > self.max_video_size:
-                return JsonResponse(f.get_json_error_message(['動画サイズが{}を超えています'.format(f.get_file_size_by_unit(self.max_video_size, unit='MB'))]))
+            return JsonResponse(f.get_json_error_message(['動画サイズが{}を超えています'.format(f.get_file_size_by_unit(self.max_video_size, unit='MB'))]))
         post.video = video_list[0]
         
         img_list = f.get_img_list(request.POST, files, self.max_img)

@@ -1,5 +1,5 @@
 from django.shortcuts import get_object_or_404
-from django.views.generic import CreateView
+from django.views.generic import CreateView, TemplateView
 from django.http import JsonResponse, Http404
 from django.db.models import F
 
@@ -27,6 +27,7 @@ class ReplyPostView(LoginRequiredMixin, ReplyItemView, CreateView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
+        print(request.POST)
         post = get_object_or_404(Post, id=f.get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         files = request.FILES
 
@@ -36,7 +37,7 @@ class ReplyPostView(LoginRequiredMixin, ReplyItemView, CreateView):
 
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return f.get_json_error_message(f.get_form_error_message(form))
+            return JsonResponse(f.get_json_error_message(f.get_form_error_message(form)))
 
         room_base = RoomBase(vr.get_room())
         reply = form.save(commit=False)
@@ -81,7 +82,7 @@ class ReplyReplyView(LoginRequiredMixin, Reply2ItemView, CreateView):
             
         form = self.form_class(request.POST)
         if not form.is_valid():
-            return f.get_json_error_message(f.get_form_error_message(form))
+            return JsonResponse(f.get_json_error_message(f.get_form_error_message(form)))
 
         room_base = RoomBase(vr.get_room())
         reply2 = form.save(commit=False)

@@ -47,7 +47,7 @@ img.trash-img {
     height: 100%;
 }
 
-img.house {
+img.house-img, img.go-detail-img, img.copy-link-img {
     width: 20px;
     height: auto;
 }

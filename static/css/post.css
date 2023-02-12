@@ -30,14 +30,6 @@
     border-bottom: 2px solid black;
 }
 
-.created-at {
-    margin-left: auto;
-}
-
-.post-edit-delete {
-    margin-left: auto;
-}
-
 .post-video-preview {
     max-width: 50%;
 }

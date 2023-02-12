@@ -98,9 +98,12 @@ function get_post_header(post) {
     var html = `<div class="post-item-header item-header">`;
     html += get_item_user_area(post.username, post.user_img);
     html += get_item_room_area(post.room_id, post.room_title);
+    html += '<div class="margin-left">';
     html += get_created_at(post.created_at);
+    html += get_item_detail_link(`/post/${post.obj_id}/`);
+    html += get_item_copy_link(`/post/${post.obj_id}/`);
     html += get_delete_btn(post.can_user_delete);
-    html += `</div>`;
+    html += `</div></div>`;
     return html;
 }
 
@@ -126,6 +129,7 @@ function get_post_content(post) {
     return html;
 }
 
+//todo replyとreply2の区別をする
 function get_reply_item(reply, is_link=false) {
     if (is_empty(reply)) {
         return '';
@@ -170,9 +174,12 @@ function get_reply_header(reply) {
     }
     html += `</div><div class="reply-item-header item-header">`;
     html += get_item_user_area(reply.username, reply.user_img);
+    html += '<div class="margin-left">';
+    html += get_item_detail_link(`/reply/${reply.obj_id}/`);
+    html += get_item_copy_link(`/reply/${reply.obj_id}/`);
     html += get_created_at(reply.created_at);
     html += get_delete_btn(reply.can_user_delete);
-    html += `</div>`
+    html += `</div></div>`;
     return html;
 }
 
@@ -377,14 +384,14 @@ function get_item_user_area(name, img=null, color='black') {
 
 function get_item_room_area(room_id, title, color='black') {
     if (!is_empty(room_id)) {
-        return `<img src="${houseImg}" class="house"><a class="c-${color} show-modal-room-button" href="#" data-roomid="${room_id}">${title}</a>`;
+        return `<img src="${houseImg}" class="house-img"><a class="c-${color} show-modal-room-button" href="#" data-roomid="${room_id}">${title}</a>`;
     }
     return '';
 }
 
 function get_item_source(source, color='blue') {
     if (!is_empty(source)) {
-        return `<a class="c-${color}" href="${escapeHTML(source)}">source</a>`; 
+        return `【ソース】<a class="c-${color}" href="${escapeHTML(source)}">${escapeHTML(source)}</a>`; 
     }
     return '';
 }
@@ -406,4 +413,12 @@ function create_search_user_result(user) {
 
 function create_myroom_dropdown(id, title) {
     $('.myroom-list').prepend(`<a class="dropdown-item" href="/room/${id}/">${escapeHTML(title)}</a>`);
+}
+
+function get_item_detail_link(path) {
+    return `<a href="${path}"><img src="${goDetail}" alt="" class="go-detail-img"></a>`;
+}
+
+function get_item_copy_link(path) {
+    return `<img src="${copyLink}" alt="" data-link="${BASE_URL}${path}" class="copy-link-img copy-link">`;
 }
