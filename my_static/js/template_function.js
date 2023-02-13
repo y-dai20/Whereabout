@@ -110,7 +110,7 @@ function get_post_header(post) {
 function get_post_content(post) {
     var html = `<div class="post-content">
             <span class="post-title">${escapeHTML(post.title)}</span><br>
-            <span class="post-text">${escapeHTML(adapt_linebreaks(post.text))}</span><br>
+            <span class="post-text">${adapt_linebreaks(escapeHTML(post.text))}</span><br>
             <span class="post-source">${get_item_source(post.source)}</span>
         </div>
         <div class="file-content text-center">
@@ -185,7 +185,7 @@ function get_reply_header(reply) {
 
 function get_reply_content(reply) {
     var html = `<div class="reply-content">
-        <span class="reply-text">${escapeHTML(adapt_linebreaks(reply.text))}</span><br>
+        <span class="reply-text">${adapt_linebreaks(escapeHTML(reply.text))}</span><br>
         <span class="reply-source">${get_item_source(reply.source)}</span>
         </div>
         <div class="file-content text-center">
@@ -274,7 +274,7 @@ function get_user_content(user){
     }
 	html += `</div><div class="username"><div class="headline">ユーザー名</div>${escapeHTML(user.username)}</div>
 	<div class="user-profession"><div class="headline">職業</div>${escapeHTML(user.profession)}</div>
-	<div class="user-description"><div class="headline">詳細</div>${escapeHTML(adapt_linebreaks(user.description))}</div></div>`;
+	<div class="user-description"><div class="headline">詳細</div>${adapt_linebreaks(escapeHTML(user.description))}</div></div>`;
 
 	return html;
 }
@@ -327,7 +327,7 @@ function get_room_content(room) {
             <span>${escapeHTML(room.title)}</span>
         </div>
         <div class="room-item-subtitle">
-            <span>${escapeHTML(adapt_linebreaks(room.subtitle))}</span>
+            <span>${adapt_linebreaks(escapeHTML(room.subtitle))}</span>
         </div>`;
     if (!is_empty(room.video_path)) {
         html += `<div class="video-area px-1">
