@@ -259,7 +259,10 @@ function get_user_item(user) {
 }
 
 function get_user_header(user) {
-    return `<div class="user-item-header item-header">${get_created_at(user.created_at)}</div>`;
+    return `<div class="user-item-header item-header">
+    <div class="margin-left">
+    ${get_item_copy_link(`/user/${user.username}/`)}
+    ${get_created_at(user.created_at)}</div></div>`;
 }
 
 function get_user_content(user){
@@ -313,7 +316,9 @@ function get_room_item(room) {
 function get_room_header(room) {
     return `<div class="room-item-header item-header">
     ${get_item_user_area(room.admin, room.admin_img, 'white')}
-    ${get_created_at(room.created_at)}</div>`;
+    <div class="margin-left">
+    ${get_item_copy_link(`/room/${room.id}/`)}
+    ${get_created_at(room.created_at)}</div></div>`;
 }
 
 function get_room_content(room) {
