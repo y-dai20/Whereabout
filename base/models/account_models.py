@@ -120,7 +120,6 @@ class UserEvaluate(models.Model):
     def __str__(self):
         return self.user.username
 
-
 class UserFollow(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH)

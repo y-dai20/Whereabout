@@ -59,9 +59,6 @@ class ReplyAgree(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.obj
-
 class ReplyFavorite(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
@@ -70,9 +67,6 @@ class ReplyFavorite(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.obj
 
 class ReplyDemagogy(models.Model):
     objects = BaseManager()
@@ -84,9 +78,6 @@ class ReplyDemagogy(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.obj
-
 class Reply2Agree(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
@@ -97,9 +88,6 @@ class Reply2Agree(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.obj
-
 class Reply2Favorite(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
@@ -108,9 +96,6 @@ class Reply2Favorite(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.obj
 
 class Reply2Demagogy(models.Model):
     objects = BaseManager()
@@ -121,9 +106,6 @@ class Reply2Demagogy(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.obj
 
 # @receiver(post_save, sender=ReplyPost)
 # def create_onetoone(sender, **kwargs):

@@ -36,7 +36,7 @@ class Room(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
     def __str__(self):
-        return self.title
+        return 'NAME:{}_ID:{}'.format(self.title, self.id)
     
     class Meta:
         constraints = [
@@ -51,9 +51,6 @@ class RoomImgs(models.Model):
     img3 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
     img4 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
     img5 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
-
-    def __str__(self):
-        return self.room
 
 class RoomRequestInformation(models.Model):
     objects = BaseManager()
@@ -133,9 +130,6 @@ class RoomReplyType(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.room
-
 class RoomGuest(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
@@ -183,9 +177,6 @@ class RoomGood(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.obj
 
 @receiver(post_save, sender=Room)
 def create_onetoone(sender, **kwargs):

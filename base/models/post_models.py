@@ -32,9 +32,6 @@ class PostImgs(models.Model):
     img3 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
     img4 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
 
-    def __str__(self):
-        return self.post
-
 class PostAgree(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
@@ -45,9 +42,6 @@ class PostAgree(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-    def __str__(self):
-        return self.obj
-
 class PostFavorite(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
@@ -56,9 +50,6 @@ class PostFavorite(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.obj
 
 class PostDemagogy(models.Model):
     objects = BaseManager()
@@ -69,6 +60,3 @@ class PostDemagogy(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    def __str__(self):
-        return self.obj
