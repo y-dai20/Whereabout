@@ -23,27 +23,29 @@
 
 <div class="content show-room-content">
   <div class="my-container">
-    <div class="show-room-container text-center">
-      {% if is_public == False %}
-        <img src="{% static "images/lock.svg" %}" class="lock-room">
-      {% endif %}
-      <h1 class="room-title c-white">{{title}}</h1>
-      <div class="room-subtitle c-white">
-        {{subtitle | linebreaks}}
-      </div>
-      <div class="room-file-content">
-        {% if video_path and img_paths %}
-          <button type="button" class="btn btn-sm btn-secondary" id="change-video-img-button">動画⇄画像</button>
+    <div class="show-room-container">
+      <div class="text-center">
+        {% if is_public == False %}
+          <img src="{% static "images/lock.svg" %}" class="lock-room">
         {% endif %}
-        {% if video_path %}
-          <div id="room-video-area">
-            <button class="close-button not-display" id="room-video-close-button">x</button>
-            <video controls autoplay muted src="{{video_path}}" class="room-video"></video>
-          </div>
-          {% include "../snippets/slider_imgs.html" with add_class="show-room not-display" %}
-        {% else %}
-          {% include "../snippets/slider_imgs.html" with add_class="show-room" %}
-        {% endif %}
+        <h1 class="room-title c-white">{{title}}</h1>
+        <div class="room-subtitle c-white">
+          {{subtitle | linebreaks}}
+        </div>
+        <div class="room-file-content">
+          {% if video_path and img_paths %}
+            <button type="button" class="btn btn-sm btn-secondary" id="change-video-img-button">動画⇄画像</button>
+          {% endif %}
+          {% if video_path %}
+            <div id="room-video-area">
+              <button class="close-button not-display" id="room-video-close-button">x</button>
+              <video controls autoplay muted src="{{video_path}}" class="room-video"></video>
+            </div>
+            {% include "../snippets/slider_imgs.html" with add_class="show-room not-display" %}
+          {% else %}
+            {% include "../snippets/slider_imgs.html" with add_class="show-room" %}
+          {% endif %}
+        </div>
       </div>
       <div class="tab-content show-room c-white" id="room-tab-pane-list"></div>
 
