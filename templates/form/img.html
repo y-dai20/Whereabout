@@ -3,11 +3,11 @@
     <span>
         {% if is_multi %}
         <span data-bs-toggle="tooltip" data-bs-placement="right" title="最大4枚．2MB以内">
-            画像<img src="{% static "images/black_question.svg" %}" class="question-img">
+            画像<script>document.write(get_question_img());</script>
         </span>
         {% else %}
         <span data-bs-toggle="tooltip" data-bs-placement="right" title="最大1枚．2MB以内">
-            画像<img src="{% static "images/black_question.svg" %}" class="question-img">
+            画像<script>document.write(get_question_img());</script>
         </span>
         {% endif %}
     </span>

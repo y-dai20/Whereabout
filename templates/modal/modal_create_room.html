@@ -12,7 +12,7 @@
           <div class="form-group">
             <label for="title">
               <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
-                タイトル*<img src="{% static "images/black_question.svg" %}" class="question-img">
+                タイトル*<script>document.write(get_question_img());</script>
               </span>
             </label>
             <input type="text" class="form-control input-title" id="input-create-room-title" name="title" placeholder="Title">
@@ -20,7 +20,7 @@
           <div class="form-group">
             <label for="text">
               <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
-                タイトル*<img src="{% static "images/black_question.svg" %}" class="question-img">
+                タイトル*<script>document.write(get_question_img());</script>
               </span>
             </label>
             <textarea class="form-control input-subtitle" rows="3" id="input-create-room-subtitle" name="subtitle" placeholder="SubTitle"></textarea>

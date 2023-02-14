@@ -40,7 +40,7 @@ function create_room_tab_title(id="None" ,title="title", is_editable=true, is_ac
         // html += `<textarea class="input-room-tab-title" id="input-room-tab-title${tab}">${title}</textarea>`;
         html += `<input class="input-room-tab-title" id="input-room-tab-title${tab}" value="${escapeHTML(title)}">`;
     } else {
-        html += `${escapeHTML(title)}`;
+        html += `<h3 class="room-tab-title-font">${escapeHTML(title)}</h3>`;
     }
     html += `</a>`;
     if (is_editable) {
@@ -270,7 +270,7 @@ function set_object(tab, row, column, data) {
     var drop_area = $('#'+get_tab_col_name(tab, row, column));
     if (data.title != '') {
         drop_area.addClass('tab-title-content');
-        drop_area.append(`<span class="break-word tab-title-style">${escapeHTML(data.title)}</span>`);
+        drop_area.append(`<h3 class="break-word tab-title-style">${escapeHTML(data.title)}</h3>`);
     } else if (escapeHTML(data.text) != '') {
         drop_area.addClass('tab-text-content');
         drop_area.append(`<pre class="break-word tab-text-font">${escapeHTML(data.text)}</pre>`);

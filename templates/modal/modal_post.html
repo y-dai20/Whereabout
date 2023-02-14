@@ -12,7 +12,7 @@
           <div class="form-group">
             <label for="input-post-title">
               <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~50文字以内">
-                タイトル*<img src="{% static "images/black_question.svg" %}" class="question-img">
+                タイトル*<script>document.write(get_question_img());</script>
               </span>
             </label>
             <input type="text" class="form-control" id="input-post-title" name="title" placeholder="Title" required>
@@ -20,7 +20,7 @@
           <div class="form-group">
             <label for="input-post-text">
               <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
-                本文*<img src="{% static "images/black_question.svg" %}" class="question-img">
+                本文*<script>document.write(get_question_img());</script>
               </span>
             </label>
             <textarea class="form-control" rows="3" name="text" id="input-post-text" name="text" placeholder="Text" required></textarea>
@@ -61,7 +61,7 @@
           <div class="form-group">
             <label for="source">
               <span data-bs-toggle="tooltip" data-bs-placement="right" title="255文字以内">
-                ソース<img src="{% static "images/black_question.svg" %}" class="question-img">
+                ソース<script>document.write(get_question_img());</script>
               </span>
             </label>
             <input class="form-control" name="source" placeholder="https://xxxx.com">
@@ -70,7 +70,7 @@
           <div class="form-group" id="post-form-video">
             <span>
               <span data-bs-toggle="tooltip" data-bs-placement="right" title="最大1つ．5MB以内">
-                動画<img src="{% static "images/black_question.svg" %}" class="question-img">
+                動画<script>document.write(get_question_img());</script>
               </span>
             </span>
             <span class="upload-size" id="post-video-upload-size" data-size="0.0"></span>

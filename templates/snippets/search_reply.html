@@ -52,7 +52,7 @@
                         <input class="radio-position" id="radio-Agree" type="radio" name="position" value="Agree"/>
                         {% endif %}
                         <label for="radio-Agree">
-                        賛成 <img src="{% static "images/traffic_green.svg" %}"class="traffic-light">
+                        賛成 <script>document.write(get_traffic_img(trafficGreenImg));</script>
                         </label>
                     </div>
                     <div class="my-col">
@@ -62,7 +62,7 @@
                         <input class="radio-position" id="radio-Neutral" type="radio" name="position" value="Neutral"/>
                         {% endif %}
                         <label for="radio-Neutral">
-                        中立 <img src="{% static "images/traffic_yellow.svg" %}" class="traffic-light">
+                        中立 <script>document.write(get_traffic_img(trafficYellowImg));</script>
                         </label>
                     </div>
                     <div class="my-col">
@@ -72,7 +72,7 @@
                         <input class="radio-position" id="radio-Disagree" type="radio" name="position" value="Disagree"/>
                         {% endif %}
                         <label for="radio-Disagree">
-                        反対 <img src="{% static "images/traffic_red.svg"%}" class="traffic-light">
+                        反対 <script>document.write(get_traffic_img(trafficRedImg));</script>
                         </label>
                     </div>
                     </div>

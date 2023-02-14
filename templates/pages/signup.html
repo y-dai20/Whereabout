@@ -13,7 +13,7 @@
         <div class="form-group">
           <label for="" class="c-white">
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="50文字以内">
-              メールアドレス<img src="{% static "images/black_question.svg" %}" class="question-img">
+              メールアドレス<script>document.write(get_question_img());</script>
             </span>
           </label>
           <input type="email" class="form-control" name="email" placeholder="Email" value="{{email}}" readonly>
@@ -21,7 +21,7 @@
         <div class="form-group">
           <label for="" class="c-white">
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="50文字以内">
-              ユーザー名<img src="{% static "images/black_question.svg" %}" class="question-img">
+              ユーザー名<script>document.write(get_question_img());</script>
             </span>
           </label>
           <input type="text" class="form-control" name="username" placeholder="Username">
@@ -29,7 +29,7 @@
         <div class="form-group">
           <label for="" class="c-white">
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="8文字以上">
-              パスワード<img src="{% static "images/black_question.svg" %}" class="question-img">
+              パスワード<script>document.write(get_question_img());</script>
             </span>
           </label>
           <input type="password" class="form-control" id="password" name="password" placeholder="Password">

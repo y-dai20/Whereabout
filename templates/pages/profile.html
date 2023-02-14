@@ -37,7 +37,7 @@
                 {% if img_path %}
                   <img src="{{img_path}}" alt="" class="user-img">
                 {% else %}
-                  <img src="{% static "images/human.svg" %}" alt="" class="user-img">
+                  <script>document.write(get_human_img());</script>
                 {% endif %}
               </div>
               <label class="user-img-upload-label">
@@ -49,7 +49,7 @@
           </div>
           <p class="manage-headline">
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="0~255文字以内">
-              職業<img src="{% static "images/black_question.svg" %}" class="question-img">
+              職業<script>document.write(get_question_img());</script>
             </span>
           </p>
           <div class="form-group">
@@ -57,7 +57,7 @@
           </div>
           <p class="manage-headline">
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="0~255文字以内">
-              説明<img src="{% static "images/black_question.svg" %}" class="question-img">
+              説明<script>document.write(get_question_img());</script>
             </span>
           </p>
           <div class="form-group">
@@ -134,7 +134,7 @@
       <dic class="tab-pane container" id="manage-user-pane">
         <p class="manage-headline">
           <span data-bs-toggle="tooltip" data-bs-placement="right" title="8文字以上">
-            パスワード変更<img src="{% static "images/black_question.svg" %}" class="question-img">
+            パスワード変更<script>document.write(get_question_img());</script>
           </span>
         </p>
         <form id="change-password-form">

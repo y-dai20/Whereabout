@@ -1,5 +1,5 @@
 .room-title {
-    font-size: 40px;
+    font-size: 35px;
     font-weight: bold;
 }
 
@@ -142,7 +142,7 @@
 }
 
 .tab-title-style {
-    font-size: 30px;
+    font-size: 25px;
     border-bottom: 2px solid white;
 }
 
@@ -187,6 +187,11 @@
     margin: 0;
     padding: 0;
     /* overflow-wrap: break-word; */
+}
+
+.room-tab-title-font {
+    font-size: 16px;
+    margin: 0;
 }
 
 .input-room-tab-title {

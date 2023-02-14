@@ -47,7 +47,7 @@
 
           <p for="title" class="manage-headline">
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
-              タイトル*<img src="{% static "images/black_question.svg" %}" class="question-img">
+              タイトル*<script>document.write(get_question_img());</script>
             </span>
           </p>
           <div class="form-group">
@@ -56,7 +56,7 @@
 
           <p for="text" class="manage-headline">
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
-              サブタイトル*<img src="{% static "images/black_question.svg" %}" class="question-img">
+              サブタイトル*<script>document.write(get_question_img());</script>
             </span>
           </p>
           <div class="form-group">
@@ -65,7 +65,7 @@
           
           <p for="img" class="manage-headline">
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="最大5枚，2MB以内">
-              画像<img src="{% static "images/black_question.svg" %}" class="question-img">
+              画像<script>document.write(get_question_img());</script>
             </span>
           </p>
           <div class="form-group">
@@ -88,7 +88,7 @@
           
           <p for="video" class="manage-headline">
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="最大1つ，5MB以内">
-              動画<img src="{% static "images/black_question.svg" %}" class="question-img">
+              動画<script>document.write(get_question_img());</script>
             </span>
           </p>
           <div class="form-group">
@@ -119,7 +119,7 @@
               </div>
             </div>
             <div class="trash-area droppable" data-bs-toggle="tooltip" data-bs-placement="top" title="この上にオブジェクトをドロップすると削除できます">
-              <img src="{% static "images/trash.svg" %}" class="trash-img">
+              <script>document.write(get_trash_img());</script>
             </div>
             <div data-bs-toggle="tooltip" data-bs-placement="top" title="クリックしたオブジェクトを右へ拡大します">
               <button class="btn btn-secondary expand-object-button" type="button">右へ拡大</button>
@@ -135,7 +135,7 @@
                 <div class="nav flex-column nav-pills room-tab-title-list w-100"></div>
                 <div class="text-center">
                   <div class="add-tab-button">
-                    <img src="{% static "images/add.svg" %}" class="img-add-button">
+                    <script>document.write(get_add_img());</script>
                   </div>
                 </div>
               </div>
@@ -332,17 +332,17 @@
             <tr>
               <th scope="col">順番</th>
               <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" title="1~255文字以内">
-                タイトル<img src="{% static "images/black_question.svg" %}" class="question-img">
+                タイトル<script>document.write(get_question_img());</script>
               </th>
               <th scope="col">タイプ</th>
               <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" title="選択肢を&amp;で区切ってください．例)男&amp;女&amp;その他">
-                選択テキスト<img src="{% static "images/black_question.svg" %}" class="question-img">
+                選択テキスト<script>document.write(get_question_img());</script>
               </th>
               <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" title="0~255以内">
-                最小文字数<img src="{% static "images/black_question.svg" %}" class="question-img">
+                最小文字数<script>document.write(get_question_img());</script>
               </th>
               <th scope="col" data-bs-toggle="tooltip" data-bs-placement="top" title="0~255以内">
-                最大文字数<img src="{% static "images/black_question.svg" %}" class="question-img">
+                最大文字数<script>document.write(get_question_img());</script>
               </th>
               <th scope="col">有効</th>
             </tr>

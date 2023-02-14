@@ -1,5 +1,9 @@
 {% extends 'base.html' %}
 
+{% block title %}
+  {{title}}
+{% endblock %}
+
 {% block main %}
 {% load static %}
 {% if do_pass_request_information %}
@@ -26,12 +30,12 @@
     <div class="show-room-container">
       <div class="text-center">
         {% if is_public == False %}
-          <img src="{% static "images/lock.svg" %}" class="lock-room">
+        <script>document.write(get_lock_img());</script>
         {% endif %}
         <h1 class="room-title c-white">{{title}}</h1>
-        <div class="room-subtitle c-white">
+        <h2 class="room-subtitle c-white">
           {{subtitle | linebreaks}}
-        </div>
+        </h2>
         <div class="room-file-content">
           {% if video_path and img_paths %}
             <button type="button" class="btn btn-sm btn-secondary" id="change-video-img-button">動画⇄画像</button>
@@ -84,7 +88,7 @@
         </div>
     {% else %}    
         <div class="user-img-area">
-            <img src="{% static "images/human.svg" %}" alt="" class="user-img">
+            <script>document.write(get_human_img());</script>
         </div>
     {% endif %}
     <div class="username">
@@ -123,10 +127,10 @@
 </div>
 <div class="menu-wrapper border-left pc-menu">
   <div class="sidebar-menu open c-white" data-for="room-admin-sidebar">
-    <img src="{% static "images/human.svg" %}" alt="">
+    <script>document.write(get_human_img());</script>
   </div>
   <div class="sidebar-menu c-white" data-for="index-post-reply-sidebar">
-    <img src="{% static "images/post.svg" %}" alt="">
+    <script>document.write(get_post_img());</script>
   </div>
 </div>
 {% endblock %}

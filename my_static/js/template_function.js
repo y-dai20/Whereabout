@@ -163,11 +163,11 @@ function get_reply_item(reply, is_link=false) {
 function get_reply_header(reply) {
     var html = `<div class="reply-item-header item-header">`;
     if (reply.is_agree) {
-        html += `<img src="${trafficGreenImg}" class="traffic-light">`;
+        html += get_traffic_img(trafficGreenImg);
     } else if (reply.is_disagree) {
-        html += `<img src="${trafficRedImg}" class="traffic-light">`;
+        html += get_traffic_img(trafficRedImg);
     } else if (reply.is_neutral) {
-        html += `<img src="${trafficYellowImg}" class="traffic-light">`;
+        html += get_traffic_img(trafficYellowImg);
     }
     if (reply.type) {
         html += `<span>#${escapeHTML(reply.type)}</span>`
@@ -421,9 +421,37 @@ function create_myroom_dropdown(id, title) {
 }
 
 function get_item_detail_link(path) {
-    return `<a href="${path}"><img src="${goDetail}" alt="" class="go-detail-img"></a>`;
+    return `<a href="${path}"><img src="${goDetailImg}" alt="" class="go-detail-img"></a>`;
 }
 
 function get_item_copy_link(path) {
-    return `<img src="${copyLink}" alt="" data-link="${BASE_URL}${path}" class="copy-link-img copy-link">`;
+    return `<img src="${copyLinkImg}" alt="" data-link="${BASE_URL}${path}" class="copy-link-img copy-link">`;
+}
+
+function get_traffic_img(src) {
+    return `<img src="${src}" class="traffic-light">`;
+}
+
+function get_question_img() {
+    return `<img src="${questionImg}" class="question-img">`;
+}
+
+function get_human_img() {
+    return `<img src="${humanImg}" class="user-img">`;
+}
+
+function get_trash_img() {
+    return `<img src="${trashImg}" class="trash-img">`;
+}
+
+function get_add_img() {
+    return `<img src="${addImg}" class="img-add-button">`;
+}
+
+function get_lock_img() {
+    return `<img src="${lockImg}" class="lock-room">`;
+}
+
+function get_post_img() {
+    return `<img src="${postImg}">`;
 }

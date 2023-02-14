@@ -16,14 +16,14 @@
           <div class="form-group">
             <label for="text">
               <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
-                本文*<img src="{% static "images/black_question.svg" %}" class="question-img">
+                本文*<script>document.write(get_question_img());</script>
               </span>
             <textarea class="form-control input-reply-text" rows="3" name="text" placeholder="Text"></textarea>
           </div>
           <div class="form-group">
             <label for="source">
               <span data-bs-toggle="tooltip" data-bs-placement="right" title="255文字以内">
-                ソース<img src="{% static "images/black_question.svg" %}" class="question-img">
+                ソース<script>document.write(get_question_img());</script>
               </span>
             </label>
             <input class="form-control" name="source" placeholder="https://xxxx.com">
