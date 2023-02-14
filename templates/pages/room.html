@@ -23,14 +23,11 @@
 
 <div class="content show-room-content">
   <div class="my-container">
-    <div class="show-room-container">
-      <div class="room-title c-white">
-        {% if is_public == False %}
-          <img src="{% static "images/lock.svg" %}" class="lock-room">
-          <br>
-        {% endif %}
-        {{title}}
-      </div>
+    <div class="show-room-container text-center">
+      {% if is_public == False %}
+        <img src="{% static "images/lock.svg" %}" class="lock-room">
+      {% endif %}
+      <h1 class="room-title c-white">{{title}}</h1>
       <div class="room-subtitle c-white">
         {{subtitle | linebreaks}}
       </div>

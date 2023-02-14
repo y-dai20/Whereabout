@@ -690,7 +690,7 @@ class ShowRoomBaseView(HeaderView):
         context['tab_content1_items'] = json.dumps(self.room_base.get_tab_content_items(self.room.tabpermutation.tab_content1))
         context['dumps_request_information'] = json.dumps(self.room_base.get_room_request_information())
 
-        context['do_pass_request_information'] = True
+        context['do_pass_request_information'] = False
         if not self.vr.is_admin(self.request.user) and\
             self.vr.is_room_user(self.request.user) and\
                 not RoomInformation.objects.filter(rri__room=room, user=self.request.user, is_deleted=False).exists():

@@ -1,12 +1,10 @@
 .room-title {
     font-size: 40px;
-    text-align: center;
     font-weight: bold;
 }
 
 .room-subtitle {
     font-size: 25px;
-    text-align: center;
 }
 .room-item-title {
     font-size: 25px;
@@ -296,8 +294,6 @@ label.form-check-label {
     max-width: 3em;
 }
 
-.show-room-container {
-    max-width: 600px;
-    width: 100%;
-    margin: auto;
-}
+/* .show-room-container {
+    margin: 0 10px;
+} */
