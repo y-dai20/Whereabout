@@ -455,14 +455,17 @@ $(document).on('click', '.save-display-button', function(){
     fd = get_form_data(form, ['input', 'textarea'], fd);
 
     var tabs = [];
+    var tab;
+    var is_include_id = false;
     for (var i=1; i <= document.getElementsByClassName('input-room-tab-title').length; i++) {
-        if ($(`#room-tab-title${i}`).hasClass('display-none')) {
+        if ($(`#room-tab-title${i}`).hasClass('not-display')) {
             continue;
         }
-        var tab = {'content_id':'', 'title':'', 'content':{'create':[], 'delete':[]}};
-        tab['content_id'] = $(`#input-room-tab-title${i}`).parents('.room-tab-title').data('content-id');
-        tab['title'] = document.getElementById(`input-room-tab-title${i}`).value;
-
+        tab = {
+            'content_id':$(`#input-room-tab-title${i}`).parents('.room-tab-title').data('content-id'), 
+            'title':document.getElementById(`input-room-tab-title${i}`).value, 
+            'content':{'create':[], 'delete':[]}};
+        is_include_id = Object.keys(RoomTabItems).includes(tab['content_id']);
         $(`#room-tab-table${i}`).find(`.added-object`).each(function() {
             var item = {
                 'title':$.trim($(this).find('.added-object-title').val()),
@@ -484,16 +487,16 @@ $(document).on('click', '.save-display-button', function(){
                 }
             });
             
-            if (TabContentItems.length < i) {
+            if (!is_include_id) {
                 tab['content']['create'].push(item);
                 return false;
             }
 
             var create_flag = true;
-            var delete_idx = -1;
-            $.each(TabContentItems[i-1], function(idx, dict){
+            var splice = -1;
+            $.each(RoomTabItems[tab['content_id']], function(idx, dict){
                 if (dict.row == item.row & dict.column == item.column) {
-                    delete_idx = idx;
+                    splice = idx;
                     if (dict.col == item.col & dict.title == item.title & dict.text == item.text & dict.img == item.img) {
                         create_flag = false;
                     }
@@ -501,17 +504,16 @@ $(document).on('click', '.save-display-button', function(){
                 }
             });
             
-            if (delete_idx != -1) {
-                TabContentItems[i-1].splice(delete_idx, 1);
+            if (splice != -1) {
+                RoomTabItems[tab['content_id']].splice(splice, 1);
             }
             
             if (create_flag) {
                 tab['content']['create'].push(item);
             }
         });
-        if (TabContentItems.length >= i) {
-            tab['content']['delete'] = TabContentItems[i-1];
-        }
+
+        tab['content']['delete'] = RoomTabItems[tab['content_id']];
         tabs.push(tab);
     }
     fd.append('tabs', JSON.stringify(tabs));

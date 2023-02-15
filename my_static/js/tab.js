@@ -18,16 +18,18 @@ $(document).ready(function(){
 });
 
 
-function create_room_tab_titles(room_tab_titles, is_editable=true) {
-    var room_tab_title = room_tab_titles.shift(); 
-    create_room_tab_title(room_tab_title.id, room_tab_title.title, is_editable, is_active=true);
-    
-    room_tab_titles.every(function(room_tab_title) {
-        if (is_empty(room_tab_title) || is_empty(room_tab_title.title)) {
+function create_room_tab_titles(tab_titles, is_editable=true) {
+    if (tab_titles.length < 1) {
+        return true;
+    }
+    var tab_titles_copy = Object.assign([], tab_titles);
+    var tab_title1 = tab_titles_copy.shift(); 
+    create_room_tab_title(tab_title1.id, tab_title1.title, is_editable, is_active=true);
+    tab_titles_copy.every(function(tab_title) {
+        if (is_empty(tab_title) || is_empty(tab_title.title)) {
             return false;
         }
-        
-        create_room_tab_title(room_tab_title.id, room_tab_title.title, is_editable);
+        create_room_tab_title(tab_title.id, tab_title.title, is_editable);
         return true;
     });
 }
@@ -331,7 +333,7 @@ $(document).on('click', '.add-tab-button', function(){
 
 $(document).on('click', '.delete-tab-button', function(){
     var tab = $(this).data('tab');
-    $(`#room-tab-title${tab}`).addClass('display-none');
+    $(`#room-tab-title${tab}`).addClass('not-display');
     $(`#room-tab-pane${tab}`).fadeOut();
     $(`#room-tab-title${tab}`).fadeOut();
     $(this).fadeOut();
@@ -359,7 +361,7 @@ $(document).on('click', '.room-tab-title', function(){
 
     var scroll_target = ".room-file-content";
     var tab = $(this).data('tab');
-    if (ShowContentIds.includes(content_id)) {
+    if (Object.keys(RoomTabItems).includes(content_id)) {
         if ($('#room-tab-pane-list').hasClass('show-room')) {
             scroll_to(scroll_target);
         }
@@ -384,8 +386,7 @@ $(document).on('click', '.room-tab-title', function(){
             deploy_tab_content_items(tab, data['content_items'], is_droppable=false);
             scroll_to(scroll_target);
         }
-        TabContentItems.push(data['content_items']);
-        ShowContentIds.push(content_id);
+        RoomTabItems[content_id] = data['content_items'];
     });
 });
 

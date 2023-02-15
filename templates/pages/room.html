@@ -33,11 +33,13 @@
   {{room_tab_items | json_script:'room_tab_items'}}
   <script>
     var RoomTabTitles = JSON.parse(document.getElementById('room_tab_titles').textContent);
-    var ShowContentIds = [RoomTabTitles.length > 0 ? RoomTabTitles[0].id : ""];
-    var RoomTabItems = JSON.parse(document.getElementById('room_tab_items').textContent);
     create_room_tab_titles(RoomTabTitles, false);
     create_room_tab_table(tab=1, is_droppable=false, is_active=true);
-    deploy_tab_content_items(tab=1, RoomTabItems, is_droppable=false);
+    var RoomTabItems = {};
+    if (RoomTabTitles.length > 0) {
+      RoomTabItems[RoomTabTitles[0].id] = JSON.parse(document.getElementById('room_tab_items').textContent);
+      deploy_tab_content_items(tab=1, RoomTabItems[RoomTabTitles[0].id], is_droppable=false);
+    }
   </script>
 </div>
 {% endblock %}
