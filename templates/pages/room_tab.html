@@ -1,0 +1,43 @@
+{% extends 'base/room_base.html' %}
+
+{% block title %}
+  {{title}}
+{% endblock %}
+
+{% block room_content %}
+<div class="text-center">
+  {% if is_public == False %}
+  <script>document.write(get_lock_img());</script>
+  {% endif %}
+  <h1 class="room-title c-white">{{title}}</h1>
+  <h2 class="room-subtitle c-white">
+    {{subtitle | linebreaks}}
+  </h2>
+  <div class="room-file-content">
+    {% if video_path and img_paths %}
+      <button type="button" class="btn btn-sm btn-secondary" id="change-video-img-button">動画⇄画像</button>
+    {% endif %}
+    {% if video_path %}
+      <div id="room-video-area">
+        <button class="close-button not-display" id="room-video-close-button">x</button>
+        <video controls autoplay muted src="{{video_path}}" class="room-video"></video>
+      </div>
+      {% include "../snippets/slider_imgs.html" with add_class="show-room not-display" %}
+    {% else %}
+      {% include "../snippets/slider_imgs.html" with add_class="show-room" %}
+    {% endif %}
+  </div>
+</div>
+<div class="tab-content show-room c-white" id="room-tab-pane-list">
+  {{room_tab_titles | json_script:'room_tab_titles'}}
+  {{room_tab_items | json_script:'room_tab_items'}}
+  <script>
+    var RoomTabTitles = JSON.parse(document.getElementById('room_tab_titles').textContent);
+    var ShowContentIds = [RoomTabTitles.length > 0 ? RoomTabTitles[0].id : ""];
+    var RoomTabItems = JSON.parse(document.getElementById('room_tab_items').textContent);
+    create_room_tab_titles(RoomTabTitles, false);
+    create_room_tab_table(tab=1, is_droppable=false, is_active=true);
+    deploy_tab_content_items(tab=1, RoomTabItems, is_droppable=false);
+  </script>
+</div>
+{% endblock %}

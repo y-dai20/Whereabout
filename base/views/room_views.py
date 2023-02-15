@@ -48,6 +48,9 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
         
         return self.get_post_items(self.get_idx_items(posts))
 
+class ShowRoomTabView(ShowRoomView):
+    pass
+
 class ManageRoomBaseView(LoginRequiredMixin, RoomAdminRequiredMixin, View):
     max_img = 5
     
@@ -464,7 +467,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
 
     def post(self, request, *args, **kwargs):
         vr = self.get_validate_room()
-        room = vr.get_room()
+        self.room = vr.get_room()
         form_data = request.POST
         self.files = request.FILES
 
@@ -476,17 +479,17 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         if is_public is None:
             raise MyBadRequest('is_public is None.')
 
-        room.is_public = is_public
-        room.title = form.clean_title()
-        room.subtitle = form.clean_subtitle()
+        self.room.is_public = is_public
+        self.room.title = form.clean_title()
+        self.room.subtitle = form.clean_subtitle()
 
-        video_list = f.get_video_list(form_data, self.files, self.max_video, [room.video])
+        video_list = f.get_video_list(form_data, self.files, self.max_video, [self.room.video])
         if f.get_file_size(video_list) > self.max_video_size:
             return JsonResponse(f.get_json_error_message(['動画サイズが{}を超えています'.format(f.get_file_size_by_unit(self.max_video_size, unit='MB'))]))
-        room.video = video_list[0]
-        room.save()
+        self.room.video = video_list[0]
+        self.room.save()
 
-        room_imgs = room.roomimgs
+        room_imgs = self.room.roomimgs
         img_list = f.get_img_list(form_data, self.files, self.max_img, [room_imgs.img1, room_imgs.img2, room_imgs.img3, room_imgs.img4, room_imgs.img5])
 
         if f.get_file_size(img_list) > self.max_img_size:
@@ -500,7 +503,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         room_imgs.save()
 
         tabs = f.literal_eval(f.get_dict_item(form_data, 'tabs'))
-        tab_permutation = get_object_or_404(TabPermutation, room=room, room__is_deleted=False)
+        tab_permutation = get_object_or_404(TabPermutation, room=self.room, room__is_deleted=False)
         tab_permutation.tab_content1 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 0), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
         tab_permutation.tab_content2 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 1), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 1), 'title'))
         tab_permutation.tab_content3 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 2), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 2), 'title'))
@@ -522,12 +525,16 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     def get_room_tab_title(self, tab_content_id, title):
         if f.is_empty(title):
             return None
-        obj = TabContent.objects.filter(id=tab_content_id, is_deleted=False)
-        if not obj.exists():
-            return TabContent.objects.create(title=title)
+        tab_content = TabContent.objects.get_or_none(id=tab_content_id, is_deleted=False)
+        if tab_content is None:
+            return TabContent.objects.create(title=title, room=self.room)
         
-        obj.update(title=title)
-        return obj[0]
+        if tab_content.room != self.room:
+            tab_content.room = self.room
+        tab_content.title = title
+        tab_content.save()
+        
+        return tab_content
 
     def set_tab_content_item(self, tab_content, data):
         if f.is_empty(tab_content):

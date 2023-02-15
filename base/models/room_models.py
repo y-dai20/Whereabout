@@ -80,6 +80,7 @@ class TabContent(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     title = models.CharField(default='title', max_length=32, blank=False, null=False)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
