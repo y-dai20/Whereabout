@@ -7,9 +7,9 @@
 {% block main %}
 {% load static %}
 {% if do_pass_request_information %}
-  {{dumps_request_information | json_script:'dumps_request_information'}}
+  {{request_information | json_script:'request_information'}}
   <script>
-    var rris = JSON.parse(JSON.parse(document.getElementById('dumps_request_information').textContent));
+    var rris = JSON.parse(document.getElementById('request_information').textContent);
     var room_id = '{{room_id}}';
     show_room_request_information(rris, room_id);
   </script>
@@ -51,7 +51,18 @@
           {% endif %}
         </div>
       </div>
-      <div class="tab-content show-room c-white" id="room-tab-pane-list"></div>
+      <div class="tab-content show-room c-white" id="room-tab-pane-list">
+        {{room_tab_titles | json_script:'room_tab_titles'}}
+        {{room_tab_items | json_script:'room_tab_items'}}
+        <script>
+          var RoomTabTitles = JSON.parse(document.getElementById('room_tab_titles').textContent);
+          var ShowContentIds = [RoomTabTitles.length > 0 ? RoomTabTitles[0].id : ""];
+          var RoomTabItems = JSON.parse(document.getElementById('room_tab_items').textContent);
+          create_room_tab_titles(RoomTabTitles, false);
+          create_room_tab_table(tab=1, is_droppable=false, is_active=true);
+          deploy_tab_content_items(tab=1, RoomTabItems, is_droppable=false);
+        </script>
+      </div>
 
       {% include "../snippets/search_post_in_room.html" %}
       

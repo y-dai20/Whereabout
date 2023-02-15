@@ -42,9 +42,6 @@
   <script>
     bsCustomFileInput.init();
     const BASE_URL = "{{MY_URL}}";
-    var TabContents = [{{tab_contents | safe}}];
-    var ShowContentIds = [TabContents[0] ? TabContents[0][0].id : ""];
-    var TabContentItems = [{{tab_content1_items | safe}}];
     const whiteStarImg = "{% static "images/white_star.svg" %}";
     const yellowStarImg = "{% static "images/yellow_star.svg" %}";
     const deleteImg = "{% static "images/delete.svg" %}";

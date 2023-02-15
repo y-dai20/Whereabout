@@ -306,28 +306,28 @@ class RoomBase(object):
 
         return img_sizes
 
-    def get_tab_contents(self):
+    def get_room_tab_titles(self):
         if not self.vr.is_room_exist():
             return [] 
 
         tab_titles = []
-        tab_titles.append(self.get_tab_content(self.room.tabpermutation.tab_content1, none_val='title'))
-        tab_titles.append(self.get_tab_content(self.room.tabpermutation.tab_content2))
-        tab_titles.append(self.get_tab_content(self.room.tabpermutation.tab_content3))
-        tab_titles.append(self.get_tab_content(self.room.tabpermutation.tab_content4))
-        tab_titles.append(self.get_tab_content(self.room.tabpermutation.tab_content5))
-        tab_titles.append(self.get_tab_content(self.room.tabpermutation.tab_content6))
-        tab_titles.append(self.get_tab_content(self.room.tabpermutation.tab_content7))
-        tab_titles.append(self.get_tab_content(self.room.tabpermutation.tab_content8))
-        tab_titles.append(self.get_tab_content(self.room.tabpermutation.tab_content9))
-        tab_titles.append(self.get_tab_content(self.room.tabpermutation.tab_content10))
+        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content1, none_val='title'))
+        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content2))
+        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content3))
+        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content4))
+        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content5))
+        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content6))
+        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content7))
+        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content8))
+        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content9))
+        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content10))
 
         return tab_titles
 
-    def get_tab_content(self, tab_content, none_val=None):
+    def get_room_tab_title(self, tab_content, none_val=None):
         return {'id':tab_content.id, 'title':tab_content.title} if tab_content else {'id':'', 'title':none_val}
 
-    def get_tab_content_items(self, tab_content_id):
+    def get_room_tab_content_items(self, tab_content_id):
         return list(TabContentItem.objects.filter(
             tab_content_id=tab_content_id, 
             is_deleted=False
@@ -686,9 +686,9 @@ class ShowRoomBaseView(HeaderView):
 
         context['video_path'] = f.get_img_path(room.video)
         context['img_paths'] = self.room_base.get_room_img_paths()
-        context['tab_contents'] = json.dumps(self.room_base.get_tab_contents())
-        context['tab_content1_items'] = json.dumps(self.room_base.get_tab_content_items(self.room.tabpermutation.tab_content1))
-        context['dumps_request_information'] = json.dumps(self.room_base.get_room_request_information())
+        context['room_tab_titles'] = self.room_base.get_room_tab_titles()
+        context['room_tab_items'] = self.room_base.get_room_tab_content_items(self.room.tabpermutation.tab_content1)
+        context['request_information'] = self.room_base.get_room_request_information()
 
         context['do_pass_request_information'] = False
         if not self.vr.is_admin(self.request.user) and\

@@ -69,7 +69,7 @@ class GetRoomTabContents(TemplateView):
             raise MyBadRequest('content_id is error.')
 
         room_base = RoomBase()
-        return JsonResponse(f.get_json_success_message(add_dict={'content_items':room_base.get_tab_content_items(content_id)}))
+        return JsonResponse(f.get_json_success_message(add_dict={'content_items':room_base.get_room_tab_content_items(content_id)}))
 
 #todo (低) ルームに電話番号，住所など情報追加
 class ManageRoomView(ManageRoomBaseView, ShowRoomBaseView, ListView):
@@ -501,11 +501,11 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
 
         tabs = f.literal_eval(f.get_dict_item(form_data, 'tabs'))
         tab_permutation = get_object_or_404(TabPermutation, room=room, room__is_deleted=False)
-        tab_permutation.tab_content1 = self.get_tab_content(f.get_dict_item(f.get_list_item(tabs, 0), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
-        tab_permutation.tab_content2 = self.get_tab_content(f.get_dict_item(f.get_list_item(tabs, 1), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 1), 'title'))
-        tab_permutation.tab_content3 = self.get_tab_content(f.get_dict_item(f.get_list_item(tabs, 2), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 2), 'title'))
-        tab_permutation.tab_content4 = self.get_tab_content(f.get_dict_item(f.get_list_item(tabs, 3), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 3), 'title'))
-        tab_permutation.tab_content5 = self.get_tab_content(f.get_dict_item(f.get_list_item(tabs, 4), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 4), 'title'))
+        tab_permutation.tab_content1 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 0), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
+        tab_permutation.tab_content2 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 1), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 1), 'title'))
+        tab_permutation.tab_content3 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 2), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 2), 'title'))
+        tab_permutation.tab_content4 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 3), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 3), 'title'))
+        tab_permutation.tab_content5 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 4), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 4), 'title'))
 
         self.set_tab_content_item(tab_permutation.tab_content1, f.get_dict_item(f.get_list_item(tabs, 0), 'content'))
         self.set_tab_content_item(tab_permutation.tab_content2, f.get_dict_item(f.get_list_item(tabs, 1), 'content'))
@@ -519,7 +519,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
 
         return JsonResponse(f.get_json_success_message(['保存しました']))
 
-    def get_tab_content(self, tab_content_id, title):
+    def get_room_tab_title(self, tab_content_id, title):
         if f.is_empty(title):
             return None
         obj = TabContent.objects.filter(id=tab_content_id, is_deleted=False)

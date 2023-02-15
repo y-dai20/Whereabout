@@ -8,17 +8,6 @@ var now_drag_object = null;
 var now_click_object = null;
 
 $(document).ready(function(){
-    if ($('#room-tab-pane-list').hasClass('manage-room')) {
-        create_room_tab_titles(TabContents[0], true);
-        create_room_tab_table(tab=1, is_droppable=true, is_active=true);
-        get_addable_object_list();
-        deploy_tab_content_items(tab=1, TabContentItems[0]);
-    } else if ($('#room-tab-pane-list').hasClass('show-room')) {
-        create_room_tab_titles(TabContents[0], false);
-        create_room_tab_table(tab=1, is_droppable=false, is_active=true);
-        deploy_tab_content_items(tab=1, TabContentItems[0], is_droppable=false);
-    }
-
     $('.trash-area').droppable({
         drop: function(){
             repair_expand();
@@ -29,16 +18,16 @@ $(document).ready(function(){
 });
 
 
-function create_room_tab_titles(tab_contents, is_editable=true) {
-    var tab_content = tab_contents.shift(); 
-    create_room_tab_title(tab_content.id, tab_content.title, is_editable, is_active=true);
+function create_room_tab_titles(room_tab_titles, is_editable=true) {
+    var room_tab_title = room_tab_titles.shift(); 
+    create_room_tab_title(room_tab_title.id, room_tab_title.title, is_editable, is_active=true);
     
-    tab_contents.every(function(tab_content) {
-        if (is_empty(tab_content) || is_empty(tab_content.title)) {
+    room_tab_titles.every(function(room_tab_title) {
+        if (is_empty(room_tab_title) || is_empty(room_tab_title.title)) {
             return false;
         }
         
-        create_room_tab_title(tab_content.id, tab_content.title, is_editable);
+        create_room_tab_title(room_tab_title.id, room_tab_title.title, is_editable);
         return true;
     });
 }
