@@ -1,147 +1,43 @@
-{% extends 'base.html' %}
+{% extends 'base/room_base.html' %}
 
 {% block title %}
   {{title}}
 {% endblock %}
 
-{% block main %}
-{% load static %}
-{% if do_pass_request_information %}
-  {{request_information | json_script:'request_information'}}
-  <script>
-    var rris = JSON.parse(document.getElementById('request_information').textContent);
-    var room_id = '{{room_id}}';
-    show_room_request_information(rris, room_id);
-  </script>
-{% endif %}
-<div class="left-sidebar sidebar">
-  <nav class="nav flex-column nav-pills room-tab-title-list w-100">
-    <a class="sidebar-button" type="button" role="pill" disabled>
-      タブ一覧
-    </a>
-  </nav>
-</div>
-<div class="menu-wrapper pc-menu">
-  <div class="hamburger-menu open" data-for="left-sidebar"><span></span><span></span><span></span></div>
-</div>
-
-<div class="content show-room-content">
-  <div class="my-container">
-    <div class="show-room-container">
-      <div class="text-center">
-        {% if is_public == False %}
-        <script>document.write(get_lock_img());</script>
-        {% endif %}
-        <h1 class="room-title c-white">{{title}}</h1>
-        <h2 class="room-subtitle c-white">
-          {{subtitle | linebreaks}}
-        </h2>
-        <div class="room-file-content">
-          {% if video_path and img_paths %}
-            <button type="button" class="btn btn-sm btn-secondary" id="change-video-img-button">動画⇄画像</button>
-          {% endif %}
-          {% if video_path %}
-            <div id="room-video-area">
-              <button class="close-button not-display" id="room-video-close-button">x</button>
-              <video controls autoplay muted src="{{video_path}}" class="room-video"></video>
-            </div>
-            {% include "../snippets/slider_imgs.html" with add_class="show-room not-display" %}
-          {% else %}
-            {% include "../snippets/slider_imgs.html" with add_class="show-room" %}
-          {% endif %}
-        </div>
+{% block room_content %}
+<div class="text-center">
+  {% if is_public == False %}
+  <script>document.write(get_lock_img());</script>
+  {% endif %}
+  <h1 class="room-title c-white">{{title}}</h1>
+  <h2 class="room-subtitle c-white">
+    {{subtitle | linebreaks}}
+  </h2>
+  <div class="room-file-content">
+    {% if video_path and img_paths %}
+      <button type="button" class="btn btn-sm btn-secondary" id="change-video-img-button">動画⇄画像</button>
+    {% endif %}
+    {% if video_path %}
+      <div id="room-video-area">
+        <button class="close-button not-display" id="room-video-close-button">x</button>
+        <video controls autoplay muted src="{{video_path}}" class="room-video"></video>
       </div>
-      <div class="tab-content show-room c-white" id="room-tab-pane-list">
-        {{room_tab_titles | json_script:'room_tab_titles'}}
-        {{room_tab_items | json_script:'room_tab_items'}}
-        <script>
-          var RoomTabTitles = JSON.parse(document.getElementById('room_tab_titles').textContent);
-          var ShowContentIds = [RoomTabTitles.length > 0 ? RoomTabTitles[0].id : ""];
-          var RoomTabItems = JSON.parse(document.getElementById('room_tab_items').textContent);
-          create_room_tab_titles(RoomTabTitles, false);
-          create_room_tab_table(tab=1, is_droppable=false, is_active=true);
-          deploy_tab_content_items(tab=1, RoomTabItems, is_droppable=false);
-        </script>
-      </div>
-
-      {% include "../snippets/search_post_in_room.html" %}
-      
-      <div class="post-list">
-        {{dumps_object_list | json_script:'dumps_object_list'}}
-        <script>
-          var posts = JSON.parse(document.getElementById('dumps_object_list').textContent);
-          create_post_items('.post-list', posts, true);
-        </script>
-      </div>
-      {% include '../snippets/load_more.html' with type="post" %}
-    </div>
-  </div>
-</div>
-
-<div class="room-admin-sidebar right-sidebar sidebar">
-  <div class="sidebar-item">
-    {% if is_admin %}
-      <a href="/manage/room/{{room_id}}/" role="button" type="button" class="sidebar-button btn btn-secondary" value="">Roomの管理</a>
-    {% elif is_blocked %}
-      <a href="#" role="button" type="button" class="sidebar-button btn btn-secondary" value="" disabled>ブロックされています</a>
-    {% elif is_room_user %}
-      <a href="#" data-url="/leave/room/{{room_id}}/" role="button" type="button" class="sidebar-button btn btn-secondary leave-room-confirm-button" value="">退出する</a>
-    {% elif is_waiting %}
-      <a href="#" role="button" type="button" class="sidebar-button btn btn-secondary" value="" disabled>許可待ち</a>
+      {% include "../snippets/slider_imgs.html" with add_class="show-room not-display" %}
     {% else %}
-      <a href="#" data-url="/join/room/{{room_id}}/" role="button" type="button" class="join-room-button sidebar-button btn btn-secondary" value="">参加</a>
+      {% include "../snippets/slider_imgs.html" with add_class="show-room" %}
     {% endif %}
   </div>
-  <div class="sidebar-item">
-    {% if admin_img %}
-        <div class="user-img-area">
-            <img src="{{admin_img}}" alt="" class="user-img">
-        </div>
-    {% else %}    
-        <div class="user-img-area">
-            <script>document.write(get_human_img());</script>
-        </div>
-    {% endif %}
-    <div class="username">
-      <div class="headline">管理者</div>
-      {{username}}
-    </div>
-    <div class="user-profession">
-      <div class="headline">職業</div>
-      {{profession}}
-    </div>
-    <div class="user-description">
-      <div class="headline">詳細</div>
-      {{description | linebreaks}}
-    </div>
-  </div>
 </div>
-<div class="index-post-reply-sidebar right-sidebar sidebar not-display">
-  <div class="sidebar-item">
-    <div class="post-detail-link obj-link">
-      投稿をクリックしたときに，その投稿の返信内容が表示されます
-    </div>
-  </div>
-  <div class="sidebar-item">
-    <div class="reply-list c-black"></div>
-    {% include '../snippets/load_more.html' with type="reply" %}
-  </div>
-</div>
-<div class="index-post-reply2-sidebar right-sidebar sidebar not-display">
-  <div class="sidebar-item">
-    <div class="reply-detail-link obj-link"></div>
-  </div>
-  <div class="sidebar-item">
-    <div class="reply2-list c-black"></div>
-    {% include '../snippets/load_more.html' with type="reply2" %}
-  </div>
-</div>
-<div class="menu-wrapper border-left pc-menu">
-  <div class="sidebar-menu open c-white" data-for="room-admin-sidebar">
-    <script>document.write(get_human_img());</script>
-  </div>
-  <div class="sidebar-menu c-white" data-for="index-post-reply-sidebar">
-    <script>document.write(get_post_img());</script>
-  </div>
+<div class="tab-content show-room c-white" id="room-tab-pane-list">
+  {{room_tab_titles | json_script:'room_tab_titles'}}
+  {{room_tab_items | json_script:'room_tab_items'}}
+  <script>
+    var RoomTabTitles = JSON.parse(document.getElementById('room_tab_titles').textContent);
+    var ShowContentIds = [RoomTabTitles.length > 0 ? RoomTabTitles[0].id : ""];
+    var RoomTabItems = JSON.parse(document.getElementById('room_tab_items').textContent);
+    create_room_tab_titles(RoomTabTitles, false);
+    create_room_tab_table(tab=1, is_droppable=false, is_active=true);
+    deploy_tab_content_items(tab=1, RoomTabItems, is_droppable=false);
+  </script>
 </div>
 {% endblock %}
