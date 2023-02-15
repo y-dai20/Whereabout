@@ -359,7 +359,7 @@ $(document).on('click', '.room-tab-title', function(){
         return false;
     }
 
-    var scroll_target = ".room-file-content";
+    var scroll_target = ".room-title";
     var tab = $(this).data('tab');
     if (Object.keys(RoomTabItems).includes(content_id)) {
         if ($('#room-tab-pane-list').hasClass('show-room')) {

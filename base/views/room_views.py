@@ -49,11 +49,13 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
         return self.get_post_items(self.get_idx_items(posts))
 
 class ShowRoomTabView(ShowRoomView):
+    template_name = 'pages/room_tab.html'
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
         tab_title = get_object_or_404(TabContent, id=f.get_dict_item(self.kwargs, 'tab_content_pk'), room=self.room, is_deleted=False)
         context['target_tab_title'] = tab_title.title
+        context['target_tab_id'] = tab_title.id
         context['target_tab_items'] = self.room_base.get_room_tab_content_items(tab_title)
 
         return context

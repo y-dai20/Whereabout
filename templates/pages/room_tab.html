@@ -5,16 +5,22 @@
 {% endblock %}
 
 {% block room_content %}
+<div class="text-center">
+    <h1 class="room-title c-white">{{target_tab_title}}</h1>
+</div>
 <div class="tab-content show-room c-white" id="room-tab-pane-list">
   {{room_tab_titles | json_script:'room_tab_titles'}}
-  {{room_tab_items | json_script:'room_tab_items'}}
   {{target_tab_items | json_script:'target_tab_items'}}
   <script>
     var RoomTabTitles = JSON.parse(document.getElementById('room_tab_titles').textContent);
-    var TargetTabItems = JSON.parse(document.getElementById('target_tab_items').textContent);
     create_room_tab_titles(RoomTabTitles, false);
     create_room_tab_table(tab=1, is_droppable=false, is_active=true);
-    deploy_tab_content_items(tab=1, TargetTabItems, is_droppable=false);
+    var RoomTabItems = {};
+    if (RoomTabTitles.length > 0) {
+      var tab_id = '{{target_tab_id}}'
+      RoomTabItems[tab_id] = JSON.parse(document.getElementById('target_tab_items').textContent);
+      deploy_tab_content_items(tab=1, RoomTabItems[tab_id], is_droppable=false);
+    }
   </script>
 </div>
 {% endblock %}
