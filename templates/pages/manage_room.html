@@ -148,7 +148,6 @@
                 {{room_tab_items | json_script:'room_tab_items'}}
                 <script>
                   var RoomTabTitles = JSON.parse(document.getElementById('room_tab_titles').textContent);
-                  console.log(RoomTabTitles);
                   create_room_tab_titles(RoomTabTitles, true);
                   create_room_tab_table(tab=1, is_droppable=true, is_active=true);
                   get_addable_object_list();

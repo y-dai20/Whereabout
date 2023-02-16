@@ -514,7 +514,6 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         room_imgs.save()
 
         tabs = f.literal_eval(f.get_dict_item(form_data, 'tabs'))
-        print(tabs)
         tab_permutation = get_object_or_404(TabPermutation, room=self.room, room__is_deleted=False)
         tab_permutation.tab_content1 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 0), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
         tab_permutation.tab_content2 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 1), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 1), 'title'))
