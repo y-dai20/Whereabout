@@ -10,7 +10,7 @@ import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.models.post_models import Post, PostImgs, PostAgree, PostFavorite, PostDemagogy
 from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy, ReplyPosition
-from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, RoomReplyType, TabContentItem,\
+from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, RoomReplyType, RoomTabItem,\
     RoomGood, RoomRequestInformation, RoomInformation
 from base.models.account_models import UserFollow, UserBlock, Profile
 from base.views.mixins import LoginRequiredMixin
@@ -328,7 +328,7 @@ class RoomBase(object):
         return {'id':tab_content.id, 'title':tab_content.title} if tab_content else {'id':'', 'title':none_val}
 
     def get_room_tab_content_items(self, tab_content_id):
-        return list(TabContentItem.objects.filter(
+        return list(RoomTabItem.objects.filter(
             tab_content_id=tab_content_id, 
             is_deleted=False
             ).order_by('row', 'column').values('title', 'text', 'img', 'row', 'column', 'col'))

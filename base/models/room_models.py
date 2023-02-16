@@ -76,7 +76,7 @@ class RoomInformation(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
 
-class TabContent(models.Model):
+class RoomTab(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     title = models.CharField(default='title', max_length=32, blank=False, null=False)
@@ -85,23 +85,23 @@ class TabContent(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class TabPermutation(models.Model):
+class RoomTabSequence(models.Model):
     room = models.OneToOneField(Room, primary_key=True, on_delete=models.CASCADE)
-    tab_content1 = models.ForeignKey(TabContent, null=True, on_delete=models.CASCADE, related_name="tab_content1")
-    tab_content2 = models.ForeignKey(TabContent, null=True, on_delete=models.CASCADE, related_name="tab_content2")
-    tab_content3 = models.ForeignKey(TabContent, null=True, on_delete=models.CASCADE, related_name="tab_content3")
-    tab_content4 = models.ForeignKey(TabContent, null=True, on_delete=models.CASCADE, related_name="tab_content4")
-    tab_content5 = models.ForeignKey(TabContent, null=True, on_delete=models.CASCADE, related_name="tab_content5")
-    tab_content6 = models.ForeignKey(TabContent, null=True, on_delete=models.CASCADE, related_name="tab_content6")
-    tab_content7 = models.ForeignKey(TabContent, null=True, on_delete=models.CASCADE, related_name="tab_content7")
-    tab_content8 = models.ForeignKey(TabContent, null=True, on_delete=models.CASCADE, related_name="tab_content8")
-    tab_content9 = models.ForeignKey(TabContent, null=True, on_delete=models.CASCADE, related_name="tab_content9")
-    tab_content10 = models.ForeignKey(TabContent, null=True, on_delete=models.CASCADE, related_name="tab_content10")
+    tab_content1 = models.ForeignKey(RoomTab, null=True, on_delete=models.CASCADE, related_name="tab_content1")
+    tab_content2 = models.ForeignKey(RoomTab, null=True, on_delete=models.CASCADE, related_name="tab_content2")
+    tab_content3 = models.ForeignKey(RoomTab, null=True, on_delete=models.CASCADE, related_name="tab_content3")
+    tab_content4 = models.ForeignKey(RoomTab, null=True, on_delete=models.CASCADE, related_name="tab_content4")
+    tab_content5 = models.ForeignKey(RoomTab, null=True, on_delete=models.CASCADE, related_name="tab_content5")
+    tab_content6 = models.ForeignKey(RoomTab, null=True, on_delete=models.CASCADE, related_name="tab_content6")
+    tab_content7 = models.ForeignKey(RoomTab, null=True, on_delete=models.CASCADE, related_name="tab_content7")
+    tab_content8 = models.ForeignKey(RoomTab, null=True, on_delete=models.CASCADE, related_name="tab_content8")
+    tab_content9 = models.ForeignKey(RoomTab, null=True, on_delete=models.CASCADE, related_name="tab_content9")
+    tab_content10 = models.ForeignKey(RoomTab, null=True, on_delete=models.CASCADE, related_name="tab_content10")
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
-class TabContentItem(models.Model):
+class RoomTabItem(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     title = models.CharField(default='', max_length=255, blank=True)
@@ -110,7 +110,7 @@ class TabContentItem(models.Model):
     row = models.IntegerField(null=False, blank=False)
     column = models.IntegerField(null=False, blank=False)
     col = models.IntegerField(null=False, blank=False)
-    tab_content_id = models.ForeignKey(TabContent, on_delete=models.CASCADE, default=None)
+    tab_content_id = models.ForeignKey(RoomTab, on_delete=models.CASCADE, default=None)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
@@ -182,5 +182,5 @@ class RoomGood(models.Model):
 @receiver(post_save, sender=Room)
 def create_onetoone(sender, **kwargs):
     if kwargs['created']:
-        TabPermutation.objects.create(room=kwargs['instance'])
+        RoomTabSequence.objects.create(room=kwargs['instance'])
         RoomReplyType.objects.create(room=kwargs['instance'])

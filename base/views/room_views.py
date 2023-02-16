@@ -8,8 +8,8 @@ import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.models.account_models import User, UserBlock
 from base.models.post_models import Post, PostFavorite
-from base.models.room_models import Room, RoomGuest, RoomImgs, RoomUser, RoomGood, RoomAuthority, TabContent, \
-    TabContentItem, RoomInviteUser, RoomReplyType, TabPermutation, RoomRequestInformation, RoomInformation
+from base.models.room_models import Room, RoomGuest, RoomImgs, RoomUser, RoomGood, RoomAuthority, RoomTab, \
+    RoomTabItem, RoomInviteUser, RoomReplyType, RoomTabSequence, RoomRequestInformation, RoomInformation
 from base.views.general_views import ShowRoomBaseView, PostItemView, RoomItemView, RoomBase, SearchBaseView, GoodView
 from base.views.validate_views import ValidateRoomView
 from base.forms import CreateRoomForm, UpdateRoomForm, RoomRequestInformationForm
@@ -53,7 +53,7 @@ class ShowRoomTabView(ShowRoomView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        tab_title = get_object_or_404(TabContent, id=f.get_dict_item(self.kwargs, 'tab_content_pk'), room=self.room, is_deleted=False)
+        tab_title = get_object_or_404(RoomTab, id=f.get_dict_item(self.kwargs, 'tab_content_pk'), room=self.room, is_deleted=False)
         context['target_tab_title'] = tab_title.title
         context['target_tab_id'] = tab_title.id
         context['target_tab_items'] = self.room_base.get_room_tab_content_items(tab_title)
@@ -514,7 +514,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         room_imgs.save()
 
         tabs = f.literal_eval(f.get_dict_item(form_data, 'tabs'))
-        tab_permutation = get_object_or_404(TabPermutation, room=self.room, room__is_deleted=False)
+        tab_permutation = get_object_or_404(RoomTabSequence, room=self.room, room__is_deleted=False)
         tab_permutation.tab_content1 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 0), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
         tab_permutation.tab_content2 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 1), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 1), 'title'))
         tab_permutation.tab_content3 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 2), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 2), 'title'))
@@ -536,9 +536,9 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     def get_room_tab_title(self, tab_content_id, title):
         if f.is_empty(title):
             return None
-        tab_content = TabContent.objects.get_or_none(id=tab_content_id, is_deleted=False)
+        tab_content = RoomTab.objects.get_or_none(id=tab_content_id, is_deleted=False)
         if tab_content is None:
-            return TabContent.objects.create(title=title, room=self.room)
+            return RoomTab.objects.create(title=title, room=self.room)
         
         if tab_content.title == title:
             return tab_content
@@ -588,7 +588,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             if not f.is_same_empty_count([title, text, img], 2):
                 raise MyBadRequest('is_same_empty error at create_tab_content.')
 
-            items = TabContentItem.objects.filter(
+            items = RoomTabItem.objects.filter(
                 row=row, 
                 column=column, 
                 tab_content_id=tab_content,
@@ -599,7 +599,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
                 items.update(title=title, text=text, img=img, col=col)
                 continue
 
-            TabContentItem.objects.create(
+            RoomTabItem.objects.create(
                 title=title, 
                 text=text, 
                 img=img, 
@@ -620,7 +620,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             if not f.is_int(row) or not f.is_int(column) or not f.is_int(col):
                 raise MyBadRequest('is_int error at create_tab_content.')
 
-            items = TabContentItem.objects.filter(
+            items = RoomTabItem.objects.filter(
                 row=row, 
                 column=column,
                 col=col, 
