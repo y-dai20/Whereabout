@@ -134,5 +134,3 @@ dmypy.json
 media/*
 secrets/
 *.sqlite3
-migrations/
-!migrations/__init__.py
