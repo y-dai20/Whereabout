@@ -465,10 +465,10 @@ $(document).on('click', '.save-display-button', function(){
             continue;
         }
         tab = {
-            'content_id':$(`#input-room-tab-title${i}`).parents('.room-tab-title').data('content-id'), 
+            'room_tab_id':$(`#input-room-tab-title${i}`).parents('.room-tab-title').data('room-tab-id'), 
             'title':document.getElementById(`input-room-tab-title${i}`).value, 
             'content':{'create':[], 'delete':[]}};
-        is_include_id = Object.keys(RoomTabItems).includes(tab['content_id']);
+        is_include_id = Object.keys(RoomTabItems).includes(tab['room_tab_id']);
         $(`#room-tab-table${i}`).find(`.added-object`).each(function() {
             item = {
                 'title':$.trim($(this).find('.added-object-title').val()),
@@ -490,14 +490,14 @@ $(document).on('click', '.save-display-button', function(){
                 }
             });
             
-            if (!is_include_id || is_empty(tab['content_id'])) {
+            if (!is_include_id || is_empty(tab['room_tab_id'])) {
                 tab['content']['create'].push(item);
                 return false;
             }
 
             create_flag = true;
             splice = -1;
-            $.each(RoomTabItems[tab['content_id']], function(idx, dict){
+            $.each(RoomTabItems[tab['room_tab_id']], function(idx, dict){
                 if (dict.row == item.row & dict.column == item.column) {
                     splice = idx;
                     if (dict.col == item.col & dict.title == item.title & dict.text == item.text & dict.img == item.img) {
@@ -508,7 +508,7 @@ $(document).on('click', '.save-display-button', function(){
             });
             
             if (splice != -1) {
-                RoomTabItems[tab['content_id']].splice(splice, 1);
+                RoomTabItems[tab['room_tab_id']].splice(splice, 1);
             }
             
             if (create_flag) {
@@ -516,7 +516,7 @@ $(document).on('click', '.save-display-button', function(){
             }
         });
 
-        tab['content']['delete'] = RoomTabItems[tab['content_id']];
+        tab['content']['delete'] = RoomTabItems[tab['room_tab_id']];
         tabs.push(tab);
     }
     fd.append('tabs', JSON.stringify(tabs));

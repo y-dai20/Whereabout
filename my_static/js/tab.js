@@ -49,8 +49,8 @@ function create_room_tab_title(id="None" ,title="title", is_editable=true, is_ac
         html += ` active `;
     }
     // エラーになる
-    // html += `" data-tab="${tab}" data-content-id="${id}" data-bs-toggle="pill" data-bs-target="#room-tab-pane${tab}" type="button" role="pill">`;
-    html += `" data-tab="${tab}" data-content-id="${id}" data-bs-toggle="pill" data-bs-target="#room-tab-pane${tab}">`;
+    // html += `" data-tab="${tab}" data-room-tab-id="${id}" data-bs-toggle="pill" data-bs-target="#room-tab-pane${tab}" type="button" role="pill">`;
+    html += `" data-tab="${tab}" data-room-tab-id="${id}" data-bs-toggle="pill" data-bs-target="#room-tab-pane${tab}">`;
     if (is_editable) {
         // html += `<textarea class="input-room-tab-title" id="input-room-tab-title${tab}">${escapeHTML(title)}</textarea>`;
         html += `<input class="input-room-tab-title" id="input-room-tab-title${tab}" value="${escapeHTML(title)}">`;
@@ -354,14 +354,14 @@ $(document).on('click', '.room-tab-content-img-delete-button', function(){
 });
 
 $(document).on('click', '.room-tab-title', function(){
-    var content_id = $(this).data('content-id');
-    if (is_empty(content_id)) {
+    var room_tab_id = $(this).data('room-tab-id');
+    if (is_empty(room_tab_id)) {
         return false;
     }
 
     var scroll_target = ".room-title";
     var tab = $(this).data('tab');
-    if (Object.keys(RoomTabItems).includes(content_id)) {
+    if (Object.keys(RoomTabItems).includes(room_tab_id)) {
         if ($('#room-tab-pane-list').hasClass('show-room')) {
             scroll_to(scroll_target);
         }
@@ -371,7 +371,7 @@ $(document).on('click', '.room-tab-title', function(){
     $.ajax({
         url: `/get/tab-contents/`,
         type:'POST',
-        data:{'content_id':content_id},
+        data:{'room_tab_id':room_tab_id},
         timeout:60000,
     }).done(function (data) {
         if (is_error(data)) {
@@ -386,7 +386,7 @@ $(document).on('click', '.room-tab-title', function(){
             deploy_tab_content_items(tab, data['content_items'], is_droppable=false);
             scroll_to(scroll_target);
         }
-        RoomTabItems[content_id] = data['content_items'];
+        RoomTabItems[room_tab_id] = data['content_items'];
     });
 });
 

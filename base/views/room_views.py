@@ -53,10 +53,10 @@ class ShowRoomTabView(ShowRoomView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        tab_title = get_object_or_404(RoomTab, id=f.get_dict_item(self.kwargs, 'tab_content_pk'), room=self.room, is_deleted=False)
-        context['target_tab_title'] = tab_title.title
-        context['target_tab_id'] = tab_title.id
-        context['target_tab_items'] = self.room_base.get_room_tab_content_items(tab_title)
+        room_tab = get_object_or_404(RoomTab, id=f.get_dict_item(self.kwargs, 'room_tab_pk'), room=self.room, is_deleted=False)
+        context['target_tab_title'] = room_tab.title
+        context['target_tab_id'] = room_tab.id
+        context['target_tab_items'] = self.room_base.get_room_tab_items(room_tab)
 
         return context
 
@@ -76,12 +76,12 @@ class ManageRoomBaseView(LoginRequiredMixin, RoomAdminRequiredMixin, View):
     
 class GetRoomTabContents(TemplateView):
     def post(self, request, *args, **kwargs):
-        content_id = f.get_dict_item(request.POST, 'content_id')
-        if f.is_empty(content_id) or not f.is_str(content_id):
-            raise MyBadRequest('content_id is error.')
+        room_tab_id = f.get_dict_item(request.POST, 'room_tab_id')
+        if f.is_empty(room_tab_id) or not f.is_str(room_tab_id):
+            raise MyBadRequest('room_tab_id is error.')
 
         room_base = RoomBase()
-        return JsonResponse(f.get_json_success_message(add_dict={'content_items':room_base.get_room_tab_content_items(content_id)}))
+        return JsonResponse(f.get_json_success_message(add_dict={'content_items':room_base.get_room_tab_items(room_tab_id)}))
 
 #todo (低) ルームに電話番号，住所など情報追加
 class ManageRoomView(ManageRoomBaseView, ShowRoomBaseView, ListView):
@@ -463,6 +463,7 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
         invite_obj.save()
         return True
 
+#todo (高) 初回だとroom_tab_itemが一つしか登録されないバグがある
 class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     model = Room
     form_class = UpdateRoomForm
@@ -471,7 +472,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     max_video_size = 11 * 1024 * 1024
     max_video = 1
     max_tab_title_len = 255
-    max_tab_text_len = 255
+    max_tab_text_len = 1024
 
     def get(self, request, *args, **kwargs):
         raise Http404
@@ -514,61 +515,61 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         room_imgs.save()
 
         tabs = f.literal_eval(f.get_dict_item(form_data, 'tabs'))
-        tab_permutation = get_object_or_404(RoomTabSequence, room=self.room, room__is_deleted=False)
-        tab_permutation.tab_content1 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 0), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
-        tab_permutation.tab_content2 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 1), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 1), 'title'))
-        tab_permutation.tab_content3 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 2), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 2), 'title'))
-        tab_permutation.tab_content4 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 3), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 3), 'title'))
-        tab_permutation.tab_content5 = self.get_room_tab_title(f.get_dict_item(f.get_list_item(tabs, 4), 'content_id'), f.get_dict_item(f.get_list_item(tabs, 4), 'title'))
+        room_tab_sequence = get_object_or_404(RoomTabSequence, room=self.room, room__is_deleted=False)
+        room_tab_sequence.tab_content1 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 0), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
+        room_tab_sequence.tab_content2 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 1), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 1), 'title'))
+        room_tab_sequence.tab_content3 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 2), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 2), 'title'))
+        room_tab_sequence.tab_content4 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 3), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 3), 'title'))
+        room_tab_sequence.tab_content5 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 4), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 4), 'title'))
 
-        self.set_tab_content_item(tab_permutation.tab_content1, f.get_dict_item(f.get_list_item(tabs, 0), 'content'))
-        self.set_tab_content_item(tab_permutation.tab_content2, f.get_dict_item(f.get_list_item(tabs, 1), 'content'))
-        self.set_tab_content_item(tab_permutation.tab_content3, f.get_dict_item(f.get_list_item(tabs, 2), 'content'))
-        self.set_tab_content_item(tab_permutation.tab_content4, f.get_dict_item(f.get_list_item(tabs, 3), 'content'))
-        self.set_tab_content_item(tab_permutation.tab_content5, f.get_dict_item(f.get_list_item(tabs, 4), 'content'))
-        tab_permutation.save()
+        self.set_room_tab_items(room_tab_sequence.tab_content1, f.get_dict_item(f.get_list_item(tabs, 0), 'content'))
+        self.set_room_tab_items(room_tab_sequence.tab_content2, f.get_dict_item(f.get_list_item(tabs, 1), 'content'))
+        self.set_room_tab_items(room_tab_sequence.tab_content3, f.get_dict_item(f.get_list_item(tabs, 2), 'content'))
+        self.set_room_tab_items(room_tab_sequence.tab_content4, f.get_dict_item(f.get_list_item(tabs, 3), 'content'))
+        self.set_room_tab_items(room_tab_sequence.tab_content5, f.get_dict_item(f.get_list_item(tabs, 4), 'content'))
+        room_tab_sequence.save()
 
         if not f.is_empty(self.error_messages):
             return JsonResponse(f.get_json_error_message(self.error_messages))
 
         return JsonResponse(f.get_json_success_message(['保存しました']))
 
-    def get_room_tab_title(self, tab_content_id, title):
+    def get_room_tab(self, room_tab_id, title):
         if f.is_empty(title):
             return None
-        tab_content = RoomTab.objects.get_or_none(id=tab_content_id, is_deleted=False)
-        if tab_content is None:
+        room_tab = RoomTab.objects.get_or_none(id=room_tab_id, is_deleted=False)
+        if room_tab is None:
             return RoomTab.objects.create(title=title, room=self.room)
         
-        if tab_content.title == title:
-            return tab_content
+        if room_tab.title == title:
+            return room_tab
 
-        if tab_content.room != self.room:
-            tab_content.room = self.room
-        tab_content.title = title
-        tab_content.save()
+        if room_tab.room != self.room:
+            room_tab.room = self.room
+        room_tab.title = title
+        room_tab.save()
 
-        return tab_content
+        return room_tab
 
-    def set_tab_content_item(self, tab_content, data):
-        if f.is_empty(tab_content):
+    def set_room_tab_items(self, room_tab, data):
+        if f.is_empty(room_tab):
             return False
 
-        self.delete_tab_content(tab_content, f.get_dict_item_list(data, 'delete'))
-        self.create_tab_content(tab_content, f.get_dict_item_list(data, 'create'))
+        self.delete_room_tab_items(room_tab, f.get_dict_item_list(data, 'delete'))
+        self.create_room_tab_items(room_tab, f.get_dict_item_list(data, 'create'))
 
-    def create_tab_content(self, tab_content, tab_content_items):
-        for tab_content_item in tab_content_items:
-            row = f.get_dict_item(tab_content_item, 'row')
-            column = f.get_dict_item(tab_content_item, 'column')
-            col = f.get_dict_item(tab_content_item, 'col')
+    def create_room_tab_items(self, room_tab, tab_items):
+        for tab_item in tab_items:
+            row = f.get_dict_item(tab_item, 'row')
+            column = f.get_dict_item(tab_item, 'column')
+            col = f.get_dict_item(tab_item, 'col')
             
             if not f.is_int(row) or not f.is_int(column) or not f.is_int(col):
-                raise MyBadRequest('is_int error at create_tab_content.')
+                raise MyBadRequest('is_int error at create_room_tab_items.')
 
-            title = f.get_dict_item(tab_content_item, 'title')
-            text = f.get_dict_item(tab_content_item, 'text')
-            img = f.get_dict_item(tab_content_item, 'img')
+            title = f.get_dict_item(tab_item, 'title')
+            text = f.get_dict_item(tab_item, 'text')
+            img = f.get_dict_item(tab_item, 'img')
 
             error_place = '{}行,{}列'.format(row, column)
             if len(title) > self.max_tab_title_len:
@@ -586,12 +587,12 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
                     continue
 
             if not f.is_same_empty_count([title, text, img], 2):
-                raise MyBadRequest('is_same_empty error at create_tab_content.')
+                raise MyBadRequest('is_same_empty error at create_room_tab_items.')
 
             items = RoomTabItem.objects.filter(
                 row=row, 
                 column=column, 
-                tab_content_id=tab_content,
+                room_tab=room_tab,
                 is_deleted=False
             )
 
@@ -606,25 +607,25 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
                 row=row, 
                 column=column, 
                 col=col,
-                tab_content_id=tab_content
+                room_tab=room_tab
             )
 
         return True
 
-    def delete_tab_content(self, tab_content, tab_content_items):
-        for tab_content_item in tab_content_items:
-            row = f.get_dict_item(tab_content_item, 'row')
-            column = f.get_dict_item(tab_content_item, 'column')
-            col = f.get_dict_item(tab_content_item, 'col')
+    def delete_room_tab_items(self, room_tab, tab_items):
+        for tab_item in tab_items:
+            row = f.get_dict_item(tab_item, 'row')
+            column = f.get_dict_item(tab_item, 'column')
+            col = f.get_dict_item(tab_item, 'col')
 
             if not f.is_int(row) or not f.is_int(column) or not f.is_int(col):
-                raise MyBadRequest('is_int error at create_tab_content.')
+                raise MyBadRequest('is_int error at create_room_tab_items.')
 
             items = RoomTabItem.objects.filter(
                 row=row, 
                 column=column,
                 col=col, 
-                tab_content_id=tab_content,
+                room_tab=room_tab,
                 is_deleted=False
             )
 

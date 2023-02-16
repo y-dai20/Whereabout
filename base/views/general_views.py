@@ -306,30 +306,30 @@ class RoomBase(object):
 
         return img_sizes
 
-    def get_room_tab_titles(self):
+    def get_room_tabs(self):
         if not self.vr.is_room_exist():
             return [] 
 
-        tab_titles = []
-        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content1, none_val='title'))
-        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content2))
-        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content3))
-        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content4))
-        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content5))
-        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content6))
-        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content7))
-        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content8))
-        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content9))
-        tab_titles.append(self.get_room_tab_title(self.room.tabpermutation.tab_content10))
+        room_tabs = []
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content1, none_val='title'))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content2))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content3))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content4))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content5))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content6))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content7))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content8))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content9))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content10))
 
-        return tab_titles
+        return room_tabs
 
-    def get_room_tab_title(self, tab_content, none_val=None):
-        return {'id':tab_content.id, 'title':tab_content.title} if tab_content else {'id':'', 'title':none_val}
+    def get_room_tab(self, room_tab, none_val=None):
+        return {'id':room_tab.id, 'title':room_tab.title} if room_tab else {'id':'', 'title':none_val}
 
-    def get_room_tab_content_items(self, tab_content_id):
+    def get_room_tab_items(self, room_tab):
         return list(RoomTabItem.objects.filter(
-            tab_content_id=tab_content_id, 
+            room_tab=room_tab, 
             is_deleted=False
             ).order_by('row', 'column').values('title', 'text', 'img', 'row', 'column', 'col'))
 
@@ -686,8 +686,8 @@ class ShowRoomBaseView(HeaderView):
 
         context['video_path'] = f.get_img_path(room.video)
         context['img_paths'] = self.room_base.get_room_img_paths()
-        context['room_tab_titles'] = self.room_base.get_room_tab_titles()
-        context['room_tab_items'] = self.room_base.get_room_tab_content_items(self.room.tabpermutation.tab_content1)
+        context['room_tab_titles'] = self.room_base.get_room_tabs()
+        context['room_tab_items'] = self.room_base.get_room_tab_items(self.room.roomtabsequence.tab_content1)
         context['request_information'] = self.room_base.get_room_request_information()
 
         context['do_pass_request_information'] = False

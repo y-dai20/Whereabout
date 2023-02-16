@@ -110,7 +110,7 @@ class RoomTabItem(models.Model):
     row = models.IntegerField(null=False, blank=False)
     column = models.IntegerField(null=False, blank=False)
     col = models.IntegerField(null=False, blank=False)
-    tab_content_id = models.ForeignKey(RoomTab, on_delete=models.CASCADE, default=None)
+    room_tab = models.ForeignKey(RoomTab, on_delete=models.CASCADE, default=None)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
