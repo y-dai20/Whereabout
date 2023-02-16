@@ -456,7 +456,10 @@ $(document).on('click', '.save-display-button', function(){
 
     var tabs = [];
     var tab;
+    var item;
     var is_include_id = false;
+    var create_flag;
+    var splice;
     for (var i=1; i <= document.getElementsByClassName('input-room-tab-title').length; i++) {
         if ($(`#room-tab-title${i}`).hasClass('not-display')) {
             continue;
@@ -467,7 +470,7 @@ $(document).on('click', '.save-display-button', function(){
             'content':{'create':[], 'delete':[]}};
         is_include_id = Object.keys(RoomTabItems).includes(tab['content_id']);
         $(`#room-tab-table${i}`).find(`.added-object`).each(function() {
-            var item = {
+            item = {
                 'title':$.trim($(this).find('.added-object-title').val()),
                 'text':$.trim($(this).find('.added-object-textarea').val()),
                 'img':'',
@@ -487,13 +490,13 @@ $(document).on('click', '.save-display-button', function(){
                 }
             });
             
-            if (!is_include_id) {
+            if (!is_include_id || is_empty(tab['content_id'])) {
                 tab['content']['create'].push(item);
                 return false;
             }
 
-            var create_flag = true;
-            var splice = -1;
+            create_flag = true;
+            splice = -1;
             $.each(RoomTabItems[tab['content_id']], function(idx, dict){
                 if (dict.row == item.row & dict.column == item.column) {
                     splice = idx;
@@ -1204,8 +1207,6 @@ $('#room-request-information-demo-button').on('click', function(){
         show_modal_message(data.status, [data.statusText]);
     });
 });
-
-
 
 $('.request-information-type').on('change', function() {
     var target = $(this).parents('tr').find('.request-information-choice');
