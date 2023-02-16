@@ -470,6 +470,8 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     max_img_size = 2 * 1024 * 1024
     max_video_size = 11 * 1024 * 1024
     max_video = 1
+    max_tab_title_len = 255
+    max_tab_text_len = 255
 
     def get(self, request, *args, **kwargs):
         raise Http404
@@ -560,24 +562,31 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             row = f.get_dict_item(tab_content_item, 'row')
             column = f.get_dict_item(tab_content_item, 'column')
             col = f.get_dict_item(tab_content_item, 'col')
+            
 
             if not f.is_int(row) or not f.is_int(column) or not f.is_int(col):
-                self.error_messages.append('row：{}，column：{}，col：{}が不正です'.format(row, column, col))
-                continue
+                raise MyBadRequest('is_int error at create_tab_content.')
 
             title = f.get_dict_item(tab_content_item, 'title')
             text = f.get_dict_item(tab_content_item, 'text')
             img = f.get_dict_item(tab_content_item, 'img')
 
+            error_place = '{}行,{}列'.format(row, column)
+            if len(title) > self.max_tab_title_len:
+                self.error_messages.append('{} タイトルの長さが{}を超えています'.format(error_place, self.max_tab_title_len))
+                continue
+            if len(text) > self.max_tab_text_len:
+                self.error_messages.append('{} テキストの長さが{}を超えています'.format(error_place, self.max_tab_text_len))
+                continue
+
             img = self.files[img] if img in self.files and f.is_uploaded_file_img(self.files[img]) else img
             if not f.is_empty(img) and f.get_file_size([img]) > self.max_img_size:
-                self.error_messages.append('row：{}，column：{}，col：{}の画像サイズが{}を超えています'.format(
-                    row, column, col, f.get_file_size_by_unit(self.max_video_size, unit='MB')))
+                self.error_messages.append('{} 画像サイズが{}を超えています'.format(
+                    error_place, f.get_file_size_by_unit(self.max_video_size, unit='MB')))
                 continue
 
             if not f.is_same_empty_count([title, text, img], 2):
-                self.error_messages.append('row：{}，column：{}，col：{}が内容が不正です'.format(row, column, col))
-                continue
+                raise MyBadRequest('is_same_empty error at create_tab_content.')
 
             items = TabContentItem.objects.filter(
                 row=row, 
@@ -591,7 +600,8 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
                 continue
             
             if items.exists() and not f.is_empty(img):
-                self.delete_tab_content(tab_content, tab_content_items)
+                items.update(is_deleted=True)
+                # self.delete_tab_content(tab_content, tab_content_items)
 
             TabContentItem.objects.create(
                 title=title, 
@@ -612,8 +622,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             col = f.get_dict_item(tab_content_item, 'col')
 
             if not f.is_int(row) or not f.is_int(column) or not f.is_int(col):
-                self.error_messages.append('row：{}，column：{}，col：{}が不正です'.format(row, column, col))
-                continue
+                raise MyBadRequest('is_int error at create_tab_content.')
 
             items = TabContentItem.objects.filter(
                 row=row, 
