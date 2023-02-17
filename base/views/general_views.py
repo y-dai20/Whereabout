@@ -311,16 +311,16 @@ class RoomBase(object):
             return [] 
 
         room_tabs = []
-        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content1, none_val='title'))
-        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content2))
-        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content3))
-        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content4))
-        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content5))
-        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content6))
-        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content7))
-        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content8))
-        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content9))
-        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab_content10))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab1, none_val='title'))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab2))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab3))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab4))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab5))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab6))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab7))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab8))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab9))
+        room_tabs.append(self.get_room_tab(self.room.roomtabsequence.tab10))
 
         return room_tabs
 
@@ -687,7 +687,7 @@ class ShowRoomBaseView(HeaderView):
         context['video_path'] = f.get_img_path(room.video)
         context['img_paths'] = self.room_base.get_room_img_paths()
         context['room_tab_titles'] = self.room_base.get_room_tabs()
-        context['room_tab_items'] = self.room_base.get_room_tab_items(self.room.roomtabsequence.tab_content1)
+        context['room_tab_items'] = self.room_base.get_room_tab_items(self.room.roomtabsequence.tab1)
         context['request_information'] = self.room_base.get_room_request_information()
 
         context['do_pass_request_information'] = False

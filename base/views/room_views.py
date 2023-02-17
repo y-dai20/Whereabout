@@ -516,17 +516,17 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
 
         tabs = f.literal_eval(f.get_dict_item(form_data, 'tabs'))
         room_tab_sequence = get_object_or_404(RoomTabSequence, room=self.room, room__is_deleted=False)
-        room_tab_sequence.tab_content1 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 0), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
-        room_tab_sequence.tab_content2 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 1), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 1), 'title'))
-        room_tab_sequence.tab_content3 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 2), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 2), 'title'))
-        room_tab_sequence.tab_content4 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 3), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 3), 'title'))
-        room_tab_sequence.tab_content5 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 4), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 4), 'title'))
+        room_tab_sequence.tab1 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 0), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
+        room_tab_sequence.tab2 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 1), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 1), 'title'))
+        room_tab_sequence.tab3 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 2), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 2), 'title'))
+        room_tab_sequence.tab4 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 3), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 3), 'title'))
+        room_tab_sequence.tab5 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 4), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 4), 'title'))
 
-        self.set_room_tab_items(room_tab_sequence.tab_content1, f.get_dict_item(f.get_list_item(tabs, 0), 'content'))
-        self.set_room_tab_items(room_tab_sequence.tab_content2, f.get_dict_item(f.get_list_item(tabs, 1), 'content'))
-        self.set_room_tab_items(room_tab_sequence.tab_content3, f.get_dict_item(f.get_list_item(tabs, 2), 'content'))
-        self.set_room_tab_items(room_tab_sequence.tab_content4, f.get_dict_item(f.get_list_item(tabs, 3), 'content'))
-        self.set_room_tab_items(room_tab_sequence.tab_content5, f.get_dict_item(f.get_list_item(tabs, 4), 'content'))
+        self.set_room_tab_items(room_tab_sequence.tab1, f.get_dict_item(f.get_list_item(tabs, 0), 'content'))
+        self.set_room_tab_items(room_tab_sequence.tab2, f.get_dict_item(f.get_list_item(tabs, 1), 'content'))
+        self.set_room_tab_items(room_tab_sequence.tab3, f.get_dict_item(f.get_list_item(tabs, 2), 'content'))
+        self.set_room_tab_items(room_tab_sequence.tab4, f.get_dict_item(f.get_list_item(tabs, 3), 'content'))
+        self.set_room_tab_items(room_tab_sequence.tab5, f.get_dict_item(f.get_list_item(tabs, 4), 'content'))
         room_tab_sequence.save()
 
         if not f.is_empty(self.error_messages):
