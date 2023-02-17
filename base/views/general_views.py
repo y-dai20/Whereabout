@@ -20,6 +20,7 @@ import json
 from datetime import datetime, timedelta
 from abc import abstractmethod
 
+#todo (高) detail画面でh1などを作成して，SEO対策をする
 
 #todo (高) sourceを画面に表示する方法を考える
 class HeaderView(View):
@@ -36,7 +37,7 @@ class HeaderView(View):
             id_=F('room__id'), title_=F('room__title'), admin_=F('room__admin__username'))
         context['other_rooms'] = other_rooms
 
-        # todo (低) notificationをmodelとして持つべきか
+        #todo (低) notificationをmodelとして持つべきか
         notifications = RoomGuest.objects.filter(room__admin=self.request.user, is_deleted=False).count()
         notifications += RoomInviteUser.objects.filter(user=self.request.user, is_deleted=False).count()
         context['notifications'] = notifications

@@ -455,22 +455,18 @@ $(document).on('click', '.save-display-button', function(){
     fd = get_form_data(form, ['input', 'textarea'], fd);
 
     var tabs = [];
-    var tab;
-    var item;
-    var is_include_id = false;
     var create_flag;
-    var splice;
     for (var i=1; i <= document.getElementsByClassName('input-room-tab-title').length; i++) {
         if ($(`#room-tab-title${i}`).hasClass('not-display')) {
             continue;
         }
-        tab = {
+        var tab = {
             'room_tab_id':$(`#input-room-tab-title${i}`).parents('.room-tab-title').data('room-tab-id'), 
             'title':document.getElementById(`input-room-tab-title${i}`).value, 
             'items':{'create':[], 'delete':[]}};
-        is_include_id = Object.keys(RoomTabItems).includes(tab['room_tab_id']);
+        var is_include_id = Object.keys(RoomTabItems).includes(tab['room_tab_id']);
         $(`#room-tab-table${i}`).find(`.added-object`).each(function() {
-            item = {
+            var item = {
                 'title':$.trim($(this).find('.added-object-title').val()),
                 'text':$.trim($(this).find('.added-object-textarea').val()),
                 'img':'',
@@ -490,33 +486,30 @@ $(document).on('click', '.save-display-button', function(){
                 }
             });
             
-            if (!is_include_id || is_empty(tab['room_tab_id'])) {
+            if (!is_include_id) {
                 tab['items']['create'].push(item);
-                return false;
+                return true;
             }
 
             create_flag = true;
-            splice = -1;
             $.each(RoomTabItems[tab['room_tab_id']], function(idx, dict){
                 if (dict.row == item.row & dict.column == item.column) {
-                    splice = idx;
+                    RoomTabItems[tab['room_tab_id']].splice(idx, 1);
                     if (dict.col == item.col & dict.title == item.title & dict.text == item.text & dict.img == item.img) {
                         create_flag = false;
                     }
                     return false;
                 }
             });
-            
-            if (splice != -1) {
-                RoomTabItems[tab['room_tab_id']].splice(splice, 1);
-            }
-            
+        
             if (create_flag) {
                 tab['items']['create'].push(item);
             }
         });
-
-        tab['items']['delete'] = RoomTabItems[tab['room_tab_id']];
+        
+        if (is_include_id) {
+            tab['items']['delete'] = RoomTabItems[tab['room_tab_id']];
+        }
         tabs.push(tab);
     }
     fd.append('tabs', JSON.stringify(tabs));

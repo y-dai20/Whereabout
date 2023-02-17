@@ -17,6 +17,7 @@ from base.views.mixins import LoginRequiredMixin, RoomAdminRequiredMixin
 
 import json
 
+#todo (高) SEO対策として，タブへのリンクを作成する
 class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
     template_name = 'pages/room.html'
     model = Room
@@ -48,6 +49,7 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
         
         return self.get_post_items(self.get_idx_items(posts))
 
+#todo (高) ルームの情報をどこかに表示する
 class ShowRoomTabView(ShowRoomView):
     template_name = 'pages/room_tab.html'
     def get_context_data(self, **kwargs):
@@ -463,7 +465,7 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
         invite_obj.save()
         return True
 
-#todo (高) 初回だとroom_tab_itemが一つしか登録されないバグがある
+#todo (中) Tabの順番をドラッグで移動できるようにする
 class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     model = Room
     form_class = UpdateRoomForm
@@ -515,6 +517,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         room_imgs.save()
 
         tabs = f.literal_eval(f.get_dict_item(form_data, 'tabs'))
+        print(tabs)
         room_tab_sequence = get_object_or_404(RoomTabSequence, room=self.room, room__is_deleted=False)
         room_tab_sequence.tab1 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 0), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
         room_tab_sequence.tab2 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 1), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 1), 'title'))
