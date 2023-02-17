@@ -302,3 +302,7 @@ label.form-check-label {
 /* .show-room-container {
     margin: 0 10px;
 } */
+
+.tab-img {
+    border-radius: 10px;
+}

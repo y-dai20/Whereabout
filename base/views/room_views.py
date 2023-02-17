@@ -60,6 +60,11 @@ class ShowRoomTabView(ShowRoomView):
         context['target_tab_id'] = room_tab.id
         context['target_tab_items'] = self.room_base.get_room_tab_items(room_tab)
 
+        for idx, room_tab in enumerate(context['room_tabs']):
+            if room_tab['id'] == context['target_tab_id']:
+                context['target_tab_sequence'] = idx
+                break
+
         return context
 
 class ManageRoomBaseView(LoginRequiredMixin, RoomAdminRequiredMixin, View):

@@ -5,6 +5,13 @@
 {% endblock %}
 
 {% block main %}
+<script>
+  $(function() {
+    $(window).on('beforeunload', function() {
+      return false;
+    });
+  })
+</script>
 <div class="left-sidebar sidebar">
   <nav class="nav flex-column nav-pills manage-room-function-list w-100">
     <a class="sidebar-button manage-room-function nav-link active" data-bs-toggle="pill" data-bs-target="#manage-display-pane" type="button" role="pill">
