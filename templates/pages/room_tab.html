@@ -9,14 +9,14 @@
     <h1 class="room-title c-white">{{target_tab_title}}</h1>
 </div>
 <div class="tab-content show-room c-white" id="room-tab-pane-list">
-  {{room_tab_titles | json_script:'room_tab_titles'}}
+  {{room_tabs | json_script:'room_tabs'}}
   {{target_tab_items | json_script:'target_tab_items'}}
   <script>
-    var RoomTabTitles = JSON.parse(document.getElementById('room_tab_titles').textContent);
-    create_room_tab_titles(RoomTabTitles, false);
+    var RoomTabs = JSON.parse(document.getElementById('room_tabs').textContent);
+    create_room_tab_titles(RoomTabs, false);
     create_room_tab_table(tab=1, is_droppable=false, is_active=true);
     var RoomTabItems = {};
-    if (RoomTabTitles.length > 0) {
+    if (RoomTabs.length > 0) {
       var tab_id = '{{target_tab_id}}'
       RoomTabItems[tab_id] = JSON.parse(document.getElementById('target_tab_items').textContent);
       deploy_tab_content_items(tab=1, RoomTabItems[tab_id], is_droppable=false);

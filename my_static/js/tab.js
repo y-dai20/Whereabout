@@ -359,6 +359,8 @@ $(document).on('click', '.room-tab-title', function(){
         return false;
     }
 
+    create_room_tab_link({'id':room_tab_id, 'title':$(this).text()});
+    
     var scroll_target = ".room-title";
     var tab = $(this).data('tab');
     if (Object.keys(RoomTabItems).includes(room_tab_id)) {
@@ -380,13 +382,13 @@ $(document).on('click', '.room-tab-title', function(){
         if ($('#room-tab-pane-list').hasClass('manage-room')) {
             create_room_tab_table(tab, is_droppable=true, is_active=true);
             get_addable_object_list();
-            deploy_tab_content_items(tab, data['content_items']);
+            deploy_tab_content_items(tab, data['room_tab_items']);
         } else if ($('#room-tab-pane-list').hasClass('show-room')) {
             create_room_tab_table(tab, is_droppable=false, is_active=true);
-            deploy_tab_content_items(tab, data['content_items'], is_droppable=false);
+            deploy_tab_content_items(tab, data['room_tab_items'], is_droppable=false);
             scroll_to(scroll_target);
         }
-        RoomTabItems[room_tab_id] = data['content_items'];
+        RoomTabItems[room_tab_id] = data['room_tab_items'];
     });
 });
 
@@ -394,4 +396,10 @@ function scroll_to(target) {
     $('.show-room-content').animate({
         scrollTop: $(target).offset().top,
     },1000)
+}
+
+function create_room_tab_link(room_tab) {
+    $('#room-tab-link').html(
+        `<h2><a href="${room_tab.id}">${room_tab.title}</a></h2>`
+    );
 }

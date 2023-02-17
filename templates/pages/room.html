@@ -28,17 +28,19 @@
     {% endif %}
   </div>
 </div>
+<div id="room-tab-link"></div>
 <div class="tab-content show-room c-white" id="room-tab-pane-list">
-  {{room_tab_titles | json_script:'room_tab_titles'}}
+  {{room_tabs | json_script:'room_tabs'}}
   {{room_tab_items | json_script:'room_tab_items'}}
   <script>
-    var RoomTabTitles = JSON.parse(document.getElementById('room_tab_titles').textContent);
-    create_room_tab_titles(RoomTabTitles, false);
+    var RoomTabs = JSON.parse(document.getElementById('room_tabs').textContent);
+    create_room_tab_titles(RoomTabs, false);
     create_room_tab_table(tab=1, is_droppable=false, is_active=true);
     var RoomTabItems = {};
-    if (RoomTabTitles.length > 0) {
-      RoomTabItems[RoomTabTitles[0].id] = JSON.parse(document.getElementById('room_tab_items').textContent);
-      deploy_tab_content_items(tab=1, RoomTabItems[RoomTabTitles[0].id], is_droppable=false);
+    if (RoomTabs.length > 0) {
+      RoomTabItems[RoomTabs[0].id] = JSON.parse(document.getElementById('room_tab_items').textContent);
+      deploy_tab_content_items(tab=1, RoomTabItems[RoomTabs[0].id], is_droppable=false);
+      create_room_tab_link(RoomTabs[0]);
     }
   </script>
 </div>

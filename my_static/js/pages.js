@@ -456,15 +456,18 @@ $(document).on('click', '.save-display-button', function(){
 
     var tabs = [];
     var create_flag;
-    for (var i=1; i <= document.getElementsByClassName('input-room-tab-title').length; i++) {
+    for (var i=1; i <= $('.input-room-tab-title').length; i++) {
         if ($(`#room-tab-title${i}`).hasClass('not-display')) {
             continue;
         }
         var tab = {
             'room_tab_id':$(`#input-room-tab-title${i}`).parents('.room-tab-title').data('room-tab-id'), 
-            'title':document.getElementById(`input-room-tab-title${i}`).value, 
-            'items':{'create':[], 'delete':[]}};
+            'title':$(`#input-room-tab-title${i}`).val(), 
+            'items':{'create':[], 'delete':[]}
+        };
         var is_include_id = Object.keys(RoomTabItems).includes(tab['room_tab_id']);
+        console.log(`#room-tab-table${i}`);
+        console.log($(`#room-tab-table${i}`).find(`.added-object`).length);
         $(`#room-tab-table${i}`).find(`.added-object`).each(function() {
             var item = {
                 'title':$.trim($(this).find('.added-object-title').val()),
@@ -479,7 +482,7 @@ $(document).on('click', '.save-display-button', function(){
                 if ($(this).attr('file-name') != '') {
                     item['img'] = $(this).attr('file-name');
                 }
-
+                
                 if (($(this).prop('files')).length > 0) {
                     item['img'] = $(this).prop('files')[0].name;
                     fd.append(item['img'], $(this).prop('files')[0]);

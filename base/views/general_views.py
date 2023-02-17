@@ -687,7 +687,7 @@ class ShowRoomBaseView(HeaderView):
 
         context['video_path'] = f.get_img_path(room.video)
         context['img_paths'] = self.room_base.get_room_img_paths()
-        context['room_tab_titles'] = self.room_base.get_room_tabs()
+        context['room_tabs'] = self.room_base.get_room_tabs()
         context['room_tab_items'] = self.room_base.get_room_tab_items(self.room.roomtabsequence.tab1)
         context['request_information'] = self.room_base.get_room_request_information()
 

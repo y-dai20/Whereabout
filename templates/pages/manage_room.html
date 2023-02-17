@@ -144,17 +144,17 @@
                 </div>
               </div>
               <div class="tab-content manage-room c-white" id="room-tab-pane-list">
-                {{room_tab_titles | json_script:'room_tab_titles'}}
+                {{room_tabs | json_script:'room_tabs'}}
                 {{room_tab_items | json_script:'room_tab_items'}}
                 <script>
-                  var RoomTabTitles = JSON.parse(document.getElementById('room_tab_titles').textContent);
-                  create_room_tab_titles(RoomTabTitles, true);
+                  var RoomTabs = JSON.parse(document.getElementById('room_tabs').textContent);
+                  create_room_tab_titles(RoomTabs, true);
                   create_room_tab_table(tab=1, is_droppable=true, is_active=true);
                   get_addable_object_list();
                   var RoomTabItems = {};
-                  if (RoomTabTitles.length > 0) {
-                    RoomTabItems[RoomTabTitles[0].id] = JSON.parse(document.getElementById('room_tab_items').textContent);
-                    deploy_tab_content_items(tab=1, RoomTabItems[RoomTabTitles[0].id]);
+                  if (RoomTabs.length > 0) {
+                    RoomTabItems[RoomTabs[0].id] = JSON.parse(document.getElementById('room_tab_items').textContent);
+                    deploy_tab_content_items(tab=1, RoomTabItems[RoomTabs[0].id]);
                   }
                 </script>
               </div>
