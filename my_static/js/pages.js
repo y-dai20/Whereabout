@@ -467,7 +467,7 @@ $(document).on('click', '.save-display-button', function(){
         tab = {
             'room_tab_id':$(`#input-room-tab-title${i}`).parents('.room-tab-title').data('room-tab-id'), 
             'title':document.getElementById(`input-room-tab-title${i}`).value, 
-            'content':{'create':[], 'delete':[]}};
+            'items':{'create':[], 'delete':[]}};
         is_include_id = Object.keys(RoomTabItems).includes(tab['room_tab_id']);
         $(`#room-tab-table${i}`).find(`.added-object`).each(function() {
             item = {
@@ -491,7 +491,7 @@ $(document).on('click', '.save-display-button', function(){
             });
             
             if (!is_include_id || is_empty(tab['room_tab_id'])) {
-                tab['content']['create'].push(item);
+                tab['items']['create'].push(item);
                 return false;
             }
 
@@ -512,11 +512,11 @@ $(document).on('click', '.save-display-button', function(){
             }
             
             if (create_flag) {
-                tab['content']['create'].push(item);
+                tab['items']['create'].push(item);
             }
         });
 
-        tab['content']['delete'] = RoomTabItems[tab['room_tab_id']];
+        tab['items']['delete'] = RoomTabItems[tab['room_tab_id']];
         tabs.push(tab);
     }
     fd.append('tabs', JSON.stringify(tabs));

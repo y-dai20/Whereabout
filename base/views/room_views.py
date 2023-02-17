@@ -74,7 +74,7 @@ class ManageRoomBaseView(LoginRequiredMixin, RoomAdminRequiredMixin, View):
             raise MyBadRequest('room is not exist.')
         return vr
     
-class GetRoomTabContents(TemplateView):
+class GetRoomTabItems(TemplateView):
     def post(self, request, *args, **kwargs):
         room_tab_id = f.get_dict_item(request.POST, 'room_tab_id')
         if f.is_empty(room_tab_id) or not f.is_str(room_tab_id):
@@ -522,11 +522,11 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         room_tab_sequence.tab4 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 3), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 3), 'title'))
         room_tab_sequence.tab5 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 4), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 4), 'title'))
 
-        self.set_room_tab_items(room_tab_sequence.tab1, f.get_dict_item(f.get_list_item(tabs, 0), 'content'))
-        self.set_room_tab_items(room_tab_sequence.tab2, f.get_dict_item(f.get_list_item(tabs, 1), 'content'))
-        self.set_room_tab_items(room_tab_sequence.tab3, f.get_dict_item(f.get_list_item(tabs, 2), 'content'))
-        self.set_room_tab_items(room_tab_sequence.tab4, f.get_dict_item(f.get_list_item(tabs, 3), 'content'))
-        self.set_room_tab_items(room_tab_sequence.tab5, f.get_dict_item(f.get_list_item(tabs, 4), 'content'))
+        self.set_room_tab_items(room_tab_sequence.tab1, f.get_dict_item(f.get_list_item(tabs, 0), 'items'))
+        self.set_room_tab_items(room_tab_sequence.tab2, f.get_dict_item(f.get_list_item(tabs, 1), 'items'))
+        self.set_room_tab_items(room_tab_sequence.tab3, f.get_dict_item(f.get_list_item(tabs, 2), 'items'))
+        self.set_room_tab_items(room_tab_sequence.tab4, f.get_dict_item(f.get_list_item(tabs, 3), 'items'))
+        self.set_room_tab_items(room_tab_sequence.tab5, f.get_dict_item(f.get_list_item(tabs, 4), 'items'))
         room_tab_sequence.save()
 
         if not f.is_empty(self.error_messages):

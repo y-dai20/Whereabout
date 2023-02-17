@@ -24,7 +24,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
 
     # Get
-    path('get/tab-contents/', views.GetRoomTabContents.as_view()),
+    path('get/room-tab-items/', views.GetRoomTabItems.as_view()),
     path('get/reply/', views.GetReplyView.as_view()),
     path('get/reply2/', views.GetReply2View.as_view()),
     path('get/reply-types/post/<str:post_pk>/', views.GetPostReplyTypesView.as_view()),

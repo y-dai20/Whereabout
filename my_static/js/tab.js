@@ -369,7 +369,7 @@ $(document).on('click', '.room-tab-title', function(){
     }
 
     $.ajax({
-        url: `/get/tab-contents/`,
+        url: `/get/room-tab-items/`,
         type:'POST',
         data:{'room_tab_id':room_tab_id},
         timeout:60000,
