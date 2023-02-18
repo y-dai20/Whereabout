@@ -17,14 +17,21 @@
     {% if video_path and img_paths %}
       <button type="button" class="btn btn-sm btn-secondary" id="change-video-img-button">動画⇄画像</button>
     {% endif %}
+    {{img_paths | json_script:'img_paths'}}
     {% if video_path %}
       <div id="room-video-area">
         <button class="close-button not-display" id="room-video-close-button">x</button>
         <video controls autoplay muted src="{{video_path}}" class="room-video"></video>
       </div>
-      {% include "../snippets/slider_imgs.html" with add_class="show-room not-display" %}
-    {% else %}
-      {% include "../snippets/slider_imgs.html" with add_class="show-room" %}
+      <script>
+        var img_paths = JSON.parse(document.getElementById('img_paths').textContent);
+        document.write(get_slider_imgs_html('show-room not-display', img_paths));
+      </script>
+      {% else %}
+      <script>
+        var img_paths = JSON.parse(document.getElementById('img_paths').textContent);
+        document.write(get_slider_imgs_html('show-room', img_paths));
+      </script>
     {% endif %}
   </div>
 </div>

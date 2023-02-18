@@ -1,9 +1,0 @@
-{% if img_paths %}
-    <ul class="slider {{add_class}}" id="room-img-area">
-    {% for img_path in img_paths %}
-        {% if img_path != None%}
-        <li><img src="{{img_path}}" alt="" class="corner-circle"></li>
-        {% endif %}
-    {% endfor %}
-    </ul>
-{% endif %}
