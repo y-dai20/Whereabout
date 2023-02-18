@@ -758,19 +758,6 @@ $('.input-tab-content').on('input', function(){
     $(this).height(0).innerHeight(this.scrollHeight);
 });
 
-// $("#move-img-dialog").dialog({ autoOpen: false });
-// $('.manage-room-img-preview').on('click', function(){
-//     // create_dialog('', '', '');
-//     $('#move-img-dialog').dialog('open');
-// })
-
-// function create_dialog(id, title, text) {
-//     document.append(`<div id="move-img-dialog" class="dialog">
-//     <div class="title-dialog"></div>
-//     <div class="text-dialog">画像をドラッグ＆ドロップで移動できます．</div>
-// </div>`)
-// }
-
 $(document).on('click', '.invite-user', function() {
     var data = {'username':$(this).data('username')};
     

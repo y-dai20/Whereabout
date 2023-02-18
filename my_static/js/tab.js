@@ -291,7 +291,7 @@ function set_object(tab, row, column, data) {
         drop_area.addClass('tab-text-content');
         drop_area.append(`<pre class="break-word tab-text-font">${escapeHTML(data.text)}</pre>`);
     } else if (escapeHTML(data.img) != '') {
-        drop_area.append(`<img class="img-fluid tab-img" src="/media/${escapeHTML(data.img)}">`);
+        drop_area.append(`<img class="img-fluid corner-circle" src="/media/${escapeHTML(data.img)}">`);
     }
 }
 

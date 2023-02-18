@@ -118,7 +118,7 @@ function get_post_content(post) {
     $.each(post.img_paths, function(idx, path) {
         if (!is_empty(path)) {
             html += `<a href="${path}" class="luminous-list-${post.obj_id} luminous-link">
-                <img src="${path}" alt="" class="post-img"></a>`;
+                <img src="${path}" alt="" class="post-img corner-circle"></a>`;
         }
     });
     html += '</div>';
@@ -192,7 +192,7 @@ function get_reply_content(reply) {
         <div class="luminous-group">`;
     if (!is_empty(reply.img_path)) {
         html += `<a href="${reply.img_path}" class="luminous-list-${reply.obj_id} luminous-link">
-            <img src="${reply.img_path}" alt="" class="reply-img"></a>`;
+            <img src="${reply.img_path}" alt="" class="reply-img corner-circle"></a>`;
     }
     html += '</div></div>';
     return html;
@@ -368,7 +368,7 @@ function get_slider_imgs_html(cls, img_paths) {
     if (!is_empty(img_paths)) {
         var html = `<ul class="slider ${cls}" id="room-img-area">`;
         $.each(img_paths, function(idx, img_path) {
-            html += `<li><img src="${img_path}" alt=""></li>`;
+            html += `<li><img src="${img_path}" class="corner-circle"></li>`;
         });
         html += `</ul>`
     }

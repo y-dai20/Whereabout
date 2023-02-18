@@ -206,7 +206,7 @@ function read_file(file_type, name, file, append_to, col=2) {
 
 function get_img_preview_html(img_path, name, file_name="", file_size=0, col=2, has_delete=true) {
     var html = `<div class="${name}-img-preview col-${col}" file-name="${file_name}" data-size="${file_size}">
-        <img src="${img_path}" class="img-fluid">`
+        <img src="${img_path}" class="img-fluid corner-circle">`
     if (has_delete) {
         html += `<div class="delete">
             <a class="${name}-img-delete-button delete-font">削除</a>
