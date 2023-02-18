@@ -588,8 +588,8 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             if not f.is_int(row) or not f.is_int(column) or not f.is_int(col):
                 raise MyBadRequest('is_int error at create_room_tab_items.')
 
-            title = f.get_dict_item(tab_item, 'title')
-            text = f.get_dict_item(tab_item, 'text')
+            title = f.get_dict_item(tab_item, 'title', is_strip=False)
+            text = f.get_dict_item(tab_item, 'text', is_strip=False)
             img = f.get_dict_item(tab_item, 'img')
 
             error_place = '{}行,{}列'.format(row, column)

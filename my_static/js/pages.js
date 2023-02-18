@@ -468,8 +468,8 @@ $(document).on('click', '.save-display-button', function(){
         var is_include_id = Object.keys(RoomTabItems).includes(tab['room_tab_id']);
         $(`#room-tab-table${i}`).find(`.added-object`).each(function() {
             var item = {
-                'title':$.trim($(this).find('.added-object-title').val()),
-                'text':$.trim($(this).find('.added-object-textarea').val()),
+                'title':$(this).find('.added-object-title').val(),
+                'text':$(this).find('.added-object-textarea').val(),
                 'img':'',
                 'row':$(this).parent().data('row'),
                 'column':$(this).parent().data('column'),
@@ -493,7 +493,7 @@ $(document).on('click', '.save-display-button', function(){
             }
 
             create_flag = true;
-            $.each(RoomTabItems[tab['room_tab_id']], function(idx, dict){
+            $.each(RoomTabItems[tab['room_tab_id']], function(idx, dict) {
                 if (dict.row == item.row & dict.column == item.column) {
                     RoomTabItems[tab['room_tab_id']].splice(idx, 1);
                     if (dict.col == item.col & dict.title == item.title & dict.text == item.text & dict.img == item.img) {

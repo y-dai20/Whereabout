@@ -7,10 +7,6 @@ a:hover {
     color: #0090ff;
 }
 
-body {
-    font-family: 'Meiryo UI';
-}
-
 div.base-body {
     width: 100vw;
     height: 100vh;
