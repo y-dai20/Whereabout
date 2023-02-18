@@ -27,7 +27,6 @@ class ReplyPostView(LoginRequiredMixin, ReplyItemView, CreateView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        print(request.POST)
         post = get_object_or_404(Post, id=f.get_dict_item(kwargs, 'post_pk'), is_deleted=False)
         files = request.FILES
 

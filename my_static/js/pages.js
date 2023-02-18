@@ -466,8 +466,6 @@ $(document).on('click', '.save-display-button', function(){
             'items':{'create':[], 'delete':[]}
         };
         var is_include_id = Object.keys(RoomTabItems).includes(tab['room_tab_id']);
-        console.log(`#room-tab-table${i}`);
-        console.log($(`#room-tab-table${i}`).find(`.added-object`).length);
         $(`#room-tab-table${i}`).find(`.added-object`).each(function() {
             var item = {
                 'title':$.trim($(this).find('.added-object-title').val()),
