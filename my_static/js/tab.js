@@ -318,8 +318,8 @@ $(document).on('click', '.expand-object-button', function(){
 });
 
 $(document).on('click change keyup keydown paste cut input', '.added-object-textarea, .added-object-title', function(){
-    $(this).parents('.room-tab-table-row').height('10px');
-    $(this).parents('.room-tab-table-row').height(this.scrollHeight + 15);
+    $(this).parents('.room-tab-table-row').height('5px');
+    $(this).parents('.room-tab-table-row').height(this.scrollHeight + 20);
 });
 
 $(document).on('click', '.add-tab-button', function(){

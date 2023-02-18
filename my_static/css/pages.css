@@ -38,10 +38,6 @@ table th {
     max-width: 20em;
 }
 
-.input-tab-content {
-    width: 30em;
-}
-
 .input-subtitle {
     max-width: 30em;
 }
@@ -64,11 +60,6 @@ table th {
 
 .delete-font {
     color: red;
-}
-
-.input-tab-content {
-    height: auto;
-    width: 80%;
 }
 
 .dialog {

@@ -473,6 +473,8 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
         return True
 
 #todo (中) Tabの順番をドラッグで移動できるようにする
+#todo (中) 選択しているオブジェクトをわかるようにする
+#todo (中) オブジェクトを選択していないときはボタンを押せなくする
 class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     model = Room
     form_class = UpdateRoomForm

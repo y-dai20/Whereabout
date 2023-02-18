@@ -753,11 +753,6 @@ $(document).on('click', '.delete-confirm-button', function() {
     show_modal_message('確認', ['削除しますか'], footer);
 });
 
-//todo 何に使ってる？
-$('.input-tab-content').on('input', function(){
-    $(this).height(0).innerHeight(this.scrollHeight);
-});
-
 $(document).on('click', '.invite-user', function() {
     var data = {'username':$(this).data('username')};
     
