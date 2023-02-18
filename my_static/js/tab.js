@@ -361,6 +361,7 @@ $(document).on('click', '.room-tab-title', function(){
     }
 
     create_room_tab_link({'id':room_tab_id, 'title':$(this).text()});
+    change_room_tab($(this).text());
 
     var scroll_target = ".room-title";
     var tab = $(this).data('tab');
@@ -399,8 +400,15 @@ function scroll_to(target) {
     },1000)
 }
 
-function create_room_tab_link(room_tab) {
-    $('#room-tab-link').html(
-        `<h2><a href="${room_tab.id}">${room_tab.title}</a></h2>`
+function create_room_tab_link(room_tab, append_to="#room-tab-link") {
+    $(append_to).html(
+        `<a href="${room_tab.id}">${room_tab.title}</a>`
     );
+}
+
+function change_room_tab(title) {
+    if ($('#room-tab-h1-title').length > 0) {
+        $('title').html(title);
+        $('#room-tab-h1-title').html(title);
+    }
 }
