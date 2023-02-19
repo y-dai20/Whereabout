@@ -1,33 +1,6 @@
-.item-object {
-    padding: 5px 2px;
-    max-width: 600px;
-    margin: 0 auto;
-}
-
-.item-link {
-    cursor: pointer;
-}
-
-.reply-item {
-    padding: 5px;
-}
-
-.agree-item {
-    background-color: rgb(143, 173, 159);
-}
-
-.disagree-item {
-    background-color: rgb(188, 133, 128);
-}
-
-.neutral-item {
-    background-color: antiquewhite;
-}
-
 .post-title {
     font-size: large;
     font-weight: bold;
-    border-bottom: 2px solid black;
 }
 
 .post-video-preview {
@@ -36,10 +9,6 @@
 
 .footer-button {
     z-index: 10;
-}
-
-.post-item {
-    padding: 10px;
 }
 
 .post-img-preview-list {
@@ -58,4 +27,8 @@
 
 .post-content, .reply-content {
     padding: 0 5px;
+}
+
+.file-content {
+    padding: 5px;
 }

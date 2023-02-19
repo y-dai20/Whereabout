@@ -135,6 +135,16 @@
     width: 100%;
 }
 
+.room-file-content {
+    max-width: 600px;
+    width: 90%;
+    height: auto;
+    margin: 0 auto;
+    padding: 5px;
+}
+
+
+
 .room-tab-table-col {
     margin: 0;
     /* padding-right: 10px; */
@@ -143,7 +153,8 @@
 
 .tab-title-style {
     font-size: 25px;
-    border-bottom: 2px solid white;
+    border-left: solid 5px white;/*左線（実線 太さ 色）*/
+    padding-left: 5px;
 }
 
 #room-tab-link {
@@ -155,7 +166,7 @@
 }
 
 .tab-text-font {
-    font-size: 15px;
+    font-size: 17px;
     padding-left: 5px;
 }
 
@@ -245,11 +256,6 @@ label.form-check-label {
     background-color: rgb(255, 147, 147);
     text-align: center;
     margin-bottom: 10px;
-}
-
-.room-item {
-    background-color: rgb(56, 62, 65);
-    padding: 5px;
 }
 
 .manage-room-tab-content {

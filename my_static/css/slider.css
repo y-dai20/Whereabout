@@ -1,15 +1,7 @@
 .slider {/*横幅94%で左右に余白を持たせて中央寄せ*/
     width:90%;
-    margin:0 auto;
-    padding:0;
-}
-
-
-.slider img {
-    width:100%;/*スライダー内の画像を60vwにしてレスポンシブ化*/
-    height:auto;
-    max-height: 300px;
-    object-fit: cover;
+    margin: auto;
+    padding: 0;
 }
 
 .slick-prev:before,

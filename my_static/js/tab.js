@@ -285,7 +285,7 @@ function set_object(tab, row, column, data) {
     var drop_area = $('#'+get_tab_col_name(tab, row, column));
     if (data.title != '') {
         drop_area.addClass('tab-title-content');
-        drop_area.append(`<h3 class="break-word tab-title-style">${escapeHTML(data.title)}</h3>`);
+        drop_area.append(`<h3 class="break-word tab-title-style">${escapeHTML(data.title)}</span></h3>`);
     } else if (escapeHTML(data.text) != '') {
         drop_area.addClass('tab-text-content');
         drop_area.append(`<pre class="break-word tab-text-font">${escapeHTML(data.text)}</pre>`);

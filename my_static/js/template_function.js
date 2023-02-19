@@ -74,7 +74,7 @@ function get_post_item(post, is_link=false) {
         return '';
     }
     post = get_parsed_str(post);
-    var html = `<div class="c-black item-object`;
+    var html = `<div class="post-item-col"><div class="c-black item-object`;
     if (is_link) {
         html += ` item-link get-reply-link`;
     }
@@ -90,7 +90,7 @@ function get_post_item(post, is_link=false) {
     html += get_post_header(post);
     html += get_post_content(post);
     html += get_item_footer(post);
-    html += `</div></div>`;
+    html += `</div></div></div>`;
 
     return html;
 }
@@ -267,7 +267,7 @@ function get_user_header(user) {
 }
 
 function get_user_content(user){
-	var html = '<div class="user-item-content"><div class="user-item-img-area user-img-area">';
+	var html = '<div class="user-item-content"><div class="user-item-img user-img-area">';
 	if (!is_empty(user.img)) {
 		html += `<img src="${user.img}" alt="" class="user-img">`;
 	} else {
@@ -335,7 +335,7 @@ function get_room_content(room) {
         <video controls src="${room.video_path}" class="w-100"></video>
         </div>`;
     } else if (!is_empty(room.img_paths)) {
-        html += get_slider_imgs_html('search-room-slider', room.img_paths);
+        html += `<div class="room-item-img">${get_slider_imgs_html('search-room-slider', room.img_paths)}</div>`;
     }
     html += `</div>
     <div class="thinking">
@@ -371,7 +371,7 @@ function get_slider_imgs_html(cls, img_paths) {
     }
 
     if (img_paths.length == 1) {
-        return `<div class="slider"><img src="${img_paths[0]}" class="corner-circle"></div>`;
+        return `<img src="${img_paths[0]}" class="corner-circle">`;
     }
 
     var html = `<ul class="slider ${cls}">`;
@@ -384,7 +384,7 @@ function get_slider_imgs_html(cls, img_paths) {
 }
 
 function get_item_user_area(name, img=null, color='black') {
-    var html = `<div class="item-user-img user-img-area">`;
+    var html = `<div class="item-header-user-img user-img-area">`;
     if (is_empty(img)) {
         html += `<img src="${humanImg}" alt="" class="user-img">`;
     } else {

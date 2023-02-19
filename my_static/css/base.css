@@ -139,13 +139,14 @@ a.sidebar-button {
 
 ::-webkit-scrollbar {
     width: 10px;
+    height: 10px;
 }
 
 ::-webkit-scrollbar-track {
-    background: rgb(37, 58, 86);
+    background: rgb(26, 32, 35);
 }
 ::-webkit-scrollbar-thumb {
-    background: gray;
+    background: white;
     border-radius: 5px;
 }
 
@@ -270,8 +271,11 @@ a.sidebar-button {
 }
 
 video, img {
-    width: 100%;
+    width: auto;
     height: auto;
+    max-width: 100%;
+    max-height: 100%;
+    margin: auto;
 }
 
 .login-area {
@@ -288,18 +292,6 @@ input {
     padding-left: 10px;
     border-left: solid 5px #ffaf58;/*左線（実線 太さ 色）*/
     color: #ffaf58;
-}
-
-.item-header, .item-footer {
-    display: flex;
-}
-
-.item-header *, .item-footer * {
-    margin: auto 1px;
-}
-
-.item-footer {
-    padding-top: 10px;
 }
 
 .search-result {
@@ -342,7 +334,7 @@ input {
 }
 
 .margin-left {
-    margin-left: auto;
+    margin-left: auto !important;
 }
 
 .copy-link {
