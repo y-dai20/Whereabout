@@ -25,12 +25,12 @@
       </div>
       <script>
         var img_paths = JSON.parse(document.getElementById('img_paths').textContent);
-        document.write(get_slider_imgs_html('show-room not-display', img_paths));
+        document.write(get_slider_imgs_html('show-room-slider not-display', img_paths));
       </script>
       {% else %}
       <script>
         var img_paths = JSON.parse(document.getElementById('img_paths').textContent);
-        document.write(get_slider_imgs_html('show-room', img_paths));
+        document.write(get_slider_imgs_html('show-room-slider', img_paths));
       </script>
     {% endif %}
   </div>

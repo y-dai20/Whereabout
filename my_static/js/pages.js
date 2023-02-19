@@ -831,11 +831,11 @@ $('.show-room-content').on('scroll', function(){
 });
 
 $('#change-video-img-button').on('click', function(){
-    if($('#room-img-area').hasClass('not-display')) {
-        $('#room-img-area').removeClass('not-display');
+    if($('.show-room-slider').hasClass('not-display')) {
+        $('.show-room-slider').removeClass('not-display');
         $('#room-video-area').addClass('not-display');
     } else if ($('#room-video-area').hasClass('not-display')) {
-        $('#room-img-area').addClass('not-display');
+        $('.show-room-slider').addClass('not-display');
         $('#room-video-area').removeClass('not-display');
     }
 });
@@ -896,7 +896,6 @@ $(document).on('click', '.load-more-button', function() {
             hide_load_more('.post-list', data);
         } else if (type == 'room') {
             create_room_items('.room-list', data.items);
-            active_slick_room_item();
             hide_load_more('.room-list', data);
         } else if (type == 'user') {
             create_user_items('.user-list', data.items);

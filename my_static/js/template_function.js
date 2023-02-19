@@ -39,6 +39,7 @@ function create_room_items(appendTo, rooms) {
     $.each(rooms, function(idx, room) {
         var html = get_room_item(room);
         $(appendTo).append(html);
+        active_slick_room_item($('.room-item:last'));
     });
 }
 
@@ -334,7 +335,7 @@ function get_room_content(room) {
         <video controls src="${room.video_path}" class="w-100"></video>
         </div>`;
     } else if (!is_empty(room.img_paths)) {
-        html += get_slider_imgs_html("search-room", room.img_paths);
+        html += get_slider_imgs_html('search-room-slider', room.img_paths);
     }
     html += `</div>
     <div class="thinking">
@@ -365,14 +366,20 @@ function get_room_footer(room) {
 }
 
 function get_slider_imgs_html(cls, img_paths) {
-    if (!is_empty(img_paths)) {
-        var html = `<ul class="slider ${cls}" id="room-img-area">`;
-        $.each(img_paths, function(idx, img_path) {
-            html += `<li><img src="${img_path}" class="corner-circle"></li>`;
-        });
-        html += `</ul>`
+    if (is_empty(img_paths)) {
+        return '';
     }
 
+    if (img_paths.length == 1) {
+        return `<div class="slider"><img src="${img_paths[0]}" class="corner-circle"></div>`;
+    }
+
+    var html = `<ul class="slider ${cls}">`;
+    $.each(img_paths, function(idx, img_path) {
+        html += `<li><img src="${img_path}" class="corner-circle"></li>`;
+    });
+    html += `</ul>`
+    
     return html;
 }
 

@@ -8,7 +8,7 @@
       {{dumps_object_list | json_script:'dumps_object_list'}}
       <script>
         var rooms = JSON.parse(document.getElementById('dumps_object_list').textContent);
-        create_room_items('.room-list', rooms, true);
+        create_room_items('.room-list', rooms);
       </script>
     </div>
     {% include 'snippets/load_more.html' with type="room" %}

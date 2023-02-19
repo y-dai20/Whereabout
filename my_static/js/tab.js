@@ -17,7 +17,6 @@ $(document).ready(function(){
     });    
 });
 
-
 function create_room_tab_titles(tab_titles, is_editable=true, active_idx=0) {
     if (tab_titles.length < 1) {
         return true;

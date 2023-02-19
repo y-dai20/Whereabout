@@ -679,7 +679,7 @@ $(document).on('click', '.show-modal-room-button', function() {
 		$('#modal-room').find('.modal-body').html(get_room_header(data) + get_room_content(data));
 		$('#modal-room').find('.modal-footer').html(get_room_footer(data));
 		show_modal('modal-room');
-		active_slick_room_item();
+		active_slick_modal($('#modal-room .modal-body'));
     });
 });
 
