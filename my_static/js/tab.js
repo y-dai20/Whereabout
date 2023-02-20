@@ -198,14 +198,17 @@ function bind_droppable() {
                 return false;
             }
             
-            $(this).html(get_added_area());
             if(now_drag_object.attr('id') == 'addable-object-title') {
+                $(this).html(get_added_area(true));
                 $(this).children().append(get_title_object());
             } else if(now_drag_object.attr('id') == 'addable-object-textarea') {
+                $(this).html(get_added_area(true));
                 $(this).children().append(get_textarea_object());
             } else if (now_drag_object.attr('id') == 'addable-object-img') {
+                $(this).html(get_added_area(true));
                 $(this).children().append(get_img_object());
             } else {
+                $(this).html(get_added_area(false));
                 $(this).children().append(now_drag_object.children());
                 repair_expand(drop_row, drop_col);
             }
