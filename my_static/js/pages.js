@@ -470,7 +470,7 @@ $(document).on('click', '.save-display-button', function(){
         $(`#room-tab-table${i}`).find(`.added-object`).each(function() {
             var item = {
                 'title':$(this).find('.added-object-title').val(),
-                'text':$(this).find('.added-object-textarea').val(),
+                'text':$(this).find('.added-object-text').val(),
                 'img':'',
                 'row':$(this).parent().data('row'),
                 'column':$(this).parent().data('column'),
@@ -532,7 +532,7 @@ $(document).on('click', '.save-display-button', function(){
 });
 
 $(document).on('click change input', 'input.input-room-tab-title', function() {
-    var target = $(this).parents('.manage-room-tab').find('.tab-char-len');
+    var target = $(this).parents('.room-tab-title-list').find(`#room-tab-title${$(this).parents('.room-tab-title').data('tab')}-info`).find('.tab-char-len');
     var len = $(this).val().length;
     target.text(`${len}文字`);
     if (len > ROOM_TAB_TITLE_MAX_LENGTH) {
@@ -546,7 +546,20 @@ $(document).on('click change input', 'textarea.added-object-title', function() {
     var target = $(this).parents('.added-object').find('.tab-char-len');
     var len = $(this).val().length;
     target.text(`${len}文字`);
-    if (len > ROOM_TAB_TITLE_MAX_LENGTH) {
+    if (len > ROOM_TAB_ITEM_TITLE_MAX_LENGTH) {
+        add_class(target, 'c-red');
+        target.removeClass('c-black');
+    } else {
+        add_class(target, 'c-black');
+        target.removeClass('c-red');
+    }
+});
+
+$(document).on('click change input', 'textarea.added-object-text', function() {
+    var target = $(this).parents('.added-object').find('.tab-char-len');
+    var len = $(this).val().length;
+    target.text(`${len}文字`);
+    if (len > ROOM_TAB_ITEM_TEXT_MAX_LENGTH) {
         add_class(target, 'c-red');
         target.removeClass('c-black');
     } else {

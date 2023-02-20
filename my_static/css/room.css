@@ -91,7 +91,7 @@
     cursor: grab;
 }
 
-.added-object-textarea, .added-object-title {
+.added-object-text, .added-object-title {
     /* box-sizing: border-box; */
     height: 100%;
     width: 100%;

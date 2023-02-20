@@ -38,7 +38,7 @@ function create_room_tab_title(id="None" ,title="title", is_editable=true, is_ac
     if (is_empty(id)) {
         id = ' ';
     }
-    var html = '<div class="manage-room-tab">'
+    var html = '';
     var tab = $('.room-tab-title').length + 1;
     if (is_editable) {
         html += `<a id="room-tab-title${tab}" class="room-tab-title nav-link`;
@@ -60,11 +60,10 @@ function create_room_tab_title(id="None" ,title="title", is_editable=true, is_ac
     }
     html += `</a>`;
     if (is_editable) {
-        html += `<div class="flex-area"><div class="delete-tab-button" data-tab="${tab}">
+        html += `<div class="flex-area" id="room-tab-title${tab}-info"><div class="delete-tab-button" data-tab="${tab}">
         <img src="${deleteImg}" class="tab-delete-button"></div>
         <div class="tab-char-len margin-left"></div></div>`;
     }
-    html += '</div>';
 
     $('.room-tab-title-list').append(html);
 }
@@ -236,7 +235,7 @@ function get_title_object(text="タイトル") {
 }
 
 function get_textarea_object(text="テキスト") {
-    return `<textarea class="added-object-textarea tab-text-font">${escapeHTML(text)}</textarea>`;
+    return `<textarea class="added-object-text tab-text-font">${escapeHTML(text)}</textarea>`;
 }
 
 function get_img_object(file_name='') {
@@ -324,7 +323,7 @@ $(document).on('click', '.expand-object-button', function(){
     expand_object(tab, row, column, col);
 });
 
-$(document).on('click change keyup keydown paste cut input', '.added-object-textarea, .added-object-title', function(){
+$(document).on('click change keyup keydown paste cut input', '.added-object-text, .added-object-title', function(){
     $(this).parents('.room-tab-table-row').height(30);
     $(this).parents('.room-tab-table-row').height(this.scrollHeight + 30);
 });
