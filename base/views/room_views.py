@@ -482,8 +482,9 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     max_img_size = 2 * 1024 * 1024
     max_video_size = 11 * 1024 * 1024
     max_video = 1
-    max_tab_title_len = 255
-    max_tab_text_len = 1024
+    max_tab_title_len = 32
+    max_tab_title_item_len = 255
+    max_tab_title_text_len = 1024
 
     def get(self, request, *args, **kwargs):
         raise Http404
@@ -548,16 +549,21 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         self.set_room_tab_items(room_tab_sequence.tab8, f.get_dict_item(f.get_list_item(tabs, 7), 'items'))
         self.set_room_tab_items(room_tab_sequence.tab9, f.get_dict_item(f.get_list_item(tabs, 8), 'items'))
         self.set_room_tab_items(room_tab_sequence.tab10, f.get_dict_item(f.get_list_item(tabs, 9), 'items'))
-        room_tab_sequence.save()
 
         if not f.is_empty(self.error_messages):
             return JsonResponse(f.get_json_error_message(self.error_messages))
+            
+        room_tab_sequence.save()
 
         return JsonResponse(f.get_json_success_message(['保存しました']))
 
     def get_room_tab(self, room_tab_id, title):
         if f.is_empty(title):
             return None
+        if len(title) > self.max_tab_title_len:
+            self.error_messages.append('タブのタイトルは{}文字以内に収めてください'.format(self.max_tab_title_len))
+            return None
+        
         room_tab = RoomTab.objects.get_or_none(id=room_tab_id, is_deleted=False)
         if room_tab is None:
             return RoomTab.objects.create(title=title, room=self.room)
@@ -593,11 +599,11 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             img = f.get_dict_item(tab_item, 'img')
 
             error_place = '{}行,{}列'.format(row, column)
-            if len(title) > self.max_tab_title_len:
-                self.error_messages.append('{} タイトルの長さが{}を超えています'.format(error_place, self.max_tab_title_len))
+            if len(title) > self.max_tab_title_item_len:
+                self.error_messages.append('{} タイトルの長さが{}を超えています'.format(error_place, self.max_tab_title_item_len))
                 continue
-            if len(text) > self.max_tab_text_len:
-                self.error_messages.append('{} テキストの長さが{}を超えています'.format(error_place, self.max_tab_text_len))
+            if len(text) > self.max_tab_title_text_len:
+                self.error_messages.append('{} テキストの長さが{}を超えています'.format(error_place, self.max_tab_title_text_len))
                 continue
 
             if img in self.files and f.is_uploaded_file_img(self.files[img]):
