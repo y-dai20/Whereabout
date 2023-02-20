@@ -360,7 +360,7 @@ function form_valid(form_id, show_error_message=false) {
     var form = $(`#${form_id}`);
     form.find('input').each(function(){
         if ($(this).hasClass('validate-length')) {
-            validate_length($(this), $(this).val(), $(this).data('min-length'), $(this).data('max-length'));
+            validate_length($(this), $(this).val(), $(this).data('min-len'), $(this).data('max-len'));
         }
     });
     var bool = form.valid() & form.find('.error:visible').length < 1;
@@ -548,11 +548,11 @@ function get_choice_html(text, name, divider='&') {
 }
 
 function get_char_html(min_length, max_length, name) {
-    return `<input type="text" name="${name}" class="validate-length" data-min-length="${min_length}" data-max-length="${max_length}">`;
+    return `<input type="text" name="${name}" class="validate-length" data-min-len="${min_length}" data-max-len="${max_length}"><div class="char-len c-green"></div>`;
 }
 
 function get_num_html(min_length, max_length, name) {
-    return `<input type="text" name="${name}" class="validate-length validate-integer" data-min-length="${min_length}" data-max-length="${max_length}">`;
+    return `<input type="text" name="${name}" class="validate-length validate-integer" data-min-len="${min_length}" data-max-len="${max_length}"><div class="char-len c-green"></div>`;
 }
 
 function show_modal(id) {

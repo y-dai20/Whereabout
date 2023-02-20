@@ -14,15 +14,17 @@
                 タイトル*<script>document.write(get_question_img());</script>
               </span>
             </label>
-            <input type="text" class="form-control input-title" id="input-create-room-title" name="title" placeholder="Title">
+            <input type="text" class="form-control input-title" id="input-create-room-title" name="title" placeholder="タイトル" data-max-len="255">
+            <div class="char-len c-green"></div>
           </div>
           <div class="form-group">
             <label for="text">
               <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
-                タイトル*<script>document.write(get_question_img());</script>
+                サブタイトル*<script>document.write(get_question_img());</script>
               </span>
             </label>
-            <textarea class="form-control input-subtitle" rows="3" id="input-create-room-subtitle" name="subtitle" placeholder="SubTitle"></textarea>
+            <textarea class="form-control input-subtitle" rows="3" id="input-create-room-subtitle" name="subtitle" placeholder="サブタイトル" data-max-len="255"></textarea>
+            <div class="char-len c-green"></div>
           </div>
           {% include "form/img.html" with action="create-room" is_multi=True %}
           <div class="form-group">

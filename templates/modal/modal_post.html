@@ -14,7 +14,8 @@
                 タイトル*<script>document.write(get_question_img());</script>
               </span>
             </label>
-            <input type="text" class="form-control" id="input-post-title" name="title" placeholder="Title" required>
+            <input type="text" class="form-control" id="input-post-title" name="title" placeholder="タイトル" data-max-len="50" required>
+            <div class="char-len c-green"></div>
           </div>
           <div class="form-group">
             <label for="input-post-text">
@@ -22,7 +23,8 @@
                 本文*<script>document.write(get_question_img());</script>
               </span>
             </label>
-            <textarea class="form-control" rows="3" name="text" id="input-post-text" name="text" placeholder="Text" required></textarea>
+            <textarea class="form-control" rows="3" name="text" id="input-post-text" name="text" placeholder="テキスト" data-max-len="255" required></textarea>
+            <div class="char-len c-green"></div>
           </div>
           <div class="form-group">
             <label for="">Room</label><br>
@@ -63,7 +65,8 @@
                 ソース<script>document.write(get_question_img());</script>
               </span>
             </label>
-            <input class="form-control" name="source" placeholder="https://xxxx.com">
+            <input type="text" class="form-control" name="source" placeholder="https://xxxx.com" data-max-len="255">
+            <div class="char-len c-green"></div>
           </div>
           {% include "form/img.html" with action="post" is_multi=True %}
           <div class="form-group" id="post-form-video">

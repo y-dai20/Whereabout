@@ -62,7 +62,8 @@
             </span>
           </p>
           <div class="form-group">
-              <input type="text" class="input-title form-control" id="input-room-title" value="{{title}}" name="title">
+            <input type="text" class="input-title form-control" id="input-room-title" value="{{title}}" name="title" data-max-len="255">
+            <div class="char-len c-green"></div>
           </div>
 
           <p for="text" class="manage-headline">
@@ -71,7 +72,8 @@
             </span>
           </p>
           <div class="form-group">
-            <textarea class="input-subtitle form-control" id="input-room-subtitle" name="subtitle" rows="3">{{subtitle}}</textarea>
+            <textarea class="input-subtitle form-control" id="input-room-subtitle" name="subtitle" rows="3" data-max-len="255">{{subtitle}}</textarea>
+            <div class="char-len c-green"></div>
           </div>
           
           <p for="img" class="manage-headline">
@@ -378,10 +380,11 @@
               <td>{{forloop.counter}}</td>
               <td>
                 {% if item.title %}
-                  <input type="text" class="request-information-title validate-length"  data-max-length="255" name="title" value="{{item.title}}">
+                  <input type="text" class="request-information-title validate-length"  data-max-len="255" name="title" value="{{item.title}}">
                 {% else %}
-                  <input type="text" class="request-information-title validate-length" data-max-length="255" name="title">
+                  <input type="text" class="request-information-title validate-length" data-max-len="255" name="title">
                 {% endif %}
+                <div class="char-len c-green"></div>
               </td>
               <td>
                 <select name="type" class="request-information-type">
@@ -404,23 +407,24 @@
               </td>
               <td>
                 {% if item.choice or item.type == 'choice' %}
-                  <input type="text" class="request-information-choice validate-length" data-max-length="255" name="choice" value="{{item.choice}}">
+                  <input type="text" class="request-information-choice validate-length" data-max-len="255" name="choice" value="{{item.choice}}">
                 {% else %}
-                  <input type="text" class="request-information-choice validate-length not-display" data-max-length="255" name="choice" value="">
+                  <input type="text" class="request-information-choice validate-length not-display" data-max-len="255" name="choice" value="">
                 {% endif %}
+                <div class="char-len c-green"></div>
               </td>
               <td>
                 {% if item.min_length %}
-                <input type="text" class="request-information-length validate-num" data-min-length="0" name="min_length" value="{{item.min_length}}">
+                <input type="text" class="request-information-length validate-num" data-min-len="0" name="min_length" value="{{item.min_length}}">
                 {% else %}
-                <input type="text" class="request-information-length validate-num" data-min-length="0" name="min_length" value="0">
+                <input type="text" class="request-information-length validate-num" data-min-len="0" name="min_length" value="0">
                 {%endif %}
               </td>
               <td>
                 {% if item.max_length %}
-                <input type="text" class="request-information-length validate-num" data-max-length="255" name="max_length" value="{{item.max_length}}">
+                <input type="text" class="request-information-length validate-num" data-max-len="255" name="max_length" value="{{item.max_length}}">
                 {% else %}
-                <input type="text" class="request-information-length validate-num" data-max-length="255" name="max_length" value="255">
+                <input type="text" class="request-information-length validate-num" data-max-len="255" name="max_length" value="255">
                 {%endif %}
               </td>
               <td>

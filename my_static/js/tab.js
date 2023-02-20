@@ -62,7 +62,7 @@ function create_room_tab_title(id="None" ,title="title", is_editable=true, is_ac
     if (is_editable) {
         html += `<div class="flex-area" id="room-tab-title${tab}-info"><div class="delete-tab-button" data-tab="${tab}">
         <img src="${deleteImg}" class="tab-delete-button"></div>
-        <div class="tab-char-len margin-left"></div></div>`;
+        <div class="char-len margin-left c-green"></div></div>`;
     }
 
     $('.room-tab-title-list').append(html);
@@ -227,18 +227,18 @@ function bind_droppable() {
 function get_added_area(need_len=false) {
     var html =  `<div class="draggable added-object">`;
     if (need_len) {
-        html += `<div class="tab-char-len margin-left c-black">0文字</div>`;
+        html += `<div class="char-len margin-left c-green">0文字</div>`;
     }
     html += `</div>`;
     return html;
 }
 
 function get_title_object(text="タイトル") {
-    return `<textarea class="added-object-title tab-title-style">${escapeHTML(text)}</textarea>`;
+    return `<textarea class="added-object-title">${escapeHTML(text)}</textarea>`;
 }
 
 function get_textarea_object(text="テキスト") {
-    return `<textarea class="added-object-text tab-text-font">${escapeHTML(text)}</textarea>`;
+    return `<textarea class="added-object-text">${escapeHTML(text)}</textarea>`;
 }
 
 function get_img_object(file_name='') {
@@ -299,9 +299,9 @@ function set_object(tab, row, column, data) {
         drop_area.append(`<h3 class="break-word tab-title-style">${escapeHTML(data.title)}</span></h3>`);
     } else if (escapeHTML(data.text) != '') {
         drop_area.addClass('tab-text-content');
-        drop_area.append(`<pre class="break-word tab-text-font">${escapeHTML(data.text)}</pre>`);
+        drop_area.append(`<pre class="break-word tab-text-style">${escapeHTML(data.text)}</pre>`);
     } else if (escapeHTML(data.img) != '') {
-        drop_area.append(`<img class="img-fluid corner-circle" src="/media/${escapeHTML(data.img)}">`);
+        drop_area.append(`<img class="img-fluid corner-circle tab-img-style" src="/media/${escapeHTML(data.img)}">`);
     }
 }
 

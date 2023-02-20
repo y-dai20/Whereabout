@@ -17,7 +17,8 @@
               <span data-bs-toggle="tooltip" data-bs-placement="right" title="入力必須．1~255文字以内">
                 本文*<script>document.write(get_question_img());</script>
               </span>
-            <textarea class="form-control input-reply-text" rows="3" name="text" placeholder="Text"></textarea>
+            <textarea class="form-control input-reply-text" rows="3" name="text" placeholder="テキスト" data-max-len="255"></textarea>
+            <div class="char-len c-green"></div>
           </div>
           <div class="form-group">
             <label for="source">
@@ -25,7 +26,8 @@
                 ソース<script>document.write(get_question_img());</script>
               </span>
             </label>
-            <input class="form-control" name="source" placeholder="https://xxxx.com">
+            <input type="text" class="form-control" name="source" placeholder="https://xxxx.com" data-max-len="255">
+            <div class="char-len c-green"></div>
           </div>
           {% include "form/img.html" with action="reply" is_multi=False %}
         </div>

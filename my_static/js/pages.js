@@ -532,41 +532,47 @@ $(document).on('click', '.save-display-button', function(){
 });
 
 $(document).on('click change input', 'input.input-room-tab-title', function() {
-    var target = $(this).parents('.room-tab-title-list').find(`#room-tab-title${$(this).parents('.room-tab-title').data('tab')}-info`).find('.tab-char-len');
-    var len = $(this).val().length;
-    target.text(`${len}文字`);
-    if (len > ROOM_TAB_TITLE_MAX_LENGTH) {
-        add_class(target, 'c-red');
-    } else {
-        target.removeClass('c-red');
-    }
+    set_char_len(
+        target=$(this).parents('.room-tab-title-list').find(`#room-tab-title${$(this).parents('.room-tab-title').data('tab')}-info`).find('.char-len'), 
+        len=$(this).val().length, 
+        max_len=ROOM_TAB_TITLE_MAX_LENGTH
+    );
 });
 
 $(document).on('click change input', 'textarea.added-object-title', function() {
-    var target = $(this).parents('.added-object').find('.tab-char-len');
-    var len = $(this).val().length;
-    target.text(`${len}文字`);
-    if (len > ROOM_TAB_ITEM_TITLE_MAX_LENGTH) {
-        add_class(target, 'c-red');
-        target.removeClass('c-black');
-    } else {
-        add_class(target, 'c-black');
-        target.removeClass('c-red');
-    }
+    set_char_len(
+        target=$(this).parents('.added-object').find('.char-len'), 
+        len=$(this).val().length, 
+        max_len=ROOM_TAB_ITEM_TITLE_MAX_LENGTH
+    );
 });
 
 $(document).on('click change input', 'textarea.added-object-text', function() {
-    var target = $(this).parents('.added-object').find('.tab-char-len');
-    var len = $(this).val().length;
+    set_char_len(
+        target=$(this).parents('.added-object').find('.char-len'), 
+        len=$(this).val().length, 
+        max_len=ROOM_TAB_ITEM_TEXT_MAX_LENGTH
+    );
+});
+
+$('input[type="text"], textarea').on('click change input', function() {
+    set_char_len(
+        target=$(this).siblings('.char-len'), 
+        len=$(this).val().length, 
+        max_len=$(this).data('max-len')
+    );
+});
+
+function set_char_len(target, len, max_len) {
     target.text(`${len}文字`);
-    if (len > ROOM_TAB_ITEM_TEXT_MAX_LENGTH) {
+    if (len > max_len) {
         add_class(target, 'c-red');
-        target.removeClass('c-black');
+        target.removeClass('c-green');
     } else {
-        add_class(target, 'c-black');
+        add_class(target, 'c-green');
         target.removeClass('c-red');
     }
-});
+}
 
 //todo fdを使わない理由は？
 $(document).on('click', '.save-participant-button', function(){
@@ -1198,10 +1204,10 @@ $('#reset-password-button').on('click', function(){
 });
 
 $(document).on('change', '.validate-length', function() {
-    validate_length($(this), $(this).val(), $(this).data('min-length'), $(this).data('max-length'));
+    validate_length($(this), $(this).val(), $(this).data('min-len'), $(this).data('max-len'));
 });
 $(document).on('change', '.validate-num', function() {
-    validate_num($(this), $(this).val(), $(this).data('min-length'), $(this).data('max-length'));
+    validate_num($(this), $(this).val(), $(this).data('min-len'), $(this).data('max-len'));
 });
 $(document).on('change', '.validate-integer', function() {
     validate_integer($(this), $(this).val());

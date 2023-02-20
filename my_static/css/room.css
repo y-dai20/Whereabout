@@ -97,6 +97,29 @@
     width: 100%;
 }
 
+.added-object-title, .tab-title-style {
+    font-size: 25px;
+}
+
+.tab-title-style {
+    border-left: solid 5px white;
+    padding-left: 5px;
+    margin: 20px 0;
+}
+
+.added-object-text, .tab-text-style {
+    font-size: 17px;
+}
+
+.tab-text-style {
+    padding-left: 5px;
+    margin: 10px 0;
+}
+
+.tab-img-style {
+    margin: 5px;
+}
+
 .trash-area {
     padding: 5px;
     background-color: white;
@@ -114,7 +137,6 @@
     overflow-x: auto;
     word-wrap: break-word;
     white-space: pre-line;
-    margin-bottom: 0;
 }
 
 .tab-title-content {
@@ -122,6 +144,7 @@
     align-items: flex-end; */
     line-height: normal;
     letter-spacing: normal;
+    padding: 10px 0;
 }
 
 .tab-text-content {
@@ -130,7 +153,7 @@
 
 .room-tab-table-row {
     padding: 0;
-    margin: 0 0 10px 0;
+    margin: 0;
     width: 100%;
 }
 
@@ -142,18 +165,10 @@
     padding: 5px;
 }
 
-
-
 .room-tab-table-col {
     margin: 0;
     /* padding-right: 10px; */
     padding: 0;
-}
-
-.tab-title-style {
-    font-size: 25px;
-    border-left: solid 5px white;/*左線（実線 太さ 色）*/
-    padding-left: 5px;
 }
 
 #room-tab-link {
@@ -162,11 +177,6 @@
 
 #room-path {
     font-size: 20px;
-}
-
-.tab-text-font {
-    font-size: 17px;
-    padding-left: 5px;
 }
 
 .tab-pane {

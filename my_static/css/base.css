@@ -39,6 +39,10 @@ span.error, p.error {
     color: red;
 }
 
+.c-green {
+    color: green;
+}
+
 .c-black {
     color: black;
 }
@@ -345,6 +349,6 @@ input {
     cursor: pointer;
 }
 
-.tab-char-len {
+.char-len {
     font-size: small;
 }
