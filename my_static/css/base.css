@@ -344,3 +344,7 @@ input {
 .copy-link {
     cursor: pointer;
 }
+
+.tab-char-len {
+    font-size: small;
+}

@@ -222,8 +222,13 @@ function bind_droppable() {
     });
 }
 
-function get_added_area() {
-    return `<div class="draggable added-object"></div>`;
+function get_added_area(need_len=false) {
+    var html =  `<div class="draggable added-object">`;
+    if (need_len) {
+        html += `<div class="tab-char-len margin-left c-black">0文字</div>`;
+    }
+    html += `</div>`;
+    return html;
 }
 
 function get_title_object(text="タイトル") {
@@ -272,7 +277,7 @@ function deploy_tab_content_items(tab, tab_content_items, is_droppable=true) {
 
 function set_added_object(tab, row, column, data) {
     var drop_area = $('#'+get_tab_col_name(tab, row, column));
-    drop_area.html(get_added_area());
+    drop_area.html(get_added_area(true));
     if (data['title'] != '') {
         drop_area.children().append(get_title_object(data['title']));
     } else if (data['text'] != '') {
@@ -320,8 +325,8 @@ $(document).on('click', '.expand-object-button', function(){
 });
 
 $(document).on('click change keyup keydown paste cut input', '.added-object-textarea, .added-object-title', function(){
-    $(this).parents('.room-tab-table-row').height(20);
-    $(this).parents('.room-tab-table-row').height(this.scrollHeight + 20);
+    $(this).parents('.room-tab-table-row').height(30);
+    $(this).parents('.room-tab-table-row').height(this.scrollHeight + 30);
 });
 
 $(document).on('click', '.add-tab-button', function(){

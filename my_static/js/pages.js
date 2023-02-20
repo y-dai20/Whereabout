@@ -542,6 +542,19 @@ $(document).on('click change input', 'input.input-room-tab-title', function() {
     }
 });
 
+$(document).on('click change input', 'textarea.added-object-title', function() {
+    var target = $(this).parents('.added-object').find('.tab-char-len');
+    var len = $(this).val().length;
+    target.text(`${len}文字`);
+    if (len > ROOM_TAB_TITLE_MAX_LENGTH) {
+        add_class(target, 'c-red');
+        target.removeClass('c-black');
+    } else {
+        add_class(target, 'c-black');
+        target.removeClass('c-red');
+    }
+});
+
 //todo fdを使わない理由は？
 $(document).on('click', '.save-participant-button', function(){
     var data = {
