@@ -663,6 +663,8 @@ $(document).on('click', '.show-modal-user-button', function() {
 		$('#modal-user').find('.modal-body').html(get_user_header(data) + get_user_content(data));
 		$('#modal-user').find('.modal-footer').html(get_user_footer(data));
 		show_modal('modal-user');
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
     });
 });
 
@@ -680,6 +682,8 @@ $(document).on('click', '.show-modal-room-button', function() {
 		$('#modal-room').find('.modal-footer').html(get_room_footer(data));
 		show_modal('modal-room');
 		active_slick_modal($('#modal-room .modal-body'));
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
     });
 });
 
@@ -703,7 +707,9 @@ $(document).on('click', '.show-modal-reply-button', function() {
 		room_reply_types.room.push(obj.roomId);
 		room_reply_types.reply_types.push(data.reply_types);
 		show_reply_types(obj, data.reply_types);
-	});
+	}).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
+    });
 });
 
 function show_reply_types(obj, reply_types) {

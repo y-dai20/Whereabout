@@ -390,6 +390,8 @@ $(document).on('click', '.room-tab-title', function(){
             scroll_to(scroll_target);
         }
         RoomTabItems[room_tab_id] = data['room_tab_items'];
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
     });
 });
 

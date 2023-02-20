@@ -321,6 +321,8 @@ function search(target) {
         if ($('.search-results').children().length < 1) {
             $('.search-results').prepend(`<span class="error">現在の検索条件では見つかりません</span>`);
         }
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
     });
 }
 
