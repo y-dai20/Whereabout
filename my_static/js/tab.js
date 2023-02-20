@@ -129,14 +129,14 @@ function get_addable_object_list() {
 }
 
 function expand_object(tab, row, column, fromCol, toCol=-1) {
-    if (toCol == -1) {
+    if (toCol < 0) {
         toCol = fromCol + COL;
     }
 
     if (toCol % COL != 0 || ((column - 1) * COL + fromCol >= MAX_COLUMN) || column >= COLUMN) {
         return false;
     }
-
+    
     if ($('#'+get_tab_col_name(tab, row, column + fromCol/COL)).children('.draggable').length > 0) {
         return false;
     }
@@ -253,13 +253,9 @@ function deploy_tab_content_items(tab, tab_content_items, is_droppable=true) {
             'text':get_dict_value(tab_content_items[i], 'text'),
             'img':get_dict_value(tab_content_items[i], 'img'),
         }
-        var row = get_dict_value(tab_content_items[i], 'row');
-        var column = get_dict_value(tab_content_items[i], 'column');
-        var col = get_dict_value(tab_content_items[i], 'col');
-
-        if (col > COL) {
-            expand_object(tab, row, column, COL, col);
-        }
+        var row = Number(get_dict_value(tab_content_items[i], 'row'));
+        var column = Number(get_dict_value(tab_content_items[i], 'column'));
+        var col = Number(get_dict_value(tab_content_items[i], 'col'));
         
         var row_count = $(`#room-tab-table${tab}`).children('.room-tab-table-row').length;
         if (row > row_count) {
@@ -268,6 +264,11 @@ function deploy_tab_content_items(tab, tab_content_items, is_droppable=true) {
                 $(`#room-tab-table${tab}`).append(get_room_tab_table_row(tab, row, is_droppable));
             }
         }
+
+        if (col > COL) {
+            expand_object(tab, row, column, COL, col);
+        }
+
         if (is_droppable) {
             set_added_object(tab, row, column, data);
         } else {
