@@ -460,6 +460,7 @@ $(document).on('click', '.save-display-button', function(){
         if ($(`#room-tab-title${i}`).hasClass('not-display')) {
             continue;
         }
+
         var tab = {
             'room_tab_id':$(`#input-room-tab-title${i}`).parents('.room-tab-title').data('room-tab-id'), 
             'title':$(`#input-room-tab-title${i}`).val(), 
@@ -528,6 +529,17 @@ $(document).on('click', '.save-display-button', function(){
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
     });
+});
+
+$(document).on('click change input', 'input.input-room-tab-title', function() {
+    var target = $(this).parents('.manage-room-tab').find('.tab-char-len');
+    var len = $(this).val().length;
+    target.text(`${len}文字`);
+    if (len > ROOM_TAB_TITLE_MAX_LENGTH) {
+        add_class(target, 'c-red');
+    } else {
+        target.removeClass('c-red');
+    }
 });
 
 //todo fdを使わない理由は？

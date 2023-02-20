@@ -35,6 +35,10 @@ span.error, p.error {
     color: white;
 }
 
+.c-red {
+    color: red;
+}
+
 .c-black {
     color: black;
 }

@@ -38,11 +38,12 @@ function create_room_tab_title(id="None" ,title="title", is_editable=true, is_ac
     if (is_empty(id)) {
         id = ' ';
     }
+    var html = '<div class="manage-room-tab">'
     var tab = $('.room-tab-title').length + 1;
     if (is_editable) {
-        var html = `<a id="room-tab-title${tab}" class="room-tab-title nav-link`;
+        html += `<a id="room-tab-title${tab}" class="room-tab-title nav-link`;
     } else {
-        var html = `<a id="room-tab-title${tab}" class="room-tab-title sidebar-button nav-link`;
+        html += `<a id="room-tab-title${tab}" class="room-tab-title sidebar-button nav-link`;
     }
     if (is_active) {
         $('.room-tab-title').removeClass('active');
@@ -59,9 +60,11 @@ function create_room_tab_title(id="None" ,title="title", is_editable=true, is_ac
     }
     html += `</a>`;
     if (is_editable) {
-        html += `<div class="delete-tab-button" data-tab="${tab}">
-        <img src="${deleteImg}" class="tab-delete-button"></div>`;
+        html += `<div class="flex-area"><div class="delete-tab-button" data-tab="${tab}">
+        <img src="${deleteImg}" class="tab-delete-button"></div>
+        <div class="tab-char-len margin-left"></div></div>`;
     }
+    html += '</div>';
 
     $('.room-tab-title-list').append(html);
 }
