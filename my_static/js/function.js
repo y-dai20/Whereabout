@@ -46,6 +46,16 @@ function is_empty(str) {
     return false;
 }
 
+function is_same_empty_count(list, allow_empty_count=1) {
+    var empty_count = 0
+
+    $.each(list, function(idx, val) {
+        empty_count += is_empty(val) ? 1 : 0;
+    });
+
+    return empty_count == allow_empty_count ? true : false;
+}
+
 function is_str(value) {
     return typeof value == 'string';
 }

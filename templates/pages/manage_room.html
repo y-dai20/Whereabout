@@ -482,17 +482,6 @@
     $(window).on('beforeunload', function() {
       return false;
     });
-    $('div.manage-room-content.aaaaa').scroll(function() {
-      console.log($(this).scrollTop());
-      console.log($('#room-tab-pane-list').offset().top);
-      if ($(this).scrollTop() > $('#room-tab-pane-list').offset().top) {
-        add_class($('.tab-operation-area'), 'my-fixed-top');
-        $(this).css('margin-top', $('.tab-operation-area').outerHeight());
-      } else {
-        $('.tab-operation-area').removeClass('my-fixed-top');
-        $(this).css('margin-top', 0);
-      }
-    });
     $('div.manage-room-content').scroll(function() {
       if (100 > $('#room-tab-pane-list').offset().top) {
         add_class($('.tab-operation-area'), 'my-fixed-top');
