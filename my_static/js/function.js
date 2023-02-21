@@ -101,13 +101,13 @@ function get_preview_files(file_type, name, fd=null) {
     });
     fd.append(`${file_type}_file_names`, file_names);
 
-    var uploaders = document.getElementsByClassName(`${name}-${file_type}-preview-uploader`);
     $.each(upload_file_names, function(idx1, upload_file_name) {
-        $.each(uploaders, function(idx2, uploader) {
-            if (uploader.files.length < 1) {
+        console.log(upload_file_name);
+        $(`.${name}-${file_type}-preview-uploader`).each(function() {
+            if (this.files.length < 1) {
                 return true;
             }
-            $.each(uploader.files, function(idx3, file) {
+            $.each(this.files, function(idx3, file) {
                 if (file.name == upload_file_name) {
                     fd.append(upload_file_name, file);
                     return false;
@@ -163,7 +163,7 @@ function preview_upload(file_type, files, name, max_files=1, max_size=1){
     }
     
     if (ok_files < 1) {
-        return 0;        
+        return false;        
     }
     $(`.${name}-${file_type}-preview-uploader`).hide();
 
@@ -261,12 +261,12 @@ function create_img_input(name, is_multi=true) {
     }
     html += '>';
 
-    $(`.${name}-img-preview-uploaders`).append(html);
+    $(`.${name}-img-preview-uploaders`).prepend(html);
 }
 
-function create_video_input(name, is_multi=true) {
+function create_video_input(name, is_multi=false) {
     var html = `<input type="file" class="form-control ${name}-video-preview-uploader file-uploader" name="video" file-name="" accept="video/*">`;
-    $(`.${name}-video-preview-uploaders`).append(html);
+    $(`.${name}-video-preview-uploaders`).prepend(html);
 }
 
 function get_confirm_button(value, add_class='', is_success=true) {

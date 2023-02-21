@@ -724,6 +724,10 @@ $(document).on('change', '.user-img-img-preview-uploader', function() {
     set_upload_file_size('user-img', 'img', file.size, MAX_USER_IMG_BYTE);
 });
 $(document).on('change', '.post-img-preview-uploader', function() {
+    console.log('###########################');
+    $(`.post-img-preview-uploader`).each(function() {
+        console.log(this.files);
+    });
     $('#post-form-video').hide();
     preview_upload('img', this.files, 'post', MAX_POST_IMGS, MAX_POST_IMG_BYTE);
 });

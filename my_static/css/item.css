@@ -71,6 +71,10 @@
 .reply-item {
     padding: 5px;
 }
+.reply-content {
+    max-height: 150px;
+    overflow-y: auto;
+}
 .agree-item {
     background-color: rgb(143, 173, 159);
 }
@@ -87,6 +91,10 @@
 }
 .post-item {
     padding: 10px;
+}
+.post-content {
+    max-height: 300px;
+    overflow-y: auto;
 }
 
 @media screen and (max-width: 1000px) {
