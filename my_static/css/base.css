@@ -195,7 +195,7 @@ a.sidebar-button {
     background-color: white;
     position: absolute;
     transform: rotate(0deg);
-    transition: .4s ease-in-out;
+    transition: .5s ease-in-out;
 }
 
 .menu-wrapper .hamburger-menu span:nth-child(1) {
@@ -351,4 +351,11 @@ input {
 
 .char-len {
     font-size: small;
+}
+
+.my-fixed-top {
+    position: fixed;
+    top: 55px;
+    right: 0;
+    z-index: 50;
 }

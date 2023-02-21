@@ -5,13 +5,6 @@
 {% endblock %}
 
 {% block main %}
-<script>
-  $(function() {
-    $(window).on('beforeunload', function() {
-      return false;
-    });
-  })
-</script>
 <div class="left-sidebar sidebar">
   <nav class="nav flex-column nav-pills manage-room-function-list w-100">
     <a class="sidebar-button manage-room-function nav-link active" data-bs-toggle="pill" data-bs-target="#manage-display-pane" type="button" role="pill">
@@ -481,6 +474,31 @@
     </div>
   </div>
 </div>
-
-
+<script>
+  $(function() {
+    $(window).on('beforeunload', function() {
+      return false;
+    });
+    $('div.manage-room-content.aaaaa').scroll(function() {
+      console.log($(this).scrollTop());
+      console.log($('#room-tab-pane-list').offset().top);
+      if ($(this).scrollTop() > $('#room-tab-pane-list').offset().top) {
+        add_class($('.tab-operation-area'), 'my-fixed-top');
+        $(this).css('margin-top', $('.tab-operation-area').outerHeight());
+      } else {
+        $('.tab-operation-area').removeClass('my-fixed-top');
+        $(this).css('margin-top', 0);
+      }
+    });
+    $('div.manage-room-content').scroll(function() {
+      if (100 > $('#room-tab-pane-list').offset().top) {
+        add_class($('.tab-operation-area'), 'my-fixed-top');
+        $('.tab-operation-area').css('width', $(this).outerWidth());
+      } else {
+        $('.tab-operation-area').removeClass('my-fixed-top');
+        $('.tab-operation-area').css('width', '100%');
+      }
+    });
+  });
+</script>
 {% endblock %}

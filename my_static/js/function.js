@@ -102,7 +102,6 @@ function get_preview_files(file_type, name, fd=null) {
     fd.append(`${file_type}_file_names`, file_names);
 
     $.each(upload_file_names, function(idx1, upload_file_name) {
-        console.log(upload_file_name);
         $(`.${name}-${file_type}-preview-uploader`).each(function() {
             if (this.files.length < 1) {
                 return true;
