@@ -150,6 +150,10 @@ function expand_object(tab, row, column, fromCol, toCol=-1) {
 }
 
 function repair_expand(drop_row=0, drop_col=0) {
+    if (is_empty(now_drag_object)) {
+        return false;
+    }
+
     var target = now_drag_object.parent();
     var tab = target.data('tab');
     var row = target.data('row');
@@ -172,7 +176,7 @@ function bind_droppable() {
         start:function() {
             $(this).css('max-width', '50px');
             $(this).css('max-height', '50px');
-            $(this).css('z-index', 100);
+            $(this).css('z-index', 1000);
             now_drag_object = $(this);
         },
         stop: function() {
@@ -217,7 +221,7 @@ function bind_droppable() {
                 $(this).parents('.room-tab-table-row').height($(this).height());
             }
             
-            now_click_object = $(this);
+            now_click_object = now_drag_object;
             now_drag_object.remove();
             get_addable_object_list();
         }
