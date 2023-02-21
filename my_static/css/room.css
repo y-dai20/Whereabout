@@ -85,10 +85,17 @@
 .added-object {
     height: 100%;
     width: 100%;
-    background-color: aqua;
     display: flex;
     flex-flow: column;
     cursor: grab;
+}
+
+.added-object:not(.active) {
+    background-color: aqua;
+}
+
+.added-object.active {
+    background-color: #ffaf58;
 }
 
 .added-object-text, .added-object-title {
@@ -288,7 +295,8 @@ label.form-check-label {
     flex: 1;
     margin-right: 10px;
 }  
-.tab-content.manage-room {
+
+.flex-3 {
     flex: 3;
 }
 
@@ -299,8 +307,9 @@ label.form-check-label {
     overflow-y: auto;
 }
 
-.add-tab-button {
+.add-button {
     background-color: greenyellow;
+    text-align: center;
     cursor: pointer;
 }
 

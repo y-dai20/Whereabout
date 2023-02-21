@@ -128,10 +128,10 @@
               <script>document.write(get_trash_img());</script>
             </div>
             <div data-bs-toggle="tooltip" data-bs-placement="top" title="クリックしたオブジェクトを右へ拡大します">
-              <button class="btn btn-secondary expand-object-button" type="button">右へ拡大</button>
+              <button class="btn btn-secondary expand-object-button need-click-object" type="button" disabled>右へ拡大</button>
             </div>
-            <div data-bs-toggle="tooltip" data-bs-placement="top" title="一番下に行を追加します">
-              <button class="btn btn-secondary add-row-button" type="button">行の追加</button>
+            <div data-bs-toggle="tooltip" data-bs-placement="top" title="クリックしたオブジェクトを左へ縮小します">
+              <button class="btn btn-secondary contract-object-button need-click-object" type="button" disabled>左へ縮小</button>
             </div>
           </div>
 
@@ -139,25 +139,28 @@
             <div class="manage-room-tab-content">
               <div class="manage-room-titles">
                 <div class="nav flex-column nav-pills room-tab-title-list w-100"></div>
-                <div class="text-center">
-                  <div class="add-tab-button">
-                    <script>document.write(get_add_img());</script>
-                  </div>
+                <div class="add-tab-button add-button">
+                  <script>document.write(get_add_img());</script>
                 </div>
               </div>
-              <div class="tab-content manage-room c-white" id="room-tab-pane-list">
-                {{room_tabs | json_script:'room_tabs'}}
-                {{room_tab_items | json_script:'room_tab_items'}}
+              <div class="flex-3">
+                <div class="tab-content manage-room c-white" id="room-tab-pane-list">
+                  {{room_tabs | json_script:'room_tabs'}}
+                  {{room_tab_items | json_script:'room_tab_items'}}
+                  <script>
+                    var RoomTabs = JSON.parse(document.getElementById('room_tabs').textContent);
+                    create_room_tab_titles(RoomTabs, true);
+                    create_room_tab_table(tab=1, is_droppable=true, is_active=true);
+                    get_addable_object_list();
+                    var RoomTabItems = {};
+                    if (RoomTabs.length > 0) {
+                      RoomTabItems[RoomTabs[0].id] = JSON.parse(document.getElementById('room_tab_items').textContent);
+                      deploy_tab_content_items(tab=1, RoomTabItems[RoomTabs[0].id]);
+                    }
+                  </script>
+                </div>
                 <script>
-                  var RoomTabs = JSON.parse(document.getElementById('room_tabs').textContent);
-                  create_room_tab_titles(RoomTabs, true);
-                  create_room_tab_table(tab=1, is_droppable=true, is_active=true);
-                  get_addable_object_list();
-                  var RoomTabItems = {};
-                  if (RoomTabs.length > 0) {
-                    RoomTabItems[RoomTabs[0].id] = JSON.parse(document.getElementById('room_tab_items').textContent);
-                    deploy_tab_content_items(tab=1, RoomTabItems[RoomTabs[0].id]);
-                  }
+                  document.write(get_add_row_button());
                 </script>
               </div>
             </div>

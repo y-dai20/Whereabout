@@ -1,8 +1,8 @@
 const MAX_ROW = 10;
 const MAX_TAB = 10;
-const MAX_COLUMN = 12;
-const COLUMN = 4;
-const COL = MAX_COLUMN / COLUMN;
+const MAX_COL = 12;
+const MAX_COLUMN = 4;
+const COL = MAX_COL / MAX_COLUMN;
 var ROW = 4;
 var now_drag_object = null;
 var now_click_object = null;
@@ -12,6 +12,7 @@ $(document).ready(function(){
         drop: function(){
             repair_expand();
             now_drag_object.remove();
+            set_now_click_object(null);
             get_addable_object_list();
         }
     });    
@@ -89,7 +90,7 @@ function create_room_tab_table(tab, is_droppable=true, is_active=false) {
 
 function get_room_tab_table_row(tab, row, is_droppable=true) {
     var html = `<div class="row room-tab-table-row">`;
-    for (var c = 1; c <= COLUMN; c++) {
+    for (var c = 1; c <= MAX_COLUMN; c++) {
         html += `<div id="${get_tab_col_name(tab, row, c)}" class="room-tab-table-col col-3 `;
         if (is_droppable) {
             html += ` border border-white droppable `;
@@ -133,20 +134,31 @@ function expand_object(tab, row, column, fromCol, toCol=-1) {
         toCol = fromCol + COL;
     }
 
-    if (toCol % COL != 0 || ((column - 1) * COL + fromCol >= MAX_COLUMN) || column >= COLUMN) {
+    if (toCol % COL != 0) {
         return false;
     }
-    
-    if ($('#'+get_tab_col_name(tab, row, column + fromCol/COL)).children('.draggable').length > 0) {
-        return false;
+
+    var is_expand = toCol > fromCol;
+    var cycle = Math.abs(toCol - fromCol) / COL;
+    var next_column = column + fromCol / COL;
+    for (var i=0; i < cycle; i++) {
+        if (is_expand) {
+            if (next_column + i > MAX_COLUMN || $('#'+get_tab_col_name(tab, row, next_column + i)).find('.added-object').length > 0) {
+                toCol = (next_column + i - 1) * COL
+                return false;
+            }
+            $('#'+get_tab_col_name(tab, row, next_column + i)).hide();
+        } else {
+            if ((next_column - 1) - i < 1) {
+                toCol = COL
+                return false;
+            }
+            $('#'+get_tab_col_name(tab, row, (next_column - 1) - i)).show();
+        }
     }
 
     $('#'+get_tab_col_name(tab, row, column)).data('col', toCol);
     $('#'+get_tab_col_name(tab, row, column)).removeClass(`col-${fromCol}`).addClass(`col-${toCol}`);
-    var next_column = column + fromCol / COL;
-    for (var i=0; i < (toCol - fromCol) / COL; i++) {
-        $('#'+get_tab_col_name(tab, row, next_column + i)).hide();
-    }
 }
 
 function repair_expand(drop_row=0, drop_col=0) {
@@ -189,8 +201,8 @@ function bind_droppable() {
         cursorAt:{left: 25, top: 0},
     });
 
-    $(".addable-object, .added-object").on('click', function(){
-        now_click_object = $(this);
+    $(".added-object").on('click', function(){
+        set_now_click_object($(this));
     });
 
     $(".droppable.room-tab-table-col").droppable({
@@ -221,10 +233,24 @@ function bind_droppable() {
                 $(this).parents('.room-tab-table-row').height($(this).height());
             }
             
-            now_click_object = now_drag_object;
+            set_now_click_object($(this).children());
             now_drag_object.remove();
             get_addable_object_list();
         }
+    });
+}
+
+function set_now_click_object(target) {
+    remove_class(now_click_object, 'active');
+    now_click_object = target;
+    add_class(now_click_object, 'active');
+    var is_disabled = false;
+    if (is_empty(now_click_object) || !now_click_object.hasClass('added-object')) {
+        is_disabled = true;
+    }
+
+    $('.need-click-object').each(function() {
+        $(this).prop('disabled', is_disabled);
     });
 }
 
@@ -319,7 +345,7 @@ $(document).on('click', '.add-row-button', function() {
 });
 
 $(document).on('click', '.expand-object-button', function(){
-    if (now_click_object == null) {
+    if (is_empty(now_click_object)) {
         return false;
     }
     var target = now_click_object.parent();
@@ -329,6 +355,21 @@ $(document).on('click', '.expand-object-button', function(){
     var tab = parseInt(target.data('tab'));
     
     expand_object(tab, row, column, col);
+});
+$(document).on('click', '.contract-object-button', function(){
+    if (is_empty(now_click_object)) {
+        return false;
+    }
+    var target = now_click_object.parent();
+    var col = parseInt(target.data('col'));
+    if (col <= COL) {
+        return false;
+    }
+    var row = parseInt(target.data('row'));
+    var column = parseInt(target.data('column'));
+    var tab = parseInt(target.data('tab'));
+    
+    expand_object(tab, row, column, col, col - COL);
 });
 
 $(document).on('click change keyup keydown paste cut input', '.added-object-text, .added-object-title', function(){
@@ -348,10 +389,10 @@ $(document).on('click', '.add-tab-button', function(){
 
 $(document).on('click', '.delete-tab-button', function(){
     var tab = $(this).data('tab');
-    $(`#room-tab-title${tab}`).addClass('not-display');
     $(`#room-tab-pane${tab}`).fadeOut();
     $(`#room-tab-title${tab}`).fadeOut();
     $(this).fadeOut();
+    $(this).siblings('.char-len').fadeOut();
 });
 
 $(document).on('change', '.room-tab-content-img-preview-uploader', function() {
@@ -427,4 +468,8 @@ function change_room_tab(title) {
         $('title').html(title);
         $('#room-tab-h1-title').html(title);
     }
+}
+
+function get_add_row_button() {
+    return `<div class="add-row-button add-button">${get_add_img()}</div>`;
 }

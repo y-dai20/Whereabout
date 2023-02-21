@@ -475,7 +475,6 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
 #todo (中) Tabの順番をドラッグで移動できるようにする
 #todo (中) 選択しているオブジェクトをわかるようにする
 #todo (中) オブジェクトを選択していないときはボタンを押せなくする
-#todo (中) タブタイトルの上下に余白をつける
 #todo (中) 文字色や背景を変えられるようにしたい
 class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     model = Room

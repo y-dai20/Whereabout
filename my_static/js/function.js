@@ -349,8 +349,21 @@ function active_luminous(id) {
 }
 
 function add_class(target, cls) {
+    if (is_empty(target)) {
+        return false;
+    }
     if (!target.hasClass(cls)) {
         target.addClass(cls);
+    }
+    return true;
+}
+
+function remove_class(target, cls) {
+    if (is_empty(target)) {
+        return false;
+    }
+    if (target.hasClass(cls)) {
+        target.removeClass(cls);
     }
     return true;
 }

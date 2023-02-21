@@ -18,6 +18,7 @@ class RoomAuthority(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 #todo (中) 関連するRoomの情報を付与
+#todo (中) 文字数の見直し
 class Room(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
