@@ -338,6 +338,7 @@ function set_object(tab, row, column, data) {
 $(document).on('click', '.add-row-button', function() {
     var table = $('.room-tab-pane.active').children('.room-tab-table');
     if (table.find('.room-tab-table-row').length >= MAX_ROW) {
+        show_modal_message('警告', [`これ以上は行を追加できません`]);
         return false;
     }
     table.append(get_room_tab_table_row(table.data('tab'), table.children().length + 1));
