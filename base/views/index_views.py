@@ -62,6 +62,7 @@ class IndexPostListView(SearchBaseView, PostItemView):
 
         return self.get_post_items(self.get_idx_items(posts))
 
+#todo (中) デフォルトの並びを急上昇などにしたい
 class IndexRoomListView(SearchBaseView, RoomItemView):
     template_name = 'pages/index_room.html'
     model = Room

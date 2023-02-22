@@ -474,6 +474,7 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
 
 #todo (中) Tabの順番をドラッグで移動できるようにする
 #todo (中) 文字色や背景を変えられるようにしたい
+#todo (中) タイトル内を開け閉めできるようにする
 class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     model = Room
     form_class = UpdateRoomForm

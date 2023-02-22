@@ -306,6 +306,7 @@ function deploy_tab_content_items(tab, tab_content_items, is_droppable=true) {
         }
     }
     bind_droppable();
+    create_room_tab_title_link(tab);
 }
 
 function set_added_object(tab, row, column, data) {
@@ -417,10 +418,11 @@ $(document).on('click', '.room-tab-title', function(){
     }
 
     create_room_tab_link({'id':room_tab_id, 'title':$(this).text()});
-    change_room_tab($(this).text());
+    change_room_tab_title($(this).text());
+    var tab = $(this).data('tab');
+    create_room_tab_title_link(tab);
 
     var scroll_target = ".room-title";
-    var tab = $(this).data('tab');
     if (Object.keys(RoomTabItems).includes(room_tab_id)) {
         if ($('#room-tab-pane-list').hasClass('show-room')) {
             scroll_to(scroll_target);
@@ -464,7 +466,7 @@ function create_room_tab_link(room_tab, append_to="#room-tab-link") {
     );
 }
 
-function change_room_tab(title) {
+function change_room_tab_title(title) {
     if ($('#room-tab-h1-title').length > 0) {
         $('title').html(title);
         $('#room-tab-h1-title').html(title);
@@ -473,4 +475,24 @@ function change_room_tab(title) {
 
 function get_add_row_button() {
     return `<div class="add-row-button add-button">${get_add_img()}</div>`;
+}
+
+function create_room_tab_title_link(tab) {
+    $('.room-tab-title-links').hide();
+    if ($('#room-tab-title-links-list').find(`#room-tab${tab}-title-links`).length > 0) {
+        $('#room-tab-title-links-list').find(`#room-tab${tab}-title-links`).show();
+        return false;
+    }
+
+    var html = `<div id="room-tab${tab}-title-links" class="room-tab-title-links"><ol>`;
+    $.each($(`#room-tab-table${tab}`).find('.tab-title-content'), function(idx, title) {
+        var link_id = `room-tab${tab}-title-link${idx}`;
+        var text = $(title).text();
+        $(title).attr('id', link_id);
+        $(title).find('.tab-title-style').text(`${idx+1}.${text}`)
+        html += `<li><a href="#${link_id}">${text}</a></li>`;
+    });
+    html += '</ol></div>';
+
+    $('#room-tab-title-links-list').append(html);
 }

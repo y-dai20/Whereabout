@@ -109,9 +109,10 @@
 }
 
 .tab-title-style {
-    border-left: solid 5px white;
+    border-left: solid 5px #ffaf58;
     padding-left: 5px;
     margin: 20px 0;
+    color: #ffaf58;
 }
 
 .added-object-text, .tab-text-style {
@@ -179,6 +180,10 @@
 
 #room-tab-link {
     font-size: 25px;
+    max-width: 600px;
+    width: 100%;
+    margin: auto;
+    padding: 10px;
 }
 
 #room-path {
@@ -337,4 +342,13 @@ label.form-check-label {
 
 .corner-circle {
     border-radius: 10px;
+}
+
+#room-tab-title-links-list {
+    border: 2px dashed white;
+    padding: 10px 20px;
+    color: white;
+    max-width: 600px;
+    width: 100%;
+    margin: auto;
 }
