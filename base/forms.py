@@ -3,9 +3,8 @@ from django.contrib.auth import get_user_model
 from django.core.exceptions import ValidationError
 from django.core.validators import validate_email
 
-from base.models import Post, ReplyPost, ReplyReply
+from base.models import Post, ReplyPost, ReplyReply, Personal, Profile
 from base.models.room_models import Room, RoomRequestInformation
-from base.models.account_models import Profile
 
 
 EMAIL_MAX_LENGTH = 255
@@ -21,6 +20,13 @@ SOURCE_MAX_LENGTH = 255
 ROOM_TITLE_MAX_LENGTH = 50
 ROOM_SUBTITLE_MAX_LENGTH = 255
 ROOM_INFORMATION_MAX_LENGTH = 255
+PERSONAL_WEB_MAX_LENGTH = 255
+PERSONAL_PHONE_MAX_LENGTH = 15
+PERSONAL_ZIPCODE_MAX_LENGTH = 7
+PERSONAL_STATE_MAX_LENGTH = 15
+PERSONAL_CITY_MAX_LENGTH = 15
+PERSONAL_ADDRESS_MAX_LENGTH = 15
+PERSONAL_DAY_MAX_LENGTH = 15
 IMAGE_EXTENSION = "jpg|jpeg|png|ico|bmp"
 VIDEO_EXTENSION = "mp4"
 
@@ -57,8 +63,8 @@ class ValidationForm:
         if SOURCE_MAX_LENGTH < len(source):
             raise ValidationError(('ソースは{}文字以下で入力してください'.format(SOURCE_MAX_LENGTH)))
 
-        if not source.startswith('http://') and not source.startswith('https://'):
-            raise ValidationError('適切なソースを入力してください')
+        if not source.startswith('https://'):
+            raise ValidationError('httpsから始めるソースを入力してください')
 
         return source
 
@@ -196,3 +202,68 @@ class RoomRequestInformationForm(ValidationForm, forms.ModelForm):
         if ROOM_INFORMATION_MAX_LENGTH < max_length:
             raise ValidationError(('最大文字数は{}です'.format(ROOM_INFORMATION_MAX_LENGTH)))
         return max_length
+
+class PersonalForm(ValidationForm, forms.ModelForm):
+
+    class Meta:
+        model = Personal
+        fields = ('web', 'phone', 'zip_code', 'state', 'city', 'address_1', 'address_2', 
+            'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun')
+
+    def clean_web(self):
+        web = self.cleaned_data.get('web')
+        if PERSONAL_WEB_MAX_LENGTH < len(web):
+            raise ValidationError(('Webサイトは{}文字以下で入力してください'.format(PERSONAL_WEB_MAX_LENGTH)))
+
+        if not web.startswith('https://'):
+            raise ValidationError('httpsから始めるWebサイトを入力してください')
+
+        return web
+    def clean_phone(self):
+        phone = self.cleaned_data.get('phone')
+        if PERSONAL_PHONE_MAX_LENGTH < len(phone):
+            raise ValidationError(('電話番号は{}文字以下で入力してください'.format(PERSONAL_PHONE_MAX_LENGTH)))
+        return phone
+    def clean_zip_code(self):
+        zip_code = self.cleaned_data.get('zip_code')
+        if PERSONAL_ZIPCODE_MAX_LENGTH < len(zip_code):
+            raise ValidationError(('郵便番号は{}文字以下で入力してください'.format(PERSONAL_ZIPCODE_MAX_LENGTH)))
+        return zip_code
+    def clean_state(self):
+        state = self.cleaned_data.get('state')
+        if PERSONAL_STATE_MAX_LENGTH < len(state):
+            raise ValidationError(('都道府県は{}文字以下で入力してください'.format(PERSONAL_STATE_MAX_LENGTH)))
+        return state
+    def clean_city(self):
+        city = self.cleaned_data.get('city')
+        if PERSONAL_CITY_MAX_LENGTH < len(city):
+            raise ValidationError(('市区町村は{}文字以下で入力してください'.format(PERSONAL_CITY_MAX_LENGTH)))
+        return city
+    def clean_address_1(self):
+        address_1 = self.cleaned_data.get('address_1')
+        if PERSONAL_ADDRESS_MAX_LENGTH < len(address_1):
+            raise ValidationError(('番地は{}文字以下で入力してください'.format(PERSONAL_ADDRESS_MAX_LENGTH)))
+        return address_1
+    def clean_address_2(self):
+        address_2 = self.cleaned_data.get('address_2')
+        if PERSONAL_ADDRESS_MAX_LENGTH < len(address_2):
+            raise ValidationError(('建物名・部屋番号は{}文字以下で入力してください'.format(PERSONAL_ADDRESS_MAX_LENGTH)))
+        return address_2
+    def validate_day(self, day):
+        if PERSONAL_DAY_MAX_LENGTH < len(day):
+            raise ValidationError(('曜日は{}文字以下で入力してください'.format(PERSONAL_DAY_MAX_LENGTH)))
+        return day
+    def clean_mon(self):
+        return self.validate_day(self.cleaned_data.get('mon'))
+    def clean_tue(self):
+        return self.validate_day(self.cleaned_data.get('tue'))
+    def clean_wed(self):
+        return self.validate_day(self.cleaned_data.get('wed'))
+    def clean_thu(self):
+        return self.validate_day(self.cleaned_data.get('thu'))
+    def clean_fri(self):
+        return self.validate_day(self.cleaned_data.get('fri'))
+    def clean_sat(self):
+        return self.validate_day(self.cleaned_data.get('sat'))
+    def clean_sun(self):
+        return self.validate_day(self.cleaned_data.get('sun'))

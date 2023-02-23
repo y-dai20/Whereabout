@@ -22,6 +22,9 @@
     <a class="sidebar-button manage-room-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-information-pane" type="button" role="pill">
       情報の管理
     </a>
+    <a class="sidebar-button manage-room-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-room-personal-pane" type="button" role="pill">
+      ルーム情報の管理
+    </a>
   </nav>
 </div>
 <div class="menu-wrapper">
@@ -470,6 +473,54 @@
             </tbody>
           </table>
         </div>
+      </div>
+      <div class="tab-pane container" id="manage-room-personal-pane">
+        <button type="button" data-save-for="room-personal" class="save-confirm-button btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <form id="manage-room-personal-form">
+          <p class="manage-headline">Webサイト</p>
+          <div class="form-group">
+            <input type="text" class="form-control" value="{{web}}" name="web" data-max-len="255" placeholder="https://whereabout.jp">
+            <div class="char-len c-green"></div>
+          </div>
+          <p class="manage-headline">電話番号</p>
+          <div class="form-group">
+            <input type="text" class="form-control" value="{{phone}}" name="phone" data-max-len="15">
+            <div class="char-len c-green"></div>
+          </div>
+          <p class="manage-headline">住所</p>
+          <div class="form-group">
+            <label for="zip_code">郵便番号（数値のみ）</label>
+            <input type="text" class="form-control" value="{{zip_code}}" name="zip_code" data-max-len="7">
+            <div class="char-len c-green"></div>
+          </div>
+          <div class="form-group">
+            <label for="state">都道府県</label>
+            <input type="text" class="form-control" value="{{state}}" name="state" data-max-len="15">
+            <div class="char-len c-green"></div>
+          </div>
+          <div class="form-group">
+            <label for="city">市区町村</label>
+            <input type="text" class="form-control" value="{{city}}" name="city" data-max-len="15">
+            <div class="char-len c-green"></div>
+          </div>
+          <div class="form-group">
+            <label for="address_1">番地</label>
+            <input type="text" class="form-control" value="{{address_1}}" name="address_1" data-max-len="15">
+            <div class="char-len c-green"></div>
+          </div>
+          <div class="form-group">
+            <label for="address_2">建物名・部屋番号</label>
+            <input type="text" class="form-control" value="{{address_2}}" name="address_2" data-max-len="15">
+            <div class="char-len c-green"></div>
+          </div>
+          <p class="manage-headline">活動日程</p>
+          <div class="form-group">
+            <label for="mon">月曜日</label>
+            <input type="text" class="form-control" value="{{mon}}" name="mon" data-max-len="15">
+            <div class="char-len c-green"></div>
+          </div>
+        </form>
       </div>
     </div>
     <div class="hidden-area">

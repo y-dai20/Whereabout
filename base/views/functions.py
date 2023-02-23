@@ -269,3 +269,10 @@ def get_file_size(files):
         total_size += file.size
     
     return total_size
+
+def get_domain(url):
+    if not url.startswith('http://') and not url.startswith('https://'):
+        return None
+
+    url = url.replace('http://', '').replace('https://', '')
+    return url.split('/')[0]

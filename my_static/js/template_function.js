@@ -462,3 +462,19 @@ function get_lock_img() {
 function get_post_img() {
     return `<img src="${postImg}">`;
 }
+
+function get_phone_img() {
+    return `<img src="${phoneImg}">`;
+}
+
+function get_web_img() {
+    return `<img src="${webImg}">`;
+}
+
+function get_map_img() {
+    return `<img src="${mapImg}">`;
+}
+
+function get_calender_img() {
+    return `<img src="${calenderImg}">`;
+}

@@ -352,3 +352,8 @@ label.form-check-label {
     width: 100%;
     margin: auto;
 }
+
+.room-personal-area img {
+    width: 20px;
+    height: auto;
+}

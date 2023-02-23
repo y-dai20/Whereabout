@@ -700,6 +700,28 @@ $(document).on('click', '.save-authority-button', function(){
     });
 });
 
+$(document).on('click', '.save-room-personal-button', function(){
+    var form = 'manage-room-personal-form';
+    if (!form_valid(form)) {
+        return false;
+    };
+
+    var fd = get_form_data(form, ['input']);
+    $.ajax({
+        url:'/manage/room-personal/' + $('#manage-room-id').val() + '/',
+        type:'POST',
+        data:fd,
+        dataType:false,
+        processData:false,
+        contentType:false,
+        timeout:60000,
+    }).done(function (data) {
+        show_modal_message(data.title, data.message);
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
+    });
+});
+
 $('#input-create-room-public').on('click', function() {
     toggle_is_public($(this), 'SwitchIsPublicLabel');
 });

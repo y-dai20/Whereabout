@@ -6,13 +6,14 @@ from django.db.models.functions import Length
 
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
+from base.models.general_models import Personal
 from base.models.account_models import User, UserBlock
 from base.models.post_models import Post, PostFavorite
 from base.models.room_models import Room, RoomGuest, RoomImgs, RoomUser, RoomGood, RoomAuthority, RoomTab, \
     RoomTabItem, RoomInviteUser, RoomReplyType, RoomTabSequence, RoomRequestInformation, RoomInformation
 from base.views.general_views import ShowRoomBaseView, PostItemView, RoomItemView, RoomBase, SearchBaseView, GoodView
 from base.views.validate_views import ValidateRoomView
-from base.forms import CreateRoomForm, UpdateRoomForm, RoomRequestInformationForm
+from base.forms import CreateRoomForm, UpdateRoomForm, RoomRequestInformationForm, PersonalForm
 from base.views.mixins import LoginRequiredMixin, RoomAdminRequiredMixin
 
 import json
@@ -721,6 +722,42 @@ class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
         rri.is_active = is_active
         rri.sequence = sequence
         rri.save()
+
+        return JsonResponse(f.get_json_success_message(['保存しました']))
+
+class ManageRoomPersonalView(ManageRoomBaseView, TemplateView):
+    form_class = PersonalForm
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
+    def post(self, request, *args, **kwargs):
+        vr = self.get_validate_room()
+        room = vr.get_room()
+        form_data = request.POST
+        form = self.form_class(form_data)
+        if not form.is_valid():
+            return JsonResponse(f.get_json_error_message(f.get_form_error_message(form)))
+
+        if room.personal is None:
+            room.personal = Personal.objects.create()
+
+        room.personal.web = form.clean_web()
+        room.personal.phone = form.clean_phone()
+        room.personal.zip_code = form.clean_zip_code()
+        room.personal.state = form.clean_state()
+        room.personal.city = form.clean_city()
+        room.personal.address_1 = form.clean_address_1()
+        room.personal.address_2 = form.clean_address_2()
+        room.personal.mon = form.clean_mon()
+        room.personal.tue = form.clean_tue()
+        room.personal.wed = form.clean_wed()
+        room.personal.thu = form.clean_thu()
+        room.personal.fri = form.clean_fri()
+        room.personal.sat = form.clean_sat()
+        room.personal.sun = form.clean_sun()
+
+        room.personal.save()
 
         return JsonResponse(f.get_json_success_message(['保存しました']))
 
