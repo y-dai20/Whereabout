@@ -4,6 +4,10 @@ a {
 }
 
 a:hover {
+    color: #0091ffcb;
+}
+
+a {
     color: #0090ff;
 }
 
