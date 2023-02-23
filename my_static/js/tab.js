@@ -489,7 +489,7 @@ function create_room_tab_title_link(tab) {
         var link_id = `room-tab${tab}-title-link${idx}`;
         var text = $(title).text();
         $(title).attr('id', link_id);
-        $(title).find('.tab-title-style').text(`${idx+1}.${text}`)
+        $(title).find('.tab-title-style').text(`${idx+1}. ${text}`)
         html += `<li><a href="#${link_id}">${text}</a></li>`;
     });
     html += '</ol></div>';
