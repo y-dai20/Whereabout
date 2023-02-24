@@ -559,7 +559,7 @@ $(document).on('click change input', 'textarea.added-object-text', function() {
     );
 });
 
-$('input[type="text"], textarea').on('click change input', function() {
+$('input, textarea').on('click change input', function() {
     set_char_len(
         target=$(this).siblings('.char-len'), 
         len=$(this).val().length, 
@@ -567,9 +567,9 @@ $('input[type="text"], textarea').on('click change input', function() {
     );
 });
 
-function set_char_len(target, len, max_len) {
+function set_char_len(target, len, max_len, min_len=0) {
     target.text(`${len}文字`);
-    if (len > max_len) {
+    if (len > max_len || len < min_len) {
         add_class(target, 'c-red');
         target.removeClass('c-green');
     } else {
@@ -1303,3 +1303,10 @@ $(document).on('click', '.copy-link', function() {
         $(this).tooltip('show');
     });
 });
+
+$('.calender-accordion').accordion({
+    header:'p',
+    collapsible:true,
+    active:false,
+});
+

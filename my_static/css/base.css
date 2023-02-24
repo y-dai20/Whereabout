@@ -230,6 +230,11 @@ a.sidebar-button {
     display: flex;
 }
 
+.align-center {
+    align-items: center;
+    display: flex;
+}
+
 .radio-button-area {
     display: block;
     position: relative;
@@ -362,4 +367,8 @@ input {
     top: 55px;
     right: 0;
     z-index: 500;
+}
+
+.ui-accordion .ui-accordion-content {
+    padding: 2px;
 }

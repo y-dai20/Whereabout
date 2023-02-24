@@ -22,11 +22,11 @@ ROOM_SUBTITLE_MAX_LENGTH = 255
 ROOM_INFORMATION_MAX_LENGTH = 255
 PERSONAL_WEB_MAX_LENGTH = 255
 PERSONAL_PHONE_MAX_LENGTH = 15
-PERSONAL_ZIPCODE_MAX_LENGTH = 7
+PERSONAL_ZIPCODE_MAX_LENGTH = 8
 PERSONAL_STATE_MAX_LENGTH = 15
 PERSONAL_CITY_MAX_LENGTH = 15
 PERSONAL_ADDRESS_MAX_LENGTH = 15
-PERSONAL_DAY_MAX_LENGTH = 15
+PERSONAL_DAY_MAX_LENGTH = 5
 IMAGE_EXTENSION = "jpg|jpeg|png|ico|bmp"
 VIDEO_EXTENSION = "mp4"
 
@@ -208,7 +208,8 @@ class PersonalForm(ValidationForm, forms.ModelForm):
     class Meta:
         model = Personal
         fields = ('web', 'phone', 'zip_code', 'state', 'city', 'address_1', 'address_2', 
-            'mon', 'tue', 'wed', 'thu', 'fri', 'sat', 'sun')
+            'mon_from', 'mon_to', 'tue_from', 'tue_to', 'wed_from', 'wed_to', 'thu_from', 'thu_to', 
+            'fri_from', 'fri_to', 'sat_from', 'sat_to', 'sun_from', 'sun_to')
 
     def clean_web(self):
         web = self.cleaned_data.get('web')
@@ -253,17 +254,31 @@ class PersonalForm(ValidationForm, forms.ModelForm):
         if PERSONAL_DAY_MAX_LENGTH < len(day):
             raise ValidationError(('曜日は{}文字以下で入力してください'.format(PERSONAL_DAY_MAX_LENGTH)))
         return day
-    def clean_mon(self):
-        return self.validate_day(self.cleaned_data.get('mon'))
-    def clean_tue(self):
-        return self.validate_day(self.cleaned_data.get('tue'))
-    def clean_wed(self):
-        return self.validate_day(self.cleaned_data.get('wed'))
-    def clean_thu(self):
-        return self.validate_day(self.cleaned_data.get('thu'))
-    def clean_fri(self):
-        return self.validate_day(self.cleaned_data.get('fri'))
-    def clean_sat(self):
-        return self.validate_day(self.cleaned_data.get('sat'))
-    def clean_sun(self):
-        return self.validate_day(self.cleaned_data.get('sun'))
+    def clean_mon_from(self):
+        return self.validate_day(self.cleaned_data.get('mon_from'))
+    def clean_mon_to(self):
+        return self.validate_day(self.cleaned_data.get('mon_to'))
+    def clean_tue_from(self):
+        return self.validate_day(self.cleaned_data.get('tue_from'))
+    def clean_tue_to(self):
+        return self.validate_day(self.cleaned_data.get('tue_to'))
+    def clean_wed_from(self):
+        return self.validate_day(self.cleaned_data.get('wed_from'))
+    def clean_wed_to(self):
+        return self.validate_day(self.cleaned_data.get('wed_to'))
+    def clean_thu_from(self):
+        return self.validate_day(self.cleaned_data.get('thu_from'))
+    def clean_thu_to(self):
+        return self.validate_day(self.cleaned_data.get('thu_to'))
+    def clean_fri_from(self):
+        return self.validate_day(self.cleaned_data.get('fri_from'))
+    def clean_fri_to(self):
+        return self.validate_day(self.cleaned_data.get('fri_to'))
+    def clean_sat_from(self):
+        return self.validate_day(self.cleaned_data.get('sat_from'))
+    def clean_sat_to(self):
+        return self.validate_day(self.cleaned_data.get('sat_to'))
+    def clean_sun_from(self):
+        return self.validate_day(self.cleaned_data.get('sun_from'))
+    def clean_sun_to(self):
+        return self.validate_day(self.cleaned_data.get('sun_to'))

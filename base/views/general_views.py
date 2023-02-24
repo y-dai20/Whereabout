@@ -691,6 +691,7 @@ class ShowRoomBaseView(HeaderView):
         context['room_tab_items'] = self.room_base.get_room_tab_items(self.room.roomtabsequence.tab1)
         context['request_information'] = self.room_base.get_room_request_information()
 
+        #todo (高) 住所とカレンダーの表示方法について
         if self.room.personal is not None:
             context['web'] = self.room.personal.web
             context['web_domain'] = f.get_domain(self.room.personal.web)
@@ -700,13 +701,21 @@ class ShowRoomBaseView(HeaderView):
             context['city'] = self.room.personal.city
             context['address_1'] = self.room.personal.address_1
             context['address_2'] = self.room.personal.address_2
-            context['mon'] = self.room.personal.mon
-            context['tue'] = self.room.personal.tue
-            context['wed'] = self.room.personal.wed
-            context['thu'] = self.room.personal.thu
-            context['fri'] = self.room.personal.fri
-            context['sat'] = self.room.personal.sat
-            context['sun'] = self.room.personal.sun
+            context['mon_from'] = self.room.personal.mon_from
+            context['mon_to'] = self.room.personal.mon_to
+            context['tue_from'] = self.room.personal.tue_from
+            context['tue_to'] = self.room.personal.tue_to
+            context['wed_from'] = self.room.personal.wed_from
+            context['wed_to'] = self.room.personal.wed_to
+            context['thu_from'] = self.room.personal.thu_from
+            context['thu_to'] = self.room.personal.thu_to
+            context['fri_from'] = self.room.personal.fri_from
+            context['fri_to'] = self.room.personal.fri_to
+            context['sat_from'] = self.room.personal.sat_from
+            context['sat_to'] = self.room.personal.sat_to
+            context['sun_from'] = self.room.personal.sun_from
+            context['sun_to'] = self.room.personal.sun_to
+
 
         context['do_pass_request_information'] = False
         if not self.vr.is_admin(self.request.user) and\

@@ -350,10 +350,19 @@ label.form-check-label {
     color: white;
     max-width: 600px;
     width: 100%;
-    margin: auto;
+    margin: 10px auto;
 }
 
 .room-personal-area img {
     width: 20px;
     height: auto;
+    margin-right: 5px;
+}
+
+.room-personal {
+    margin: 5px;
+}
+
+input.time-input {
+    width: initial;
 }

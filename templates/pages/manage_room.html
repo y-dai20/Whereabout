@@ -341,7 +341,8 @@
             <div class="col-6">
               <label for="">返信タイプ{{forloop.counter}}</label>
               <div class="form-group">
-                <input type="text" class="manage-reply-type" name="type{{forloop.counter}}" value="{{reply_type}}">
+                <input type="text" class="manage-reply-type" name="type{{forloop.counter}}" value="{{reply_type}}" data-max-len="8">
+                <div class="char-len c-green"></div>
               </div>
             </div>
           {% endfor %}
@@ -485,13 +486,13 @@
           </div>
           <p class="manage-headline">電話番号</p>
           <div class="form-group">
-            <input type="text" class="form-control" value="{{phone}}" name="phone" data-max-len="15">
+            <input type="tel" class="form-control" value="{{phone}}" name="phone" data-max-len="15">
             <div class="char-len c-green"></div>
           </div>
           <p class="manage-headline">住所</p>
           <div class="form-group">
-            <label for="zip_code">郵便番号（数値のみ）</label>
-            <input type="text" class="form-control" value="{{zip_code}}" name="zip_code" data-max-len="7">
+            <label for="zip_code">郵便番号</label>
+            <input type="text" class="form-control zip-code-input" value="{{zip_code}}" name="zip_code" data-max-len="8">
             <div class="char-len c-green"></div>
           </div>
           <div class="form-group">
@@ -516,9 +517,88 @@
           </div>
           <p class="manage-headline">活動日程</p>
           <div class="form-group">
-            <label for="mon">月曜日</label>
-            <input type="text" class="form-control" value="{{mon}}" name="mon" data-max-len="15">
-            <div class="char-len c-green"></div>
+            <label for="mon">月曜</label>
+            <div class="align-center">
+              <div>
+                <input type="time" class="form-control time-input" value="{{mon_from}}" name="mon_from">
+              </div>
+              　〜　
+              <div>
+                <input type="time" class="form-control time-input" value="{{mon_to}}" name="mon_to">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="tue">火曜</label>
+            <div class="align-center">
+              <div>
+                <input type="time" class="form-control time-input" value="{{tue_from}}" name="tue_from">
+              </div>
+              　〜　
+              <div>
+                <input type="time" class="form-control time-input" value="{{tue_to}}" name="tue_to">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="wed">水曜</label>
+            <div class="align-center">
+              <div>
+                <input type="time" class="form-control time-input" value="{{wed_from}}" name="wed_from">
+              </div>
+              　〜　
+              <div>
+                <input type="time" class="form-control time-input" value="{{wed_to}}" name="wed_to">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="thu">木曜</label>
+            <div class="align-center">
+              <div>
+                <input type="time" class="form-control time-input" value="{{thu_from}}" name="thu_from">
+              </div>
+              　〜　
+              <div>
+                <input type="time" class="form-control time-input" value="{{thu_to}}" name="thu_to">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="fri">金曜</label>
+            <div class="align-center">
+              <div>
+                <input type="time" class="form-control time-input" value="{{fri_from}}" name="fri_from">
+              </div>
+              　〜　
+              <div>
+                <input type="time" class="form-control time-input" value="{{fri_to}}" name="fri_to">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="sat">土曜</label>
+            <div class="align-center">
+              <div>
+                <input type="time" class="form-control time-input" value="{{sat_from}}" name="sat_from">
+              </div>
+              　〜　
+              <div>
+                <input type="time" class="form-control time-input" value="{{sat_to}}" name="sat_to">
+              </div>
+            </div>
+          </div>
+          <div class="form-group">
+            <label for="sun">日曜</label>
+            <div class="align-center">
+              <div>
+                <input type="time" class="form-control time-input" value="{{sun_from}}" name="sun_from">
+              </div>
+              　〜　
+              <div>
+                <input type="time" class="form-control time-input" value="{{sun_to}}" name="sun_to">
+              </div>
+            </div>
           </div>
         </form>
       </div>
