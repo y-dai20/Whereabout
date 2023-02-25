@@ -5,8 +5,7 @@ from django.conf import settings
 from base.models import create_id
 from base.models.functions import post_directory_path, video_directory_path
 from base.models.room_models import Room
-from base.models.general_models import ObjectExpansion
-from base.models.general_models import BaseManager
+from base.models.general_models import BaseManager, ObjectExpansion, Tag
 
 class Post(models.Model):
     objects = BaseManager()
@@ -17,6 +16,7 @@ class Post(models.Model):
     video = models.FileField(null=True, blank=True, upload_to=video_directory_path)
     room = models.ForeignKey(Room, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True)
     expansion = models.ForeignKey(ObjectExpansion, on_delete=models.CASCADE)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)

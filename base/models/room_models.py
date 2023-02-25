@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 from base.models import create_id
-from base.models.general_models import BaseManager, Personal
+from base.models.general_models import BaseManager, Personal, Tag
 from base.models.functions import room_directory_path, video_directory_path
 
 
@@ -30,6 +30,7 @@ class Room(models.Model):
     need_approval = models.BooleanField(default=False)
     authority = models.ForeignKey(RoomAuthority, on_delete=models.CASCADE)
     personal = models.ForeignKey(Personal, on_delete=models.CASCADE, null=True)
+    tag = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True)
     good_count = models.IntegerField(default=0)
     bad_count = models.IntegerField(default=0)
     participant_count = models.IntegerField(default=0)
