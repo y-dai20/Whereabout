@@ -23,6 +23,11 @@
 <div class="content show-room-content">
   <div class="my-container">
     <div class="show-room-container">
+      <div class="flex-area">
+        {% for room_tag in room_tags %}
+          <div class="tag-item"><a href="/room/">{{room_tag}}</a></div>
+        {% endfor %}
+      </div>
       {% block room_content %}
       {% endblock %}
 

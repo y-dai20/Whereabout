@@ -117,7 +117,6 @@ class ManageRoomView(ManageRoomBaseView, ShowRoomBaseView, ListView):
         context['room_invite_users'] = room_invite_users
         context['room_guests'] = room_guests
         context['reply_types'] = room_base.get_room_reply_types(is_unique=False)
-        context['room_tags'] = room_base.get_room_tags()
         img_sizes = room_base.get_room_img_size()
         context['img_path_and_size'] = f.get_combined_list('path', f.get_dict_item_list(context, 'img_paths'),'size',img_sizes)
         context['total_img_size'] = {'b':sum(img_sizes), 'mb':f.get_file_size_by_unit(sum(img_sizes), 'MB')}

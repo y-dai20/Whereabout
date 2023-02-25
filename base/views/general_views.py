@@ -711,6 +711,7 @@ class ShowRoomBaseView(HeaderView):
         context['room_tabs'] = self.room_base.get_room_tabs()
         context['room_tab_items'] = self.room_base.get_room_tab_items(self.room.roomtabsequence.tab1)
         context['request_information'] = self.room_base.get_room_request_information()
+        context['room_tags'] = self.room_base.get_room_tags()
 
         #todo (高) 住所とカレンダーの表示方法について
         if self.room.personal is not None:

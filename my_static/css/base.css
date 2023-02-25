@@ -228,6 +228,7 @@ a.sidebar-button {
 
 .flex-area {
     display: flex;
+    flex-wrap: wrap;
 }
 
 .align-center {
@@ -394,4 +395,21 @@ datalist option {
 
 option:hover{
     background-color: lightblue;
+}
+
+
+.tag-item {
+    color: antiquewhite;
+    background-color: steelblue;
+    border-radius: 5px;
+    padding: 4px;
+    margin: 5px;
+}
+
+.tag-item a {
+    color: antiquewhite; 
+}
+
+.tag-item a:hover {
+    color: blue; 
 }
