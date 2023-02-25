@@ -5,6 +5,7 @@ from django.utils.timezone import make_aware, make_naive
 from django.core.mail import send_mail
 from django.conf import settings
 from django.http import JsonResponse, Http404
+from django.db.models.functions import Length
 
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
@@ -13,6 +14,7 @@ from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFav
 from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, RoomReplyType, RoomTabItem,\
     RoomGood, RoomRequestInformation, RoomInformation
 from base.models.account_models import UserFollow, UserBlock, Profile
+from base.models.general_models import Tag
 from base.views.mixins import LoginRequiredMixin
 from base.views.validate_views import ValidateRoomView
 
@@ -355,6 +357,25 @@ class RoomBase(object):
             return list(sorted(set(reply_types), key=reply_types.index))
 
         return reply_types
+
+    def get_room_tags(self):
+        if not self.vr.is_room_exist():
+            return []
+
+        room_tags = [
+            self.room.tag1.tag if self.room.tag1 is not None else None,
+            self.room.tag2.tag if self.room.tag2 is not None else None,
+            self.room.tag3.tag if self.room.tag3 is not None else None,
+            self.room.tag4.tag if self.room.tag4 is not None else None,
+            self.room.tag5.tag if self.room.tag5 is not None else None,
+            self.room.tag6.tag if self.room.tag6 is not None else None,
+            self.room.tag7.tag if self.room.tag7 is not None else None,
+            self.room.tag8.tag if self.room.tag8 is not None else None,
+            self.room.tag9.tag if self.room.tag9 is not None else None,
+            self.room.tag10.tag if self.room.tag10 is not None else None,
+        ]
+
+        return room_tags
 
     def get_room_request_information(self, is_active=None):
         if not self.vr.is_room_exist():
@@ -783,3 +804,10 @@ class DeleteBaseView(TemplateView):
         vr = ValidateRoomView(room)
         if (vr.is_room_exist() and not vr.is_admin(self.request.user)) or self.request.user != user:
             raise MyBadRequest('no permission to delete.')
+
+class GetTag(TemplateView):
+    def post(self, request, *args, **kwargs):
+        tag = f.get_dict_item(request.POST, 'tag')
+
+        candidates = Tag.objects.filter(tag__contains=tag, is_deleted=False).order_by(Length('tag')).values_list('tag')
+        return JsonResponse({'candidates':list(candidates)})

@@ -6,7 +6,7 @@ from django.db.models.functions import Length
 
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
-from base.models.general_models import Personal
+from base.models.general_models import Personal, Tag
 from base.models.account_models import User, UserBlock
 from base.models.post_models import Post, PostFavorite
 from base.models.room_models import Room, RoomGuest, RoomImgs, RoomUser, RoomGood, RoomAuthority, RoomTab, \
@@ -117,6 +117,7 @@ class ManageRoomView(ManageRoomBaseView, ShowRoomBaseView, ListView):
         context['room_invite_users'] = room_invite_users
         context['room_guests'] = room_guests
         context['reply_types'] = room_base.get_room_reply_types(is_unique=False)
+        context['room_tags'] = room_base.get_room_tags()
         img_sizes = room_base.get_room_img_size()
         context['img_path_and_size'] = f.get_combined_list('path', f.get_dict_item_list(context, 'img_paths'),'size',img_sizes)
         context['total_img_size'] = {'b':sum(img_sizes), 'mb':f.get_file_size_by_unit(sum(img_sizes), 'MB')}
@@ -684,6 +685,30 @@ class ManageRoomPostView(ManageRoomBaseView, TemplateView):
         reply_type.type10 = f.get_dict_item(form_data, 'type10')
 
         reply_type.save()
+
+        return JsonResponse(f.get_json_success_message(['保存しました']))
+
+class ManageRoomTagView(ManageRoomBaseView, TemplateView):
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
+    def post(self, request, *args, **kwargs):
+        vr = self.get_validate_room()
+        room = vr.get_room()
+        form_data = request.POST
+
+        room.tag1, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag1')); 
+        room.tag2, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag2')); 
+        room.tag3, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag3')); 
+        room.tag4, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag4')); 
+        room.tag5, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag5')); 
+        room.tag6, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag6')); 
+        room.tag7, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag7')); 
+        room.tag8, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag8')); 
+        room.tag9, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag9')); 
+        room.tag10, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag10')); 
+        
+        room.save()
 
         return JsonResponse(f.get_json_success_message(['保存しました']))
 

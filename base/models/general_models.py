@@ -49,16 +49,6 @@ class Personal(models.Model):
 
 class Tag(models.Model):
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
-    tag1 = models.CharField(default='', max_length=15, blank=True)
-    tag2 = models.CharField(default='', max_length=15, blank=True)
-    tag3 = models.CharField(default='', max_length=15, blank=True)
-    tag4 = models.CharField(default='', max_length=15, blank=True)
-    tag5 = models.CharField(default='', max_length=15, blank=True)
-    tag6 = models.CharField(default='', max_length=15, blank=True)
-    tag7 = models.CharField(default='', max_length=15, blank=True)
-    tag8 = models.CharField(default='', max_length=15, blank=True)
-    tag9 = models.CharField(default='', max_length=15, blank=True)
-    tag10 = models.CharField(default='', max_length=15, blank=True)
+    tag = models.CharField(default='', max_length=15, blank=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
-    updated_at = models.DateTimeField(auto_now=True)

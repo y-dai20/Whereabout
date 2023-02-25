@@ -618,6 +618,22 @@ $(document).on('click', '.save-reply-type-button', function(){
     });
 });
 
+$(document).on('click', '.save-room-tag-button', function(){
+    $.ajax({
+        url:'/manage/room-tag/' + $('#manage-room-id').val() + '/',
+        type:'POST',
+        data:get_form_input_data('manage-room-tag-form'),
+        dataType:false,
+        processData:false,
+        contentType:false,
+        timeout:60000,
+    }).done(function (data) {
+        show_modal_message(data.title, data.message);
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
+    });
+});
+
 $(document).on('click', '.save-information-button', function(){
     var room_id = $('#manage-room-id').val();
     var ajax_list = [];
@@ -1310,3 +1326,31 @@ $('.calender-accordion').accordion({
     active:false,
 });
 
+$('.manage-room-tag').on('keyup keydown', function() {
+    var self = this;
+    if (self.timer) {
+        clearTimeout(self.timer);
+    }
+    self.timer = setTimeout(function(){
+        self.timer = null;
+        var val = $(self).val();
+        $.ajax({
+            url:'/get/tag/',
+            type:'POST',
+            data:{'tag':val},
+            timeout:60000,
+        }).done(function (data) {
+            var html = '';
+            $.each(data.candidates, function(idx, candidate) {
+                html += get_option(candidate);
+            });
+            $(self).siblings('datalist').html(html);
+        }).fail(function (data) {
+            show_modal_message(data.status, [data.statusText]);
+        });
+    }, 1000);
+});
+
+function get_option(val) {
+    return `<option value="${val}">${val}</option>`;
+}
