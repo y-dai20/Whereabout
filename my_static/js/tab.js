@@ -50,12 +50,11 @@ function create_room_tab_title(id="None" ,title="title", is_editable=true, is_ac
         $('.room-tab-title').removeClass('active');
         html += ` active `;
     }
-    // エラーになる
-    // html += `" data-tab="${tab}" data-room-tab-id="${id}" data-bs-toggle="pill" data-bs-target="#room-tab-pane${tab}" type="button" role="pill">`;
+
     html += `" data-tab="${tab}" data-room-tab-id="${id}" data-bs-toggle="pill" data-bs-target="#room-tab-pane${tab}">`;
     if (is_editable) {
         // html += `<textarea class="input-room-tab-title" id="input-room-tab-title${tab}">${escapeHTML(title)}</textarea>`;
-        html += `<input class="input-room-tab-title" id="input-room-tab-title${tab}" value="${escapeHTML(title)}">`;
+        html += `<input type="text" class="input-room-tab-title" id="input-room-tab-title${tab}" value="${escapeHTML(title)}">`;
     } else {
         html += `<h3 class="room-tab-title-font">${escapeHTML(title)}</h3>`;
     }

@@ -45,9 +45,9 @@
           <p for="is_public" class="manage-headline">Roomの公開・非公開</p>
           <div class="form-check form-switch">
             {% if is_public %}
-            <input class="form-check-input" type="checkbox" id="manage-room-public" name="is_public" checked>
+            <input type="checkbox" class="form-check-input" id="manage-room-public" name="is_public" checked>
             {% else %}
-            <input class="form-check-input" type="checkbox" id="manage-room-public" name="is_public">
+            <input type="checkbox" class="form-check-input" id="manage-room-public" name="is_public">
             {% endif %}
             <label class="form-check-label" id="manage-room-public-label" for="manage-room-public" name="is_public">公開</label>
           </div>
@@ -176,9 +176,9 @@
         <p class="manage-headline" for="need_approval">Room参加時に承認が必要・不要</p>
         <div class="form-check form-switch">
           {% if need_approval %}
-          <input class="form-check-input" type="checkbox" id="manage-room-approval" name="need_approval" checked>
+          <input type="checkbox" class="form-check-input" id="manage-room-approval" name="need_approval" checked>
           {% else %}
-          <input class="form-check-input" type="checkbox" id="manage-room-approval" name="need_approval">
+          <input type="checkbox" class="form-check-input" id="manage-room-approval" name="need_approval">
           {% endif %}
           <label class="form-check-label" id="manage-room-approval-label" for="manage-room-approval" name="need_approval">不要</label>
         </div>
@@ -244,23 +244,23 @@
           <div class="d-flex flex-row">
             <div class="px-2">
                 {% if defo_authority.can_reply %}
-                    <label><input id="defa-reply-check-input" type="checkbox" class="check-input" data-default="checked" checked> 返信許可</label>
+                    <label><input type="checkbox" id="defa-reply-check-input" class="check-input" data-default="checked" checked> 返信許可</label>
                 {% else %}
-                    <label><input id="defa-reply-check-input" type="checkbox" class="check-input" data-default=""> 返信許可</label>
+                    <label><input type="checkbox" id="defa-reply-check-input" class="check-input" data-default=""> 返信許可</label>
                 {% endif %}
             </div>
             <div class="px-2">
                 {% if defo_authority.can_post %}
-                    <label><input id="defa-post-check-input" type="checkbox" class="check-input" data-default="checked" checked> 投稿許可</label>
+                    <label><input type="checkbox" id="defa-post-check-input" class="check-input" data-default="checked" checked> 投稿許可</label>
                 {% else %}
-                    <label><input id="defa-post-check-input" type="checkbox" class="check-input" data-default=""> 投稿許可</label>
+                    <label><input type="checkbox" id="defa-post-check-input" class="check-input" data-default=""> 投稿許可</label>
                 {% endif %}
             </div>
             <div class="px-2">
                 {% if defo_authority.is_admin %}
-                    <label><input id="defa-admin-check-input" type="checkbox" class="check-input" data-default="checked" checked> 管理者</label>
+                    <label><input type="checkbox" id="defa-admin-check-input" class="check-input" data-default="checked" checked> 管理者</label>
                 {% else %}
-                    <label><input id="defa-admin-check-input" type="checkbox" class="check-input" data-default=""> 管理者</label>
+                    <label><input type="checkbox" id="defa-admin-check-input" class="check-input" data-default=""> 管理者</label>
                 {% endif %}
             </div>
           </div>
@@ -281,7 +281,7 @@
                             <option value="unchecked">Not Check</option>
                           </select>
                           <br>
-                          <label><input id="reply-check-input-all" type="checkbox" class="check-input-all" value=""> 返信許可</label>
+                          <label><input type="checkbox" id="reply-check-input-all" class="check-input-all" value=""> 返信許可</label>
                         </th>
                         <th scope="col">
                           <select name="" id="select-post-check-display" data-filter="filter-3">
@@ -290,7 +290,7 @@
                             <option value="unchecked">Not Check</option>
                           </select>
                           <br>
-                          <label><input id="post-check-input-all" type="checkbox" class="check-input-all" value=""> 投稿許可</label>
+                          <label><input type="checkbox" id="post-check-input-all" class="check-input-all" value=""> 投稿許可</label>
                         </th>
                         <th scope="col">
                           <select name="" id="select-admin-check-display" data-filter="filter-4">
@@ -299,7 +299,7 @@
                             <option value="unchecked">Not Check</option>
                           </select>
                           <br>
-                          <label><input id="admin-check-input-all" type="checkbox" class="check-input-all" value=""> 管理者</label>
+                          <label><input type="checkbox" id="admin-check-input-all" class="check-input-all" value=""> 管理者</label>
                         </th>
                     </tr>
                 </thead>
@@ -310,19 +310,19 @@
                               <a class="c-black show-modal-user-button filter-1" href="#" data-username="{{room_user.user.username}}">{{room_user.user.username}}</a>
                             </td>
                             {% if room_user.authority.can_reply %}
-                            <td><input class="reply-check-input filter-2" type="checkbox" data-default="checked" checked></td>
+                            <td><input type="checkbox" class="reply-check-input filter-2" data-default="checked" checked></td>
                             {% else %}
-                            <td><input class="reply-check-input filter-2" type="checkbox" data-default=""></td>
+                            <td><input type="checkbox" class="reply-check-input filter-2" data-default=""></td>
                             {% endif %}
                             {% if room_user.authority.can_post %}
-                            <td><input class="post-check-input filter-3" type="checkbox" data-default="checked" checked></td>
+                            <td><input type="checkbox" class="post-check-input filter-3" data-default="checked" checked></td>
                             {% else %}
-                            <td><input class="post-check-input filter-3" type="checkbox" data-default=""></td>
+                            <td><input type="checkbox" class="post-check-input filter-3" data-default=""></td>
                             {% endif %}
                             {% if room_user.authority.is_admin %}
-                            <td><input class="admin-check-input filter-4" type="checkbox" data-default="checked" checked></td>
+                            <td><input type="checkbox" class="admin-check-input filter-4" data-default="checked" checked></td>
                             {% else %}
-                            <td><input class="admin-check-input filter-4" type="checkbox" data-default=""></td>
+                            <td><input type="checkbox" class="admin-check-input filter-4" data-default=""></td>
                             {% endif %}
                         </tr>
                     {% endfor %}
@@ -415,16 +415,16 @@
               </td>
               <td>
                 {% if item.min_length %}
-                <input type="text" class="request-information-length validate-num" data-min-len="0" name="min_length" value="{{item.min_length}}">
+                <input type="text" class="request-information-length num-autocomplete" data-min-len="0" name="min_length" value="{{item.min_length}}">
                 {% else %}
-                <input type="text" class="request-information-length validate-num" data-min-len="0" name="min_length" value="0">
+                <input type="text" class="request-information-length num-autocomplete" data-min-len="0" name="min_length" value="0">
                 {%endif %}
               </td>
               <td>
                 {% if item.max_length %}
-                <input type="text" class="request-information-length validate-num" data-max-len="255" name="max_length" value="{{item.max_length}}">
+                <input type="text" class="request-information-length num-autocomplete" data-max-len="255" name="max_length" value="{{item.max_length}}">
                 {% else %}
-                <input type="text" class="request-information-length validate-num" data-max-len="255" name="max_length" value="255">
+                <input type="text" class="request-information-length num-autocomplete" data-max-len="255" name="max_length" value="255">
                 {%endif %}
               </td>
               <td>
@@ -481,12 +481,12 @@
         <form id="manage-room-personal-form">
           <p class="manage-headline">Webサイト</p>
           <div class="form-group">
-            <input type="text" class="form-control" value="{{web}}" name="web" data-max-len="255" placeholder="https://whereabout.jp">
+            <input type="text" class="form-control full-to-half not-w-space" value="{{web}}" name="web" data-max-len="255" placeholder="https://whereabout.jp">
             <div class="char-len c-green"></div>
           </div>
           <p class="manage-headline">電話番号</p>
           <div class="form-group">
-            <input type="tel" class="form-control" value="{{phone}}" name="phone" data-max-len="15">
+            <input type="tel" class="form-control full-to-half not-w-space" value="{{phone}}" name="phone" data-max-len="15">
             <div class="char-len c-green"></div>
           </div>
           <p class="manage-headline">住所</p>
@@ -497,22 +497,22 @@
           </div>
           <div class="form-group">
             <label for="state">都道府県</label>
-            <input type="text" class="form-control" value="{{state}}" name="state" data-max-len="15">
+            <input type="text" class="form-control not-w-space" value="{{state}}" name="state" data-max-len="15">
             <div class="char-len c-green"></div>
           </div>
           <div class="form-group">
             <label for="city">市区町村</label>
-            <input type="text" class="form-control" value="{{city}}" name="city" data-max-len="15">
+            <input type="text" class="form-control not-w-space" value="{{city}}" name="city" data-max-len="15">
             <div class="char-len c-green"></div>
           </div>
           <div class="form-group">
             <label for="address_1">番地</label>
-            <input type="text" class="form-control" value="{{address_1}}" name="address_1" data-max-len="15">
+            <input type="text" class="form-control not-w-space" value="{{address_1}}" name="address_1" data-max-len="15">
             <div class="char-len c-green"></div>
           </div>
           <div class="form-group">
             <label for="address_2">建物名・部屋番号</label>
-            <input type="text" class="form-control" value="{{address_2}}" name="address_2" data-max-len="15">
+            <input type="text" class="form-control not-w-space" value="{{address_2}}" name="address_2" data-max-len="15">
             <div class="char-len c-green"></div>
           </div>
           <p class="manage-headline">活動日程</p>

@@ -574,7 +574,7 @@ function get_char_html(min_length, max_length, name) {
 }
 
 function get_num_html(min_length, max_length, name) {
-    return `<input type="text" name="${name}" class="validate-length validate-integer" data-min-len="${min_length}" data-max-len="${max_length}"><div class="char-len c-green"></div>`;
+    return `<input type="text" name="${name}" class="validate-length num-autocomplete" data-min-len="${min_length}" data-max-len="${max_length}"><div class="char-len c-green"></div>`;
 }
 
 function show_modal(id) {

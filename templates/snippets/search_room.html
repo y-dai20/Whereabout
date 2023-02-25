@@ -20,17 +20,17 @@
                     <tr>
                         <th scope="row"><label for="">作成日</label></th>
                         <td>
-                            <input type="text" id="room-search-date-from" placeholder="YYYY-MM-DD" name="date_from" value="{{search.date_from}}">
+                          <input type="date" id="room-search-date-from" name="date_from" value="{{search.date_from}}">
                             〜
-                            <input type="text" id="room-search-date-to" placeholder="YYYY-MM-DD" name="date_to" value="{{search.date_to}}">
+                          <input type="date" id="room-search-date-to" name="date_to" value="{{search.date_to}}">
                         </td>
                     </tr>
                     <tr>
                         <th scope="row"><label for="">参加人数</label></th>
                         <td>
-                            <input type="text" id="room-search-participant-from" placeholder="最小人数" name="participant_from" value="{{search.participant_from}}">
+                            <input type="text" id="room-search-participant-from" class="num-autocomplete" placeholder="最小人数" name="participant_from" value="{{search.participant_from}}">
                             〜
-                            <input type="text" id="room-search-participant-to" placeholder="最大人数" name="participant_to" value="{{search.participant_to}}">
+                            <input type="text" id="room-search-participant-to" class="num-autocomplete" placeholder="最大人数" name="participant_to" value="{{search.participant_to}}">
                         </td>
                     </tr>
                 </table>
