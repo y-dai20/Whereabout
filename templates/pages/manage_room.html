@@ -22,9 +22,6 @@
     <a class="sidebar-button manage-room-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-information-pane" type="button" role="pill">
       情報の管理
     </a>
-    <a class="sidebar-button manage-room-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-room-tag-pane" type="button" role="pill">
-      タグの管理
-    </a>
     <a class="sidebar-button manage-room-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-room-personal-pane" type="button" role="pill">
       ルーム情報の管理
     </a>
@@ -74,6 +71,20 @@
             <textarea class="input-subtitle form-control" id="input-room-subtitle" name="subtitle" rows="3" data-max-len="255">{{subtitle}}</textarea>
             <div class="char-len c-green"></div>
           </div>
+
+          <p class="manage-headline">タグ</p>
+          <input type="text" class="tag-input" autocomplete="on" list="manage-room-tag-list" placeholder="例)カフェ">
+          <datalist id="manage-room-tag-list"></datalist>
+          <input type="button" class="btn btn-sm btn-primary add-tag-button" value="追加" data-max-len="5">
+          <div class="added-tag-list flex-area" id="added-manage-room-tag-list"></div>
+          <input type="hidden" value="" name="tags">
+          {{room_tags | json_script:'room_tags'}}
+          <script>
+            var tags = JSON.parse(document.getElementById('room_tags').textContent);
+            $.each(tags, function(idx, tag) {
+              append_removable_tag(tag, '#added-manage-room-tag-list');
+            });
+          </script>
           
           <p for="img" class="manage-headline">
             <span data-bs-toggle="tooltip" data-bs-placement="right" title="最大5枚，2MB以内">
@@ -477,26 +488,6 @@
             </tbody>
           </table>
         </div>
-      </div>
-      <div class="tab-pane container" id="manage-room-tag-pane">
-        <button type="button" data-save-for="room-tag" class="save-confirm-button btn btn-success">保存</button>
-        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
-        <p class="manage-headline">タグの管理</p>
-        <form id="manage-room-tag-form">
-          {% csrf_token %}
-          <div class="manage-room-tags row">
-          {% for room_tag in room_tags %}
-            <div class="col-6">
-              <label for="">タグ{{forloop.counter}}</label>
-              <div class="form-group">
-                <input type="text" class="tag-input" autocomplete="on" list="room-tag{{forloop.counter}}" name="tag{{forloop.counter}}" value="{{room_tag}}" data-max-len="15">
-                <datalist id="room-tag{{forloop.counter}}"></datalist>
-                <div class="char-len c-green"></div>
-              </div>
-            </div>
-          {% endfor %}
-          </div>
-        </form>
       </div>
       <div class="tab-pane container" id="manage-room-personal-pane">
         <button type="button" data-save-for="room-personal" class="save-confirm-button btn btn-success">保存</button>

@@ -618,22 +618,6 @@ $(document).on('click', '.save-reply-type-button', function(){
     });
 });
 
-$(document).on('click', '.save-room-tag-button', function(){
-    $.ajax({
-        url:'/manage/room-tag/' + $('#manage-room-id').val() + '/',
-        type:'POST',
-        data:get_form_input_data('manage-room-tag-form'),
-        dataType:false,
-        processData:false,
-        contentType:false,
-        timeout:60000,
-    }).done(function (data) {
-        show_modal_message(data.title, data.message);
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
-});
-
 $(document).on('click', '.save-information-button', function(){
     var room_id = $('#manage-room-id').val();
     var ajax_list = [];

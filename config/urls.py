@@ -62,7 +62,6 @@ urlpatterns = [
     path('manage/room-display/<str:room_pk>/', views.ManageRoomDisplayView.as_view()),
     path('manage/room-participant/<str:room_pk>/', views.ManageRoomParticipantView.as_view()),
     path('manage/room-reply-type/<str:room_pk>/', views.ManageRoomPostView.as_view()),
-    path('manage/room-tag/<str:room_pk>/', views.ManageRoomTagView.as_view()),
     path('manage/room-information/<str:room_pk>/', views.ManageRoomRequestInformationView.as_view()),
     path('manage/room-personal/<str:room_pk>/', views.ManageRoomPersonalView.as_view()),
     # path('updateroom/<str:pk>/', views.UpdateRoomView.as_view()),

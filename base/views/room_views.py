@@ -508,6 +508,20 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         self.room.title = form.clean_title()
         self.room.subtitle = form.clean_subtitle()
 
+        tags_str = f.get_dict_item(request.POST, 'tags')
+        if not f.is_empty(tags_str):
+            tags = tags_str.split(',')
+            self.room.tag1, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 0))
+            self.room.tag2, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 1))
+            self.room.tag3, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 2))
+            self.room.tag4, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 3))
+            self.room.tag5, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 4))
+            self.room.tag6, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 5))
+            self.room.tag7, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 6))
+            self.room.tag8, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 7))
+            self.room.tag9, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 8))
+            self.room.tag10, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 9))
+
         video_list = f.get_video_list(form_data, self.files, self.max_video, [self.room.video])
         if f.get_file_size(video_list) > self.max_video_size:
             return JsonResponse(f.get_json_error_message(['動画サイズが{}を超えています'.format(f.get_file_size_by_unit(self.max_video_size, unit='MB'))]))
@@ -684,30 +698,6 @@ class ManageRoomPostView(ManageRoomBaseView, TemplateView):
         reply_type.type10 = f.get_dict_item(form_data, 'type10')
 
         reply_type.save()
-
-        return JsonResponse(f.get_json_success_message(['保存しました']))
-
-class ManageRoomTagView(ManageRoomBaseView, TemplateView):
-    def get(self, request, *args, **kwargs):
-        raise Http404
-
-    def post(self, request, *args, **kwargs):
-        vr = self.get_validate_room()
-        room = vr.get_room()
-        form_data = request.POST
-
-        room.tag1, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag1')); 
-        room.tag2, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag2')); 
-        room.tag3, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag3')); 
-        room.tag4, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag4')); 
-        room.tag5, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag5')); 
-        room.tag6, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag6')); 
-        room.tag7, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag7')); 
-        room.tag8, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag8')); 
-        room.tag9, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag9')); 
-        room.tag10, _ = Tag.objects.get_or_create(tag=f.get_dict_item(form_data, 'tag10')); 
-        
-        room.save()
 
         return JsonResponse(f.get_json_success_message(['保存しました']))
 
