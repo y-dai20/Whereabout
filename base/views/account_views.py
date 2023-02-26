@@ -13,7 +13,7 @@ from django.shortcuts import render
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.forms import SignUpForm, ChangePasswordForm, SendMailForm, UserProfileForm
-from base.models import Room, RoomGuest
+from base.models import Room, RoomGuest, Tag
 from base.models.room_models import RoomInviteUser, RoomUser, RoomAuthority
 from base.models.account_models import User, Guest, UserReset
 from base.views.general_views import UserItemView, SendMailView, HeaderView
@@ -270,7 +270,7 @@ class GetUserView(UserItemView, ListView):
         target_user = get_object_or_404(User, username=f.get_dict_item(self.kwargs, 'username'), is_active=True)
         return JsonResponse(self.get_user_item(target_user.profile))
 
-class UserProfileView(LoginRequiredMixin, HeaderView, TemplateView):
+class UserProfileView(LoginRequiredMixin, HeaderView, UserItemView, TemplateView):
     form_class = UserProfileForm
     template_name = 'pages/profile.html'
     model = settings.AUTH_USER_MODEL
@@ -294,6 +294,16 @@ class UserProfileView(LoginRequiredMixin, HeaderView, TemplateView):
 
         profile.profession = form.clean_profession()
         profile.description = form.clean_description()
+
+        tags_str = f.get_dict_item(request.POST, 'tags')
+        if not f.is_empty(tags_str):
+            tags = tags_str.split(',')
+            profile.tag1, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 0))
+            profile.tag2, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 1))
+            profile.tag3, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 2))
+            profile.tag4, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 3))
+            profile.tag5, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 4))
+
         profile.save()
 
         return JsonResponse(f.get_json_success_message(['保存しました']))
@@ -304,6 +314,7 @@ class UserProfileView(LoginRequiredMixin, HeaderView, TemplateView):
         context['img_path'] = f.get_img_path(profile.img)
         context['profession'] = profile.profession
         context['description'] = profile.description
+        context['user_tags'] = self.get_profile_tags(profile)
 
         context['room_guests'] = self.get_accept_room_guests()
         context['invited_rooms'] = self.get_invited_rooms()

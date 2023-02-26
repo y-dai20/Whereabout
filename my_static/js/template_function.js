@@ -251,7 +251,9 @@ function get_user_item(user) {
         return '';
     }
     user = get_parsed_str(user);
-    var html = `<div class="user-item-col"><div class="item-object c-white"><div class="border user-item">`;
+    var html = `<div class="user-item-col">
+    <div class="item-object c-white">
+    <div class="border user-item">`;
     html += get_user_header(user);
     html += get_user_content(user);
     html += get_user_footer(user);
@@ -268,7 +270,9 @@ function get_user_header(user) {
 }
 
 function get_user_content(user){
-	var html = '<div class="user-item-content"><div class="user-item-img user-img-area">';
+	var html = `<div class="user-item-content">
+    ${get_tags(user.user_tags, 'user')}
+    <div class="user-item-img user-img-area">`;
 	if (!is_empty(user.img)) {
 		html += `<img src="${user.img}" alt="" class="user-img">`;
 	} else {

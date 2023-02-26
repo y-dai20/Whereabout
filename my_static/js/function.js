@@ -422,6 +422,10 @@ function get_form_data(form_id, tags=[], fd=null) {
 
     $.each(tags, function(idx, tag) {
         $(`#${form_id}`).find(tag).each(function(){
+            if (is_empty($(this).attr('name'))) {
+                return true;
+            }
+
             var value = '';
             if ($(this).attr('type') == 'checkbox') {
                 value = $(this).prop('checked');
@@ -594,20 +598,32 @@ function escapeHTML(string){
     .replace(/'/g, "&#x27;");
 }
 
-function append_search_tag(val, append_to) {
-    if ($('input[name="tags"]').val().split(',').includes(val)) {
-        $('#search-tag').val('');
+function append_removable_tag(val, append_to) {
+    if (is_empty(val)) {
         return false;
     }
+    val = escapeHTML(val);
+    if (is_str(append_to)) {
+        append_to = $(append_to);
+    }
+    var input_tags = append_to.siblings('input[name="tags"]');
 
-    $(append_to).append(`<div class="search-tag-item tag-item">${val}</div>`);
-    if ($('input[name="tags"]').length < 1) {
-        $(append_to).next(`<input type="hidden" value="${val}" name="tags">`);
+    if (input_tags.val().split(',').includes(val)) {
+        $('.input-tag').val('');
+        return false;
+    }
+    append_to.append(`<div class="removable-tag-item tag-item">${val}</div>`);
+    if (input_tags.length < 1) {
+        append_to.next(`<input type="hidden" value="${val}" name="tags">`);
         return true;
     }
-    var tags = $('input[name="tags"]').val();
+    var tags = input_tags.val();
     if (tags != '') {
         tags += ',';
     }
-    $('input[name="tags"]').val(`${tags}${val}`);
+    input_tags.val(`${tags}${val}`);
+}
+
+function get_option(val) {
+    return `<option value="${val}">${val}</option>`;
 }

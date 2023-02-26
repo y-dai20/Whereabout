@@ -522,6 +522,12 @@ class PostItemView(View):
 
 class UserItemView(View):
 
+    def get_user_items(self, profiles):
+        queryset = []
+        for profile in profiles:
+            queryset.append(self.get_user_item(profile))
+        return queryset
+
     def get_user_item(self, profile):
         if not isinstance(profile, Profile):
             return {}
@@ -530,6 +536,7 @@ class UserItemView(View):
             'username':profile.user.username,
             'created_at':f.get_display_datetime(datetime.now() - make_naive(profile.user.created_at)),
             'img':f.get_img_path(profile.img),
+            'user_tags':self.get_profile_tags(profile),
             'profession':profile.profession,
             'description':profile.description,
             'followed_count':f.get_number_unit(profile.followed_count),
@@ -544,11 +551,19 @@ class UserItemView(View):
 
         return user_dict
 
-    def get_user_items(self, profiles):
-        queryset = []
-        for profile in profiles:
-            queryset.append(self.get_user_item(profile))
-        return queryset
+    def get_profile_tags(self, profile):
+        if f.is_empty(profile):
+            return []
+
+        tags = [
+            profile.tag1.tag if profile.tag1 is not None else '',
+            profile.tag2.tag if profile.tag2 is not None else '',
+            profile.tag3.tag if profile.tag3 is not None else '',
+            profile.tag4.tag if profile.tag4 is not None else '',
+            profile.tag5.tag if profile.tag5 is not None else '',
+        ]
+
+        return tags
 
 class ReplyItemView(View):
 

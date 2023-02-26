@@ -125,12 +125,13 @@ class IndexUserListView(SearchBaseView, UserItemView):
             'description':'', 
             'date_from':'', 
             'date_to':'',
-            'is_blocked':''
+            'is_blocked':'',
+            'tags':'',
         }
 
     def get_items(self):
         params = self.get_params()
-        profile = Profile.objects.filter(
+        profiles = Profile.objects.filter(
             is_deleted=False,
             user__is_active=True,
             user__username__icontains=params['username'],
@@ -141,8 +142,14 @@ class IndexUserListView(SearchBaseView, UserItemView):
         )
 
         if f.get_boolean_or_none(params['is_blocked']) == True:
-            profile = profile.filter(user__id__in=self.get_blocked_user_list())
+            profiles = profiles.filter(user__id__in=self.get_blocked_user_list())
         else:
-            profile = profile.exclude(user__id__in=self.get_blocked_user_list())
+            profiles = profiles.exclude(user__id__in=self.get_blocked_user_list())
+
+        if not f.is_empty(params['tags']):
+            profiles = profiles.annotate(
+                tags=Concat(V('&'), 'tag1__tag', V('&'), 'tag2__tag', V('&'), 'tag3__tag', V('&'), 'tag4__tag', V('&'), 'tag5__tag', V('&')))
+            for tag in params['tags'].split(','):
+                profiles = profiles.filter(tags__contains='&{}&'.format(tag))
         
-        return self.get_user_items(self.get_idx_items(profile))
+        return self.get_user_items(self.get_idx_items(profiles))

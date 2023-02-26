@@ -28,6 +28,7 @@ const ROOM_TAB_ITEM_TEXT_MAX_LENGTH = 1024;
 
 const MAX_ROOM_TAG_NUM = 10;
 const MAX_POST_TAG_NUM = 5;
+const MAX_USER_TAG_NUM = 5;
 
 const IMAGE_EXTENSION = "jpg|jpeg|png|ico|bmp";
 const VIDEO_EXTENSION = "mp4";

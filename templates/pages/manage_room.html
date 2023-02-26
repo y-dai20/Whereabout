@@ -246,90 +246,90 @@
           <p class="manage-headline">今後の参加者に付与するデフォルト権限を設定</p>
           <div class="d-flex flex-row">
             <div class="px-2">
-                {% if defo_authority.can_reply %}
-                    <label><input type="checkbox" id="defa-reply-check-input" class="check-input" data-default="checked" checked> 返信許可</label>
-                {% else %}
-                    <label><input type="checkbox" id="defa-reply-check-input" class="check-input" data-default=""> 返信許可</label>
-                {% endif %}
+              {% if defo_authority.can_reply %}
+                <label><input type="checkbox" id="defa-reply-check-input" class="check-input" data-default="checked" checked> 返信許可</label>
+              {% else %}
+                <label><input type="checkbox" id="defa-reply-check-input" class="check-input" data-default=""> 返信許可</label>
+              {% endif %}
             </div>
             <div class="px-2">
-                {% if defo_authority.can_post %}
-                    <label><input type="checkbox" id="defa-post-check-input" class="check-input" data-default="checked" checked> 投稿許可</label>
-                {% else %}
-                    <label><input type="checkbox" id="defa-post-check-input" class="check-input" data-default=""> 投稿許可</label>
-                {% endif %}
+              {% if defo_authority.can_post %}
+                <label><input type="checkbox" id="defa-post-check-input" class="check-input" data-default="checked" checked> 投稿許可</label>
+              {% else %}
+                <label><input type="checkbox" id="defa-post-check-input" class="check-input" data-default=""> 投稿許可</label>
+              {% endif %}
             </div>
             <div class="px-2">
-                {% if defo_authority.is_admin %}
-                    <label><input type="checkbox" id="defa-admin-check-input" class="check-input" data-default="checked" checked> 管理者</label>
-                {% else %}
-                    <label><input type="checkbox" id="defa-admin-check-input" class="check-input" data-default=""> 管理者</label>
-                {% endif %}
+              {% if defo_authority.is_admin %}
+                <label><input type="checkbox" id="defa-admin-check-input" class="check-input" data-default="checked" checked> 管理者</label>
+              {% else %}
+                <label><input type="checkbox" id="defa-admin-check-input" class="check-input" data-default=""> 管理者</label>
+              {% endif %}
             </div>
           </div>
           <p class="manage-headline">ユーザーごとの権限を管理</p>
           <div class="table-scroll">
             <table class="table table-light table-striped" id="authority-user-table">
-                <thead>
-                    <tr>
-                        <th scope="col">
-                          <input type="text" class="search-user-input" id="search-authority-user" data-filter="filter-1" placeholder="検索ワード">
-                          <br>
-                          <label>ユーザー</label>
-                        </th>
-                        <th scope="col">
-                          <select name="" id="select-reply-check-display" data-filter="filter-2">
-                            <option selected value="all">すべて</option>
-                            <option value="checked">Check</option>
-                            <option value="unchecked">Not Check</option>
-                          </select>
-                          <br>
-                          <label><input type="checkbox" id="reply-check-input-all" class="check-input-all" value=""> 返信許可</label>
-                        </th>
-                        <th scope="col">
-                          <select name="" id="select-post-check-display" data-filter="filter-3">
-                            <option selected value="all">すべて</option>
-                            <option value="checked">Check</option>
-                            <option value="unchecked">Not Check</option>
-                          </select>
-                          <br>
-                          <label><input type="checkbox" id="post-check-input-all" class="check-input-all" value=""> 投稿許可</label>
-                        </th>
-                        <th scope="col">
-                          <select name="" id="select-admin-check-display" data-filter="filter-4">
-                            <option selected value="all">すべて</option>
-                            <option value="checked">Check</option>
-                            <option value="unchecked">Not Check</option>
-                          </select>
-                          <br>
-                          <label><input type="checkbox" id="admin-check-input-all" class="check-input-all" value=""> 管理者</label>
-                        </th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for room_user in room_users %}
-                        <tr class="authority-user-col" data-username="{{room_user.user.username}}">
-                            <td>
-                              <a class="c-black show-modal-user-button filter-1" href="#" data-username="{{room_user.user.username}}">{{room_user.user.username}}</a>
-                            </td>
-                            {% if room_user.authority.can_reply %}
-                            <td><input type="checkbox" class="reply-check-input filter-2" data-default="checked" checked></td>
-                            {% else %}
-                            <td><input type="checkbox" class="reply-check-input filter-2" data-default=""></td>
-                            {% endif %}
-                            {% if room_user.authority.can_post %}
-                            <td><input type="checkbox" class="post-check-input filter-3" data-default="checked" checked></td>
-                            {% else %}
-                            <td><input type="checkbox" class="post-check-input filter-3" data-default=""></td>
-                            {% endif %}
-                            {% if room_user.authority.is_admin %}
-                            <td><input type="checkbox" class="admin-check-input filter-4" data-default="checked" checked></td>
-                            {% else %}
-                            <td><input type="checkbox" class="admin-check-input filter-4" data-default=""></td>
-                            {% endif %}
-                        </tr>
-                    {% endfor %}
-                </tbody>
+              <thead>
+                <tr>
+                  <th scope="col">
+                    <input type="text" class="search-user-input" id="search-authority-user" data-filter="filter-1" placeholder="検索ワード">
+                    <br>
+                    <label>ユーザー</label>
+                  </th>
+                  <th scope="col">
+                    <select name="" id="select-reply-check-display" data-filter="filter-2">
+                      <option selected value="all">すべて</option>
+                      <option value="checked">Check</option>
+                      <option value="unchecked">Not Check</option>
+                    </select>
+                    <br>
+                    <label><input type="checkbox" id="reply-check-input-all" class="check-input-all" value=""> 返信許可</label>
+                  </th>
+                  <th scope="col">
+                    <select name="" id="select-post-check-display" data-filter="filter-3">
+                      <option selected value="all">すべて</option>
+                      <option value="checked">Check</option>
+                      <option value="unchecked">Not Check</option>
+                    </select>
+                    <br>
+                    <label><input type="checkbox" id="post-check-input-all" class="check-input-all" value=""> 投稿許可</label>
+                  </th>
+                  <th scope="col">
+                    <select name="" id="select-admin-check-display" data-filter="filter-4">
+                      <option selected value="all">すべて</option>
+                      <option value="checked">Check</option>
+                      <option value="unchecked">Not Check</option>
+                    </select>
+                    <br>
+                    <label><input type="checkbox" id="admin-check-input-all" class="check-input-all" value=""> 管理者</label>
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for room_user in room_users %}
+                  <tr class="authority-user-col" data-username="{{room_user.user.username}}">
+                    <td>
+                      <a class="c-black show-modal-user-button filter-1" href="#" data-username="{{room_user.user.username}}">{{room_user.user.username}}</a>
+                    </td>
+                    {% if room_user.authority.can_reply %}
+                    <td><input type="checkbox" class="reply-check-input filter-2" data-default="checked" checked></td>
+                    {% else %}
+                    <td><input type="checkbox" class="reply-check-input filter-2" data-default=""></td>
+                    {% endif %}
+                    {% if room_user.authority.can_post %}
+                    <td><input type="checkbox" class="post-check-input filter-3" data-default="checked" checked></td>
+                    {% else %}
+                    <td><input type="checkbox" class="post-check-input filter-3" data-default=""></td>
+                    {% endif %}
+                    {% if room_user.authority.is_admin %}
+                    <td><input type="checkbox" class="admin-check-input filter-4" data-default="checked" checked></td>
+                    {% else %}
+                    <td><input type="checkbox" class="admin-check-input filter-4" data-default=""></td>
+                    {% endif %}
+                  </tr>
+                {% endfor %}
+              </tbody>
             </table>
           </div>
       </div>

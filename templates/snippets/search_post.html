@@ -64,15 +64,15 @@
                     <tr>
                         <th scope="row"><label for="">タグ</label></th>
                         <td>
-                            <input type="text" class="tag-input" autocomplete="on" list="search-tag-list" id="search-tag" placeholder="例)カフェ">
+                            <input type="text" class="tag-input" autocomplete="on" list="search-tag-list" placeholder="例)カフェ">
                             <datalist id="search-tag-list"></datalist>
-                            <input type="button" class="btn btn-sm btn-primary" id="add-search-tag-button" value="追加">
-                            <div class="search-tag-result flex-area"></div>
+                            <input type="button" class="btn btn-sm btn-primary add-tag-button" value="追加" data-max-len="5">
+                            <div class="added-tag-list flex-area" id="added-search-post-tag-list"></div>
                             <input type="hidden" value="" name="tags">
                             <script>
                                 var tags = "{{search.tags}}".split(',');
                                 $.each(tags, function(idx, tag) {
-                                    append_search_tag(tag, '.search-tag-result');
+                                    append_removable_tag(tag, '#added-search-post-tag-list');
                                 });
                             </script>
                         </td>
