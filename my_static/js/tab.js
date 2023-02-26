@@ -419,12 +419,11 @@ $(document).on('click', '.room-tab-title', function(){
     create_room_tab_link({'id':room_tab_id, 'title':$(this).text()});
     change_room_tab_title($(this).text());
     var tab = $(this).data('tab');
-    create_room_tab_title_link(tab);
-
     var scroll_target = ".room-title";
     if (Object.keys(RoomTabItems).includes(room_tab_id)) {
         if ($('#room-tab-pane-list').hasClass('show-room')) {
             scroll_to(scroll_target);
+            create_room_tab_title_link(tab);
         }
         return true;
     }
