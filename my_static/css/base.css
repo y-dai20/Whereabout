@@ -375,7 +375,6 @@ input {
 }
 
 datalist {
-    position: absolute;
     background-color: whitesmoke;
     border-radius: 0 0 5px 5px;
     border-top: none;
@@ -404,6 +403,7 @@ option:hover{
     border-radius: 5px;
     padding: 4px;
     margin: 5px;
+    width: auto;
 }
 
 .tag-item a {
@@ -412,4 +412,8 @@ option:hover{
 
 .tag-item a:hover {
     color: blue; 
+}
+
+.search-tag-item {
+    cursor: pointer;
 }

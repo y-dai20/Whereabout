@@ -593,3 +593,21 @@ function escapeHTML(string){
     .replace(/"/g, '&quot;')
     .replace(/'/g, "&#x27;");
 }
+
+function append_search_tag(val, append_to) {
+    if ($('input[name="tags"]').val().split(',').includes(val)) {
+        $('#search-tag').val('');
+        return false;
+    }
+
+    $(append_to).append(`<div class="search-tag-item tag-item">${val}</div>`);
+    if ($('input[name="tags"]').length < 1) {
+        $(append_to).next(`<input type="hidden" value="${val}" name="tags">`);
+        return true;
+    }
+    var tags = $('input[name="tags"]').val();
+    if (tags != '') {
+        tags += ',';
+    }
+    $('input[name="tags"]').val(`${tags}${val}`);
+}

@@ -1326,7 +1326,7 @@ $('.calender-accordion').accordion({
     active:false,
 });
 
-$('.manage-room-tag').on('keyup keydown', function() {
+$('.tag-input').on('keyup keydown', function() {
     var self = this;
     if (self.timer) {
         clearTimeout(self.timer);
@@ -1354,3 +1354,49 @@ $('.manage-room-tag').on('keyup keydown', function() {
 function get_option(val) {
     return `<option value="${val}">${val}</option>`;
 }
+
+$('#add-search-tag-button').click(function() {
+    var val = $('#search-tag').val();
+    if (is_empty(val)) {
+        return false;
+    }
+    var tag_len = $('.search-tag-result').find('.tag-item').length + 1;
+    if (tag_len >= MAX_ROOM_TAG_NUM) {
+        show_modal_message('警告', [`タグは最大${MAX_ROOM_TAG_NUM}個までです。`, `新規追加したい場合は既存のタグをクリックして削除してください。`])
+        return false;
+    }
+
+    append_search_tag(val, '.search-tag-result');
+    $('#search-tag').val('');
+});
+
+$('#add-post-tag-button').on('click', function() {
+    var val = $('#post-tag').val();
+    if (is_empty(val)) {
+        return false;
+    }
+    var tag_len = $('.post-tag-result').find('.tag-item').length + 1;
+    if (tag_len >= MAX_POST_TAG_NUM) {
+        show_modal_message('警告', [`タグは最大${MAX_POST_TAG_NUM}個までです。`, `新規追加したい場合は既存のタグをクリックして削除してください。`])
+        return false;
+    }
+
+    append_search_tag(val, '.post-tag-result');
+    $('#post-tag').val('');
+});
+
+$(document).on('click', '.search-tag-item', function() {
+    var val = $(this).text();
+    var tags = $('input[name="tags"]').val().split(',');
+    tags.splice(tags.indexOf(val), 1);
+    $('input[name="tags"]').val(tags.join(','));
+    $(this).remove();
+});
+
+$(document).on('click', '.tag-link-button', function() {
+    var url = new URL(window.location.href);
+    var params = url.searchParams;
+    params.set('tags', [params.get('tags'), $(this).text()].join(','));
+    url.search = params.toString();
+    window.location.href = url.toString();
+});

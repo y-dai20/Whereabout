@@ -68,6 +68,14 @@
             <input type="text" class="form-control not-w-space full-to-half" name="source" placeholder="https://xxxx.com" data-max-len="255">
             <div class="char-len c-green"></div>
           </div>
+          <div class="form-group">
+            <label for="tags">タグ</label><br>
+            <input type="text" class="tag-input" autocomplete="on" list="post-tag-list" id="post-tag" placeholder="例)カフェ">
+            <datalist id="post-tag-list"></datalist>
+            <input type="button" class="btn btn-sm btn-primary" id="add-post-tag-button" value="追加">
+            <div class="post-tag-result flex-area"></div>
+            <input type="hidden" value="" name="tags">
+          </div>
           {% include "form/img.html" with action="post" is_multi=True %}
           <div class="form-group" id="post-form-video">
             <span>

@@ -110,6 +110,7 @@ function get_post_header(post) {
 
 function get_post_content(post) {
     var html = `<div class="post-content">
+            ${get_tags(post.post_tags)}
             <span class="post-title">${escapeHTML(post.title)}</span><br>
             <span class="post-text">${adapt_linebreaks(escapeHTML(post.text))}</span><br>
             <span class="post-source">${get_item_source(post.source)}</span>
@@ -324,6 +325,7 @@ function get_room_header(room) {
 
 function get_room_content(room) {
     var html = `<div class="room-item-content">
+        ${get_tags(room.room_tags)}
         <div class="room-item-title">
             <span>${escapeHTML(room.title)}</span>
         </div>
@@ -362,6 +364,17 @@ function get_room_footer(room) {
     html += `<span class="bad-count">${room.bad_count}</span>
     </div>`;
 
+    return html;
+}
+
+function get_tags(tags) {
+    var html = '<div class="flex-area">';
+    $.each(tags, function(idx, tag) {
+        if (!is_empty(tag)) {
+            html += `<div class="tag-item"><a href="#" class="tag-link-button">${tag}</a></div>`;
+        }
+    });
+    html += '</div>';
     return html;
 }
 

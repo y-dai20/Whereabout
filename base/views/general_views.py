@@ -363,16 +363,16 @@ class RoomBase(object):
             return []
 
         room_tags = [
-            self.room.tag1.tag if self.room.tag1 is not None else None,
-            self.room.tag2.tag if self.room.tag2 is not None else None,
-            self.room.tag3.tag if self.room.tag3 is not None else None,
-            self.room.tag4.tag if self.room.tag4 is not None else None,
-            self.room.tag5.tag if self.room.tag5 is not None else None,
-            self.room.tag6.tag if self.room.tag6 is not None else None,
-            self.room.tag7.tag if self.room.tag7 is not None else None,
-            self.room.tag8.tag if self.room.tag8 is not None else None,
-            self.room.tag9.tag if self.room.tag9 is not None else None,
-            self.room.tag10.tag if self.room.tag10 is not None else None,
+            self.room.tag1.tag if self.room.tag1 is not None else '',
+            self.room.tag2.tag if self.room.tag2 is not None else '',
+            self.room.tag3.tag if self.room.tag3 is not None else '',
+            self.room.tag4.tag if self.room.tag4 is not None else '',
+            self.room.tag5.tag if self.room.tag5 is not None else '',
+            self.room.tag6.tag if self.room.tag6 is not None else '',
+            self.room.tag7.tag if self.room.tag7 is not None else '',
+            self.room.tag8.tag if self.room.tag8 is not None else '',
+            self.room.tag9.tag if self.room.tag9 is not None else '',
+            self.room.tag10.tag if self.room.tag10 is not None else '',
         ]
 
         return room_tags
@@ -440,6 +440,7 @@ class RoomItemView(View):
             'admin_img':f.get_img_path(room.admin.profile.img),
             'user_count':f.get_number_unit(room.participant_count),
             'img_paths':room_base.get_room_img_paths(),
+            'room_tags':room_base.get_room_tags(),
             'video_path':f.get_img_path(room.video),
             'created_at':f.get_display_datetime(datetime.now() - make_naive(room.created_at)),
             'good_count':f.get_number_unit(room.good_count),
@@ -493,7 +494,8 @@ class PostItemView(View):
             'true_count':f.get_number_unit(post.expansion.true_count),
             'false_count':f.get_number_unit(post.expansion.false_count),
             'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
-            'can_user_delete':post.user == user
+            'can_user_delete':post.user == user,
+            'post_tags':self.get_post_tags(post),
         }
 
         if post.room is not None:
@@ -502,6 +504,21 @@ class PostItemView(View):
             post_dict['can_user_delete'] =(post.room.admin == user)
 
         return post_dict
+    
+    def get_post_tags(self, post):
+        if f.is_empty(post):
+            return []
+
+        tags = [
+            post.tag1.tag if post.tag1 is not None else '',
+            post.tag2.tag if post.tag2 is not None else '',
+            post.tag3.tag if post.tag3 is not None else '',
+            post.tag4.tag if post.tag4 is not None else '',
+            post.tag5.tag if post.tag5 is not None else '',
+        ]
+
+        return tags
+
 
 class UserItemView(View):
 

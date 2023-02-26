@@ -489,8 +489,8 @@
             <div class="col-6">
               <label for="">タグ{{forloop.counter}}</label>
               <div class="form-group">
-                <input type="text" class="manage-room-tag" autocomplete="on" list="room-tag{{forloop.counter}}" name="tag{{forloop.counter}}" value="{{room_tag}}" data-max-len="15">
-                <datalist id="room-tag{{forloop.counter}}" role="listbox"></datalist>
+                <input type="text" class="tag-input" autocomplete="on" list="room-tag{{forloop.counter}}" name="tag{{forloop.counter}}" value="{{room_tag}}" data-max-len="15">
+                <datalist id="room-tag{{forloop.counter}}"></datalist>
                 <div class="char-len c-green"></div>
               </div>
             </div>

@@ -25,6 +25,7 @@ class IndexPostListView(SearchBaseView, PostItemView):
             'other_room_check':'', 
             'no_room_check':'', 
             'is_favorite':'',
+            'tags':'',
             # 'agree-state':'', 
             # 'true-state':''
         }
@@ -77,8 +78,9 @@ class IndexRoomListView(SearchBaseView, RoomItemView):
             'date_to':'',
             'participant_from':'',
             'participant_to':'',
+            'tags':'',
         }
-
+    #todo (中) タグ検索の追加
     def get_items(self):
         params = self.get_params()
         rooms = Room.objects.filter(

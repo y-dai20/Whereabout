@@ -5,7 +5,7 @@ from django.http import JsonResponse, Http404
 
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
-from base.models.general_models import ObjectExpansion
+from base.models.general_models import ObjectExpansion, Tag
 from base.models.reply_models import ReplyPost, ReplyPosition
 from base.models.post_models import Post, PostAgree, PostFavorite, PostImgs
 from base.forms import PostForm
@@ -55,6 +55,15 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
         if f.get_file_size(video_list) > 0 and f.get_file_size(img_list) > 0:
             raise MyBadRequest('only img or video.')
 
+        tags_str = f.get_dict_item(request.POST, 'tags')
+        if not f.is_empty(tags_str):
+            tags = tags_str.split(',')
+            post.tag1, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 0))
+            post.tag2, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 1))
+            post.tag3, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 2))
+            post.tag4, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 3))
+            post.tag5, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 4))
+        
         post.save()
         PostImgs.objects.create(
             post=post,

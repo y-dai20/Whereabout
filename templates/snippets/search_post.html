@@ -61,6 +61,22 @@
                             {% endif %}
                         </td>
                     </tr>
+                    <tr>
+                        <th scope="row"><label for="">タグ</label></th>
+                        <td>
+                            <input type="text" class="tag-input" autocomplete="on" list="search-tag-list" id="search-tag" placeholder="例)カフェ">
+                            <datalist id="search-tag-list"></datalist>
+                            <input type="button" class="btn btn-sm btn-primary" id="add-search-tag-button" value="追加">
+                            <div class="search-tag-result flex-area"></div>
+                            <input type="hidden" value="" name="tags">
+                            <script>
+                                var tags = "{{search.tags}}".split(',');
+                                $.each(tags, function(idx, tag) {
+                                    append_search_tag(tag, '.search-tag-result');
+                                });
+                            </script>
+                        </td>
+                    </tr>
                     {% comment %} <tr>
                         <th scope="row" class="search-post-th"><label for="">賛否</label></th>
                         <td>
