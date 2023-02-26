@@ -25,7 +25,9 @@
     <div class="show-room-container">
       <div class="flex-area">
         {% for room_tag in room_tags %}
-          <div class="tag-item"><a href="/room/?tags={{room_tag}}">{{room_tag}}</a></div>
+          {% if room_tag %}
+            <div class="tag-item"><a href="/room/?tags={{room_tag}}">{{room_tag}}</a></div>
+          {% endif %}
         {% endfor %}
       </div>
       {% block room_content %}

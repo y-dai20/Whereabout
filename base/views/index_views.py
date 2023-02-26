@@ -1,5 +1,5 @@
-from django.db.models import Q
-
+from django.db.models import Q, Value as V
+from django.db.models.functions import Concat
 
 import base.views.functions as f
 from base.models.post_models import Post, PostFavorite
@@ -61,6 +61,12 @@ class IndexPostListView(SearchBaseView, PostItemView):
         else:
             posts = posts.filter(room__in=rooms)
 
+        if not f.is_empty(params['tags']):
+            posts = posts.annotate(
+                tags=Concat(V('&'), 'tag1__tag', V('&'), 'tag2__tag', V('&'), 'tag3__tag', V('&'), 'tag4__tag', V('&'), 'tag5__tag', V('&')))
+            for tag in params['tags'].split(','):
+                posts = posts.filter(tags__contains='&{}&'.format(tag))
+
         return self.get_post_items(self.get_idx_items(posts))
 
 #todo (中) デフォルトの並びを急上昇などにしたい
@@ -95,6 +101,14 @@ class IndexRoomListView(SearchBaseView, RoomItemView):
 
         if f.is_int(params['participant_to']):
             rooms = rooms.filter(participant_count__lte=params['participant_to'])
+
+        if not f.is_empty(params['tags']):
+            rooms = rooms.annotate(
+                tags=Concat(
+                    V('&'), 'tag1__tag', V('&'), 'tag2__tag', V('&'), 'tag3__tag', V('&'), 'tag4__tag', V('&'), 'tag5__tag', V('&'),
+                    V('&'), 'tag6__tag', V('&'), 'tag7__tag', V('&'), 'tag8__tag', V('&'), 'tag9__tag', V('&'), 'tag10__tag', V('&')))
+            for tag in params['tags'].split(','):
+                rooms = rooms.filter(tags__contains='&{}&'.format(tag))
         
         return self.get_room_items(self.get_idx_items(rooms))
 
