@@ -1395,6 +1395,12 @@ $(document).on('click', '.search-tag-item', function() {
 
 $(document).on('click', '.tag-link-button', function() {
     var url = new URL(window.location.href);
+    var item = $(this).data('item');
+    if (!is_empty(item) & url.pathname != `/${item}/`) {
+        window.location.href = `/${item}/?tags=${$(this).text()}`;
+        return false;
+    }
+    
     var params = url.searchParams;
     params.set('tags', [params.get('tags'), $(this).text()].join(','));
     url.search = params.toString();

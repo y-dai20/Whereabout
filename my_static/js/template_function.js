@@ -325,7 +325,7 @@ function get_room_header(room) {
 
 function get_room_content(room) {
     var html = `<div class="room-item-content">
-        ${get_tags(room.room_tags)}
+        ${get_tags(room.room_tags, 'room')}
         <div class="room-item-title">
             <span>${escapeHTML(room.title)}</span>
         </div>
@@ -367,11 +367,11 @@ function get_room_footer(room) {
     return html;
 }
 
-function get_tags(tags) {
+function get_tags(tags, item='') {
     var html = '<div class="flex-area">';
     $.each(tags, function(idx, tag) {
         if (!is_empty(tag)) {
-            html += `<div class="tag-item"><a href="#" class="tag-link-button">${tag}</a></div>`;
+            html += `<div class="tag-item"><a href="#" class="tag-link-button" data-item="${item}">${escapeHTML(tag)}</a></div>`;
         }
     });
     html += '</div>';
