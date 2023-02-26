@@ -10,6 +10,9 @@
     <a class="sidebar-button manage-room-function nav-link active" data-bs-toggle="pill" data-bs-target="#manage-display-pane" type="button" role="pill">
       表示の管理
     </a>
+    <a class="sidebar-button manage-room-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-tab-pane" type="button" role="pill">
+      タブの管理
+    </a>
     <a class="sidebar-button manage-room-function nav-link" data-bs-toggle="pill" data-bs-target="#manage-participant-pane" type="button" role="pill">
       参加者の管理
     </a>
@@ -133,7 +136,12 @@
               {% endif %}
             </div>
           </div>
-
+        </form>
+      </div>
+      <div class="tab-pane container" id="manage-tab-pane">
+        <button type="button" data-save-for="tab" class="save-confirm-button btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <form class="manage-room-form" id="manage-room-tab-form">
           <p for="text" class="manage-headline">タブ</p>
           <div class="tab-operation-area">
             <div class="addable-object-area" data-bs-toggle="tooltip" data-bs-placement="top" title="オブジェクトをドラッグ&amp;ドロップして配置します">

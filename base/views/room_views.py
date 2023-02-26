@@ -483,9 +483,6 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     max_img_size = 2 * 1024 * 1024
     max_video_size = 11 * 1024 * 1024
     max_video = 1
-    max_tab_title_len = 32
-    max_tab_title_item_len = 255
-    max_tab_title_text_len = 1024
 
     def get(self, request, *args, **kwargs):
         raise Http404
@@ -541,6 +538,25 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         room_imgs.img5 = img_list[4]  
         room_imgs.save()
 
+        return JsonResponse(f.get_json_success_message(['保存しました']))
+
+class ManageRoomTabView(ManageRoomBaseView, TemplateView):
+    model = Room
+    template_name = 'pages/manage_room.html'
+    max_tab_title_len = 32
+    max_img_size = 2 * 1024 * 1024
+    max_tab_title_item_len = 255
+    max_tab_title_text_len = 1024
+
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
+    def post(self, request, *args, **kwargs):
+        vr = self.get_validate_room()
+        self.room = vr.get_room()
+        form_data = request.POST
+        self.files = request.FILES
+
         tabs = f.literal_eval(f.get_dict_item(form_data, 'tabs'))
         room_tab_sequence = get_object_or_404(RoomTabSequence, room=self.room, room__is_deleted=False)
         room_tab_sequence.tab1 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 0), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
@@ -569,7 +585,6 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             return JsonResponse(f.get_json_error_message(self.error_messages))
             
         room_tab_sequence.save()
-
         return JsonResponse(f.get_json_success_message(['保存しました']))
 
     def get_room_tab(self, room_tab_id, title):

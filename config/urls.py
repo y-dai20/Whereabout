@@ -60,6 +60,7 @@ urlpatterns = [
     path('create-room/', views.CreateRoomView.as_view()),
     path('manage/room-authority/<str:room_pk>/', views.ManageRoomAuthorityView.as_view()),
     path('manage/room-display/<str:room_pk>/', views.ManageRoomDisplayView.as_view()),
+    path('manage/room-tab/<str:room_pk>/', views.ManageRoomTabView.as_view()),
     path('manage/room-participant/<str:room_pk>/', views.ManageRoomParticipantView.as_view()),
     path('manage/room-reply-type/<str:room_pk>/', views.ManageRoomPostView.as_view()),
     path('manage/room-information/<str:room_pk>/', views.ManageRoomRequestInformationView.as_view()),

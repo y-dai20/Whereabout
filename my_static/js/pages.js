@@ -454,6 +454,23 @@ $(document).on('click', '.save-display-button', function(){
     fd = get_video_preview_files('manage-room', fd);
     fd = get_form_data(form, ['input', 'textarea'], fd);
 
+    $.ajax({
+        url:'/manage/room-display/' + $('#manage-room-id').val() + '/',
+        type:'POST',
+        data:fd,
+        dataType:false,
+        processData:false,
+        contentType:false,
+        timeout:60000,
+    }).done(function (data) {
+        show_modal_message(data.title, data.message);
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
+    });
+});
+
+$(document).on('click', '.save-tab-button', function() {
+    var fd = new FormData();
     var tabs = [];
     var create_flag;
     for (var i=1; i <= $('.input-room-tab-title').length; i++) {
@@ -521,7 +538,7 @@ $(document).on('click', '.save-display-button', function(){
     fd.append('tabs', JSON.stringify(tabs));
 
     $.ajax({
-        url:'/manage/room-display/' + $('#manage-room-id').val() + '/',
+        url:'/manage/room-tab/' + $('#manage-room-id').val() + '/',
         type:'POST',
         data:fd,
         dataType:false,
