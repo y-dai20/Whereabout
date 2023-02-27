@@ -116,10 +116,10 @@ def get_boolean_or_none(value):
 
 def get_bool_or_str(value):
     if is_str(value):
-        value = value.strip().lower()
-        if is_str_true(value):
+        _value = value.strip().lower()
+        if is_str_true(_value):
             return True
-        if is_str_false(value):
+        if is_str_false(_value):
             return False
     elif is_bool(value):
         return value

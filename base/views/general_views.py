@@ -132,6 +132,7 @@ class SearchBaseView(IndexBaseView):
 
     def get_params(self):
         request_params = dict(self.request.GET)
+        print(request_params)
         params = {}
         for key in self.search.keys():
             if key not in request_params or f.is_empty(request_params[key][0]):

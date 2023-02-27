@@ -59,7 +59,8 @@ $(document).on('click', '.tag-link-button', function() {
     }
     
     var params = url.searchParams;
-    params.set('tags', [params.get('tags'), $(this).text()].join(','));
+    var tags =  is_empty(params.get('tags')) ? $(this).text() : [params.get('tags'), $(this).text()].join(',');
+    params.set('tags', tags);
     url.search = params.toString();
     window.location.href = url.toString();
 });
