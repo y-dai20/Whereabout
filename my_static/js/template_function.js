@@ -279,7 +279,14 @@ function get_user_content(user){
 		html += `<img src="${humanImg}" alt="" class="user-img">`;
     }
 	html += `</div><div class="username"><div class="headline">ユーザー名</div>${escapeHTML(user.username)}</div>
-	<div class="user-profession"><div class="headline">職業</div>${escapeHTML(user.profession)}</div>
+    <div class="user-rooms"><div class="headline">ルーム</div>`;
+
+    $.each(user.user_rooms, function(idx, room) {
+        html += get_item_room_area(room.id_, room.title_, 'blue');
+        // html += `<a href="/room/${room.id_}" class="room-link">${room.title_}</a>`;
+    });
+
+	html += `</div><div class="user-profession"><div class="headline">職業</div>${escapeHTML(user.profession)}</div>
 	<div class="user-description"><div class="headline">詳細</div>${adapt_linebreaks(escapeHTML(user.description))}</div></div>`;
 
 	return html;
@@ -413,7 +420,7 @@ function get_item_user_area(name, img=null, color='black') {
 
 function get_item_room_area(room_id, title, color='black') {
     if (!is_empty(room_id)) {
-        return `<img src="${houseImg}" class="house-img"><a class="c-${color} show-modal-room-button" href="#" data-roomid="${room_id}">${title}</a>`;
+        return `<div class="room-link"><img src="${houseImg}" class="house-img"><a class="c-${color} show-modal-room-button" href="#" data-roomid="${room_id}">${title}</a></div>`;
     }
     return '';
 }

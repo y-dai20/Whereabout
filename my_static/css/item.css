@@ -64,6 +64,10 @@
     max-width: 50px;
 }
 
+.room-link {
+    margin: 5px;
+}
+
 .reply-item-col {
     flex: 33%;
     max-width: 33%;

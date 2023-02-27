@@ -537,6 +537,7 @@ class UserItemView(View):
             'created_at':f.get_display_datetime(datetime.now() - make_naive(profile.user.created_at)),
             'img':f.get_img_path(profile.img),
             'user_tags':self.get_profile_tags(profile),
+            'user_rooms':list(Room.objects.filter(admin=profile.user, is_public=True, is_deleted=False).values(id_=F('id'), title_=F('title'))),
             'profession':profile.profession,
             'description':profile.description,
             'followed_count':f.get_number_unit(profile.followed_count),

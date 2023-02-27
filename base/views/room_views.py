@@ -2,7 +2,8 @@ from django.views.generic import ListView, CreateView, UpdateView, TemplateView,
 from django.shortcuts import redirect, get_object_or_404
 from django.http import JsonResponse, Http404
 from django.db.models.functions import Length
-
+from django.db.models import Value as V
+from django.db.models.functions import Concat
 
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
@@ -18,7 +19,7 @@ from base.views.mixins import LoginRequiredMixin, RoomAdminRequiredMixin
 
 import json
 
-#todo (高) SEO対策として，タブへのリンクを作成する
+#todo (高) 投稿検索で全てを再読み込みは辞めたい。
 class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
     template_name = 'pages/room.html'
     model = Room
@@ -32,6 +33,7 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
             'date_from':'',
             'date_to':'',
             'is_favorite':'',
+            'tags':'',
         }
 
     def get_items(self):
@@ -48,6 +50,13 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
             fav_ids = PostFavorite.objects.filter(user=self.request.user, obj__room=self.room, is_deleted=False).values_list('obj__id', flat=True)
             posts = posts.filter(id__in=fav_ids)
         
+        if not f.is_empty(params['tags']):
+            posts = posts.annotate(
+                tags=Concat(V('&'), 'tag1__tag', V('&'), 'tag2__tag', V('&'), 'tag3__tag', V('&'), 'tag4__tag', V('&'), 'tag5__tag', V('&')))
+            for tag in params['tags'].split(','):
+                posts = posts.filter(tags__contains='&{}&'.format(tag))
+
+
         return self.get_post_items(self.get_idx_items(posts))
 
 #todo (高) ルームの情報をどこかに表示する

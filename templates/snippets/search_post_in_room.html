@@ -1,48 +1,64 @@
 <div class="accordion" id="search-pir-accordion">
-    <div class="accordion-item index-search">
-      <h2 class="accordion-header" id="search-pir-accordion-hearder1">
-        <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#search-pir-accordion-collapse1" aria-expanded="true" aria-controls="search-pir-accordion-collapse1">
-          【投稿検索】
-        </button>
-      </h2>
-      <div id="search-pir-accordion-collapse1" class="accordion-collapse collapse show" aria-labelledby="search-pir-accordion-hearder1" data-bs-parent="#search-pir-accordion">
-        <div class="accordion-body">
-            <form action="/room/{{room_id}}/" method="get" id="search-pir-form">
-                <table class="table"> 
-                    <tr>
-                        <th scope="row"><label for="pir-search-username">ユーザー</label></th>
-                        <td><input type="text" id="pir-search-username" placeholder="ユーザー" name="username" value="{{search.username}}"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row"><label for="pir-search-title">タイトル</label></th>
-                        <td><input type="text" id="pir-search-title" placeholder="タイトル" name="title" value="{{search.title}}"></td>
-                    </tr>
-                    <tr>
-                        <th scope="row"><label for="">投稿日</label></th>
-                        <td>
-                          <input type="date" id="pir-search-date-from" name="date_from" value="{{search.date_from}}">
-                            〜
-                          <input type="date" id="pir-search-date-to" name="date_to" value="{{search.date_to}}">
-                        </td>
-                    </tr>
-                    <tr>
-                      <th scope="row" class="search-post-th"><label for="">お気に入りのみ</label></th>
-                      <td>
-                          {% if search.is_favorite %}            
-                          <label class="checkbox-space"><input type="checkbox" name="is_favorite" checked> Yes</label>
-                          {% else %}
-                          <label class="checkbox-space"><input type="checkbox" name="is_favorite"> Yes</label>
-                          {% endif %}
-                      </td>
-                    </tr>
-                </table>
-                <div class="right-button">
-                  <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
-                  <button type="submit" class="btn btn-secondary">検索</button>
-                </div>
-            </form>
-        </div>
+  <div class="accordion-item index-search">
+    <h2 class="accordion-header" id="search-pir-accordion-hearder1">
+      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#search-pir-accordion-collapse1" aria-expanded="true" aria-controls="search-pir-accordion-collapse1">
+        【投稿検索】
+      </button>
+    </h2>
+    <div id="search-pir-accordion-collapse1" class="accordion-collapse collapse show" aria-labelledby="search-pir-accordion-hearder1" data-bs-parent="#search-pir-accordion">
+      <div class="accordion-body">
+        <form action="/room/{{room_id}}/" method="get" id="search-pir-form">
+          <table class="table"> 
+            <tr>
+              <th scope="row"><label for="pir-search-username">ユーザー</label></th>
+              <td><input type="text" id="pir-search-username" placeholder="ユーザー" name="username" value="{{search.username}}"></td>
+            </tr>
+            <tr>
+              <th scope="row"><label for="pir-search-title">タイトル</label></th>
+              <td><input type="text" id="pir-search-title" placeholder="タイトル" name="title" value="{{search.title}}"></td>
+            </tr>
+            <tr>
+              <th scope="row"><label for="">投稿日</label></th>
+              <td>
+                <input type="date" id="pir-search-date-from" name="date_from" value="{{search.date_from}}">
+                  〜
+                <input type="date" id="pir-search-date-to" name="date_to" value="{{search.date_to}}">
+              </td>
+            </tr>
+            <tr>
+              <th scope="row" class="search-post-th"><label for="">お気に入りのみ</label></th>
+              <td>
+                {% if search.is_favorite %}            
+                <label class="checkbox-space"><input type="checkbox" name="is_favorite" checked> Yes</label>
+                {% else %}
+                <label class="checkbox-space"><input type="checkbox" name="is_favorite"> Yes</label>
+                {% endif %}
+              </td>
+            </tr>
+            <tr>
+              <th scope="row"><label for="">タグ</label></th>
+              <td>
+                <input type="text" class="tag-input" autocomplete="on" list="search-tag-list" placeholder="例)カフェ">
+                <datalist id="search-tag-list"></datalist>
+                <input type="button" class="btn btn-sm btn-primary add-tag-button" value="追加" data-max-len="5">
+                <div class="added-tag-list flex-area" id="added-search-pir-tag-list"></div>
+                <input type="hidden" value="" name="tags">
+                <script>
+                  var tags = "{{search.tags}}".split(',');
+                  $.each(tags, function(idx, tag) {
+                      append_removable_tag(tag, '#added-search-pir-tag-list');
+                  });
+                </script>
+              </td>
+          </tr>
+          </table>
+          <div class="right-button">
+            <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
+            <button type="submit" class="btn btn-secondary">検索</button>
+          </div>
+        </form>
       </div>
     </div>
+  </div>
 </div>
 
