@@ -1,4 +1,4 @@
-<form action="/{{type}}/{{obj_id}}/" method="get" id="search-reply-form">
+<form id="search-reply-form">
 <div class="accordion" id="search-reply-accordion">
     <div class="accordion-item index-search">
     <h2 class="accordion-header" id="search-reply-header1">
@@ -45,30 +45,30 @@
                     <label for="radio-all">すべて</label>
                     <div class="my-row">
                     <div class="my-col">
-                        {% if search.position == "Agree" %}
-                        <input class="radio-position" id="radio-Agree" type="radio" name="position" value="Agree" checked/>
+                        {% if search.position == "agree" %}
+                        <input class="radio-position" id="radio-Agree" type="radio" name="position" value="agree" checked/>
                         {% else %}
-                        <input class="radio-position" id="radio-Agree" type="radio" name="position" value="Agree"/>
+                        <input class="radio-position" id="radio-Agree" type="radio" name="position" value="agree"/>
                         {% endif %}
                         <label for="radio-Agree">
                         賛成 <script>document.write(get_traffic_img(trafficGreenImg));</script>
                         </label>
                     </div>
                     <div class="my-col">
-                        {% if search.position == "Neutral" %}
-                        <input class="radio-position" id="radio-Neutral" type="radio" name="position" value="Neutral" checked/>
+                        {% if search.position == "neutral" %}
+                        <input class="radio-position" id="radio-Neutral" type="radio" name="position" value="neutral" checked/>
                         {% else %}
-                        <input class="radio-position" id="radio-Neutral" type="radio" name="position" value="Neutral"/>
+                        <input class="radio-position" id="radio-Neutral" type="radio" name="position" value="neutral"/>
                         {% endif %}
                         <label for="radio-Neutral">
                         中立 <script>document.write(get_traffic_img(trafficYellowImg));</script>
                         </label>
                     </div>
                     <div class="my-col">
-                        {% if search.position == "Disagree" %}
-                        <input class="radio-position" id="radio-Disagree" type="radio" name="position" value="Disagree" checked/>
+                        {% if search.position == "disagree" %}
+                        <input class="radio-position" id="radio-Disagree" type="radio" name="position" value="disagree" checked/>
                         {% else %}
-                        <input class="radio-position" id="radio-Disagree" type="radio" name="position" value="Disagree"/>
+                        <input class="radio-position" id="radio-Disagree" type="radio" name="position" value="disagree"/>
                         {% endif %}
                         <label for="radio-Disagree">
                         反対 <script>document.write(get_traffic_img(trafficRedImg));</script>
@@ -106,7 +106,7 @@
             </table>
             <div class="right-button">
                 <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
-                <button type="submit" class="btn btn-secondary">検索</button>
+                <button type="button" class="btn btn-secondary search-reply-button">検索</button>
             </div>
         </div>
     </div>
@@ -150,7 +150,8 @@
             </div>
 
             <div class="right-button">
-                <button type="submit" class="btn btn-secondary">並べ替え</button>
+                {% comment %} <button type="submit" class="btn btn-secondary">並べ替え</button> {% endcomment %}
+                <button type="button" class="btn btn-secondary search-reply-button">並び替え</button>
             </div>
         </div>
     </div>

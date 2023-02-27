@@ -136,8 +136,8 @@ class ReplyDetailView(ReplyItemView, Reply2ItemView, DetailBaseView):
         )
         
         items = []
-        if not f.is_empty(params['position']):
-            replies2 = self.get_replies_after_order(replies.filter(position=params['position']))
+        if not f.is_empty(params['position']) and params['position'].upper() in ReplyPosition.names:
+            replies2 = self.get_replies_after_order(replies.filter(position=ReplyPosition[params['position'].upper()]))
             self.load_by *= 3
             return self.get_reply2_items(self.get_idx_items(replies2))
 

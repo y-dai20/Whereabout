@@ -7,7 +7,7 @@
         </h2>
         <div id="search-post-accordion-collapse1" class="accordion-collapse collapse show" aria-labelledby="search-post-accordion-hearder1" data-bs-parent="#search-post-accordion">
         <div class="accordion-body">
-            <form action="/" method="get" id="search-post-form">
+            <form id="search-post-form">
                 <table class="table"> 
                     <tr>
                         <th scope="row" class="search-post-th"><label for="post-search-username">ユーザー</label></th>
@@ -77,36 +77,10 @@
                             </script>
                         </td>
                     </tr>
-                    {% comment %} <tr>
-                        <th scope="row" class="search-post-th"><label for="">賛否</label></th>
-                        <td>
-                            賛成
-                            <select name="agree-state">
-                                <option value=""></option>
-                                <option value="agree">＞</option>
-                                <option value="disagree">＜</option>
-                                <option value="equal">＝</option>
-                            </select>
-                            反対
-                        </td>
-                    </tr>
-                    <tr>
-                        <th scope="row" class="search-post-th"><label for="">真偽</label></th>
-                        <td>
-                            真
-                            <select name="true-state">
-                                <option value=""></option>
-                                <option value="true">＞</option>
-                                <option value="false">＜</option>
-                                <option value="equal">＝</option>
-                            </select>
-                            偽
-                        </td>
-                    </tr> {% endcomment %}
                 </table>
                 <div class="right-button">
                     <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
-                    <button type="submit" class="btn btn-secondary">検索</button>
+                    <button type="button" class="btn btn-secondary" id="search-post-button">検索</button>
                 </div>
             </form>
         </div>

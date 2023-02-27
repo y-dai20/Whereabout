@@ -11,7 +11,6 @@ class IndexPostListView(SearchBaseView, PostItemView):
     template_name = 'pages/index.html'
     model = Post
     load_by = 20
-    checked_label = 'on'
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -33,9 +32,9 @@ class IndexPostListView(SearchBaseView, PostItemView):
     def get_items(self):
         if f.is_empty(dict(self.request.GET)):
             if self.request.user.is_authenticated:
-                self.search['my_room_check'] = self.checked_label
+                self.search['my_room_check'] = True
             else:
-                self.search['no_room_check'] = self.checked_label
+                self.search['no_room_check'] = True
 
         params = self.get_params()
         posts = Post.objects.filter(
@@ -52,11 +51,11 @@ class IndexPostListView(SearchBaseView, PostItemView):
 
         my_rooms = RoomBase.get_my_room_list(self.request.user)
         attend_rooms = RoomBase.get_attend_room_list(self.request.user)
-        rooms = my_rooms if self.checked_label == self.search['my_room_check'] else []
-        rooms += attend_rooms if self.checked_label == self.search['attend_room_check'] else []
-        rooms += RoomBase.get_other_room_list(my_rooms + attend_rooms) if self.checked_label == self.search['other_room_check'] else []
+        rooms = my_rooms if params['my_room_check'] == True else []
+        rooms += attend_rooms if params['attend_room_check'] == True else []
+        rooms += RoomBase.get_other_room_list(my_rooms + attend_rooms) if params['other_room_check'] == True else []
 
-        if self.checked_label == self.search['no_room_check']:
+        if params['no_room_check'] == True:
             posts = posts.filter(Q(room__in=rooms) | Q(room__isnull=True))
         else:
             posts = posts.filter(room__in=rooms)

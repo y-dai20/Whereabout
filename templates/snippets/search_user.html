@@ -7,7 +7,7 @@
     </h2>
     <div id="search-user-collapse1" class="accordion-collapse collapse show" aria-labelledby="search-user-header1" data-bs-parent="#search-user-accordion">
       <div class="accordion-body">
-        <form action="/user/" method="get" id="search-user-form">
+        <form id="search-user-form">
           <table class="table"> 
             <tr>
               <th scope="row"><label for="user-search-username">ユーザー名</label></th>
@@ -76,7 +76,7 @@
           </table>
           <div class="right-button">
             <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
-            <button type="submit" class="btn btn-secondary">検索</button>
+            <button type="button" class="btn btn-secondary" id="search-user-button">検索</button>
           </div>
         </form>
       </div>

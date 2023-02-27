@@ -106,18 +106,37 @@ def is_same_empty_count(list, allow_empty_count=1):
 def get_boolean_or_none(value):
     if is_str(value):
         value = value.strip().lower()
-        if value == 'true' or value == 'y':
+        if is_str_true(value):
             return True
-        if value == 'false' or value == 'n':
+        if is_str_false(value):
             return False
     elif is_bool(value):
         return value
     return None
 
+def get_bool_or_str(value):
+    if is_str(value):
+        value = value.strip().lower()
+        if is_str_true(value):
+            return True
+        if is_str_false(value):
+            return False
+    elif is_bool(value):
+        return value
+    return value
+
 def is_str(value):
     if type(value) is str:
         return True
     return False
+
+def is_str_true(value):
+    return True if value in ['true', 'y', 't', 'on'] else False
+def is_str_false(value):
+    return True if value in ['false', 'n', 'f', 'off'] else False
+
+def is_equal(val1, val2):
+    return val1.casefold() == val2.casefold()
 
 def is_int(value):
     if is_empty(value):
@@ -134,16 +153,6 @@ def is_bool(value):
     if type(value) is bool:
         return True
     return False
-
-def get_bool_or_str(value):
-    if is_str(value):
-        if value.strip().lower() == 'true':
-            return True
-        if value.strip().lower() == 'false':
-            return False
-    elif is_bool(value):
-        return value
-    return value
 
 def get_display_datetime(dt):
     days = dt.days

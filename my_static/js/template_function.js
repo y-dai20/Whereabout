@@ -17,6 +17,9 @@ function create_post_items(appendTo, posts, is_link=false) {
 function create_reply_items(appendTo, replies, is_link=false) {
     replies = get_parsed_str(replies);
     $.each(replies, function(idx, reply) {
+        if (is_empty(reply)) {
+            return true;
+        }
         var html = get_reply_item(reply, is_link);
         $(appendTo).append(html);
         active_luminous(reply.obj_id);

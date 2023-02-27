@@ -1326,3 +1326,83 @@ $('.calender-accordion').accordion({
     collapsible:true,
     active:false,
 });
+
+$('#search-post-button').on('click', function() {
+    var url = get_form_href('search-post-form');
+    $.ajax({
+        url: url,
+        type: 'POST',
+        timeout: 60000,
+    }).done(function(data){
+        $(`.post-list`).html('');
+        $(`.post-list`).siblings('.load-more').find('.load-more-button').data('idx', 1).show();
+        history.pushState(null, 'Whereabout', url);
+        create_post_items(`.post-list`, data.items, true);
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
+    });
+});
+
+$('#search-pir-button').on('click', function() {
+    var url = get_form_href('search-pir-form');
+    $.ajax({
+        url: url,
+        type: 'POST',
+        timeout: 60000,
+    }).done(function(data){
+        $(`.post-list`).html('');
+        $(`.post-list`).siblings('.load-more').find('.load-more-button').data('idx', 1).show();
+        history.pushState(null, 'Whereabout', url);
+        create_post_items(`.post-list`, data.items, true);
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
+    });
+});
+
+$('#search-user-button').on('click', function() {
+    var url = get_form_href('search-user-form');
+    $.ajax({
+        url: url,
+        type: 'POST',
+        timeout: 60000,
+    }).done(function(data){
+        $(`.user-list`).html('');
+        $(`.user-list`).siblings('.load-more').find('.load-more-button').data('idx', 1).show();
+        history.pushState(null, 'Whereabout', url);
+        create_user_items(`.user-list`, data.items, true);
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
+    });
+});
+
+$('#search-room-button').on('click', function() {
+    var url = get_form_href('search-room-form');
+    $.ajax({
+        url: url,
+        type: 'POST',
+        timeout: 60000,
+    }).done(function(data){
+        $(`.room-list`).html('');
+        $(`.room-list`).siblings('.load-more').find('.load-more-button').data('idx', 1).show();
+        history.pushState(null, 'Whereabout', url);
+        create_room_items(`.room-list`, data.items, true);
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
+    });
+});
+
+$('.search-reply-button').on('click', function() {
+    var url = get_form_href('search-reply-form');
+    $.ajax({
+        url: url,
+        type: 'POST',
+        timeout: 60000,
+    }).done(function(data){
+        $(`.reply-list`).html('');
+        $(`.reply-list`).siblings('.load-more').find('.load-more-button').data('idx', 1).show();
+        history.pushState(null, 'Whereabout', url);
+        create_post_detail_items(`.reply-list`, data.items, true);
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
+    });
+});

@@ -7,7 +7,7 @@
     </h2>
     <div id="search-room-collapse1" class="accordion-collapse collapse show" aria-labelledby="search-room-header1" data-bs-parent="#search-room-accordion">
       <div class="accordion-body">
-        <form action="/room/" method="get" id="search-room-form">
+        <form id="search-room-form">
           <table class="table"> 
             <tr>
               <th scope="row"><label for="room-search-username">管理者</label></th>
@@ -52,7 +52,7 @@
           </table>
           <div class="right-button">
             <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
-            <button type="submit" class="btn btn-secondary">検索</button>
+            <button type="button" class="btn btn-secondary" id="search-room-button">検索</button>
           </div>
         </form>
       </div>

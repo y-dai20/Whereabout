@@ -97,9 +97,8 @@ class PostDetailView(PostItemView, ReplyItemView, DetailBaseView):
             is_deleted=False,
         )
 
-        if not f.is_empty(params['position']):
-            #todo (中) search_reply.htmlと密結合になっている．Agreeなどが送られてこないと検索に引っかからない
-            replies = self.get_replies_after_order(replies.filter(position=params['position']))
+        if not f.is_empty(params['position']) and params['position'].upper() in ReplyPosition.names:
+            replies = self.get_replies_after_order(replies.filter(position=ReplyPosition[params['position'].upper()]))
             self.load_by *= 3
             return self.get_reply_items(self.get_idx_items(replies))
 

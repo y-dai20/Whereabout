@@ -438,6 +438,36 @@ function get_form_data(form_id, tags=[], fd=null) {
     return fd;
 }
 
+function get_form_data_parameter(form_id, tags=['input']) {
+    var parameter = '?';
+    $.each(tags, function(idx, tag) {
+        $(`#${form_id}`).find(tag).each(function(){
+            if (is_empty($(this).attr('name'))) {
+                return true;
+            }
+
+            var value = '';
+            if (['checkbox', 'radio'].includes($(this).attr('type'))) {
+                value = $(this).prop('checked') ? $(this).val(): '';
+            } else {
+                value = $(this).val();
+            }
+
+            if (is_empty(value)) {
+                return true;
+            }
+
+            parameter += `${$(this).attr('name')}=${value}&`;
+        });
+    });
+
+    return parameter.slice(0, -1);
+}
+
+function get_form_href(form_id) {
+    return `${$(location).attr('pathname')}${get_form_data_parameter(form_id)}`;
+}
+
 function adapt_linebreaks(str) {
     return str.replaceAll(/\n/g, '<br>');
 }
@@ -591,6 +621,10 @@ function close_modal(id) {
 }
 
 function escapeHTML(string){
+    if (is_empty(string)) {
+        return '';
+    }
+
     return string.replace(/&/g, '&lt;')
     .replace(/</g, '&lt;')
     .replace(/>/g, '&gt;')

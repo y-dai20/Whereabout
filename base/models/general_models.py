@@ -47,6 +47,7 @@ class Personal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+#todo 誰が最初に作ったっかの情報があるといいかも
 class Tag(models.Model):
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     tag = models.CharField(default='', max_length=15, blank=True)

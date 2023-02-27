@@ -140,7 +140,7 @@ class SearchBaseView(IndexBaseView):
                 elif key == 'date_to':
                     params[key] = make_aware(datetime(9999, 1, 1))
                 else:
-                    params[key] = ''
+                    params[key] = self.search[key]
             else:
                 self.search[key] = f.get_bool_or_str(request_params[key][0])
                 if key == 'date_from':

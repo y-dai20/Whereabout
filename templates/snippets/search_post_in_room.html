@@ -7,7 +7,7 @@
     </h2>
     <div id="search-pir-accordion-collapse1" class="accordion-collapse collapse show" aria-labelledby="search-pir-accordion-hearder1" data-bs-parent="#search-pir-accordion">
       <div class="accordion-body">
-        <form action="/room/{{room_id}}/" method="get" id="search-pir-form">
+        <form id="search-pir-form">
           <table class="table"> 
             <tr>
               <th scope="row"><label for="pir-search-username">ユーザー</label></th>
@@ -54,7 +54,7 @@
           </table>
           <div class="right-button">
             <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
-            <button type="submit" class="btn btn-secondary">検索</button>
+            <button type="button" class="btn btn-secondary" id="search-pir-button">検索</button>
           </div>
         </form>
       </div>
