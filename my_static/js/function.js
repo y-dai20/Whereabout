@@ -465,7 +465,8 @@ function get_form_data_parameter(form_id, tags=['input']) {
 }
 
 function get_form_href(form_id) {
-    return `${$(location).attr('pathname')}${get_form_data_parameter(form_id)}`;
+    var url = new URL(window.location.href);
+    return `${url.origin}${url.pathname}${get_form_data_parameter(form_id)}`;
 }
 
 function adapt_linebreaks(str) {
@@ -660,4 +661,41 @@ function append_removable_tag(val, append_to) {
 
 function get_option(val) {
     return `<option value="${val}">${val}</option>`;
+}
+
+function search_ajax(url, list_cls, create_func) {
+    $.ajax({
+        url: url,
+        type: 'POST',
+        timeout: 60000,
+    }).done(function(data){
+        $(list_cls).html('');
+        $(list_cls).siblings('.load-more').find('.load-more-button').data('idx', 1).show();
+        history.pushState(null, 'Whereabout', url);
+        create_func(list_cls, data.items, true);
+    }).fail(function (data) {
+        show_modal_message(data.status, [data.statusText]);
+    });
+}
+
+function search_post_ajax(url) {
+    search_ajax(url, '.post-list', create_post_items);
+}
+function search_user_ajax(url) {
+    search_ajax(url, '.user-list', create_user_items);
+}
+function search_room_ajax(url) {
+    search_ajax(url, '.room-list', create_room_items);
+}
+function search_reply_ajax(url) {
+    search_ajax(url, '.reply-list', create_post_detail_items);
+}
+
+function set_url_parameter(_url, label, val) {
+    var url = new URL(_url);
+    var params = url.searchParams;
+    var new_val =  is_empty(params.get(label)) ? val : [params.get(label), val].join(',');
+    params.set(label, new_val);
+    url.search = params.toString();
+    return url.toString();
 }

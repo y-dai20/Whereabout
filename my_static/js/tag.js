@@ -53,14 +53,29 @@ $(document).on('click', '.removable-tag-item', function() {
 $(document).on('click', '.tag-link-button', function() {
     var url = new URL(window.location.href);
     var item = $(this).data('item');
+    var tag = $(this).text();
     if (!is_empty(item) & url.pathname != `/${item}/`) {
-        window.location.href = `/${item}/?tags=${$(this).text()}`;
+        window.location.href = `/${item}/?tags=${tag}`;
         return false;
     }
     
-    var params = url.searchParams;
-    var tags =  is_empty(params.get('tags')) ? $(this).text() : [params.get('tags'), $(this).text()].join(',');
-    params.set('tags', tags);
-    url.search = params.toString();
-    window.location.href = url.toString();
+    if (item == '') {
+        if ($('#added-search-post-tag-list').length > 0) {
+            append_removable_tag(tag, '#added-search-post-tag-list');
+        } else if ($('#added-search-pir-tag-list').length > 0) {
+            append_removable_tag(tag, '#added-search-pir-tag-list');
+        }
+        var new_url = set_url_parameter(get_form_href('search-post-form'), 'tags', tag);
+        search_post_ajax(new_url);
+    } else if (item == 'user') {
+        append_removable_tag(tag, '#added-search-user-tag-list');
+        var new_url = set_url_parameter(get_form_href('search-user-form'), 'tags', tag);
+        search_user_ajax(new_url);
+    } else if (item == 'room') {
+        append_removable_tag(tag, '#added-search-room-tag-list');
+        var new_url = set_url_parameter(get_form_href('search-room-form'), 'tags', tag);
+        search_room_ajax(new_url);
+    } else {
+        window.location.href = set_url_parameter(url, 'tags', tag);
+    }
 });
