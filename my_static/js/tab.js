@@ -419,10 +419,9 @@ $(document).on('click', '.room-tab-title', function(){
     create_room_tab_link({'id':room_tab_id, 'title':$(this).text()});
     change_room_tab_title($(this).text());
     var tab = $(this).data('tab');
-    var scroll_target = ".room-title";
     if (Object.keys(RoomTabItems).includes(room_tab_id)) {
         if ($('#room-tab-pane-list').hasClass('show-room')) {
-            scroll_to(scroll_target);
+            window.location.href = '#room-tab-link';
             create_room_tab_title_link(tab);
         }
         return true;
@@ -444,19 +443,13 @@ $(document).on('click', '.room-tab-title', function(){
         } else if ($('#room-tab-pane-list').hasClass('show-room')) {
             create_room_tab_table(tab, is_droppable=false, is_active=true);
             deploy_tab_content_items(tab, data['room_tab_items'], is_droppable=false);
-            scroll_to(scroll_target);
+            window.location.href = '#room-tab-link';
         }
         RoomTabItems[room_tab_id] = data['room_tab_items'];
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
     });
 });
-
-function scroll_to(target) {
-    $('.show-room-content').animate({
-        scrollTop: $(target).offset().top,
-    },1000)
-}
 
 function create_room_tab_link(room_tab, append_to="#room-tab-link") {
     $(append_to).html(

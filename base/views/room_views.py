@@ -19,7 +19,6 @@ from base.views.mixins import LoginRequiredMixin, RoomAdminRequiredMixin
 
 import json
 
-#todo (高) 投稿検索で全てを再読み込みは辞めたい。
 class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
     template_name = 'pages/room.html'
     model = Room

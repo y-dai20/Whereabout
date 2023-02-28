@@ -430,7 +430,8 @@ function get_item_room_area(room_id, title, color='black') {
 
 function get_item_source(source, color='blue') {
     if (!is_empty(source)) {
-        return `【ソース】<a class="c-${color}" href="${escapeHTML(source)}">${escapeHTML(source)}</a>`; 
+        var url = new URL(source);
+        return `【ソース】<a class="c-${color}" href="${escapeHTML(source)}">${escapeHTML(url.host)}</a>`; 
     }
     return '';
 }

@@ -443,7 +443,6 @@ $('.cancel-confirm-button').on('click', function(){
     show_modal_message('確認', ['変更内容をキャンセルしますか'], '<a onclick="location.reload()" type="button" class="btn btn-danger" data-bs-dismiss="modal">キャンセル</a>');
 });
 
-//todo 複雑すぎない？？
 $(document).on('click', '.save-display-button', function(){
     var form = 'manage-room-display-form';
     if (!form_valid(form)) {
