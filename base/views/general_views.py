@@ -23,7 +23,6 @@ from datetime import datetime, timedelta
 from abc import abstractmethod
 
 #todo (高) detail画面でh1などを作成して，SEO対策をする
-
 #todo (高) sourceを画面に表示する方法を考える
 class HeaderView(View):
     def get_context_data(self, **kwargs):
@@ -747,7 +746,7 @@ class ShowRoomBaseView(HeaderView):
         context['request_information'] = self.room_base.get_room_request_information()
         context['room_tags'] = self.room_base.get_room_tags()
 
-        #todo (高) 住所とカレンダーの表示方法について
+        #todo (高) 住所の表示方法について
         if self.room.personal is not None:
             context['web'] = self.room.personal.web
             context['web_domain'] = f.get_domain(self.room.personal.web)

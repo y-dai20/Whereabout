@@ -57,3 +57,4 @@ admin.site.register(RoomInformation)
 
 admin.site.register(ObjectExpansion)
 admin.site.register(Personal)
+admin.site.register(Tag)

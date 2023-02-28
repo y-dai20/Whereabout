@@ -49,7 +49,12 @@ class Personal(models.Model):
 
 #todo 誰が最初に作ったっかの情報があるといいかも
 class Tag(models.Model):
+    objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
-    tag = models.CharField(default='', max_length=15, blank=True)
+    tag = models.CharField(max_length=15, blank=False, null=False)
+    created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
+
+    def __str__(self):
+        return self.tag

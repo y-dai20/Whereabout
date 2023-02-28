@@ -298,11 +298,11 @@ class UserProfileView(LoginRequiredMixin, HeaderView, UserItemView, TemplateView
         tags_str = f.get_dict_item(request.POST, 'tags')
         if not f.is_empty(tags_str):
             tags = tags_str.split(',')
-            profile.tag1, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 0))
-            profile.tag2, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 1))
-            profile.tag3, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 2))
-            profile.tag4, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 3))
-            profile.tag5, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 4))
+            profile.tag1 = f.get_tag(f.get_list_item(tags, 0), self.request.user)
+            profile.tag2 = f.get_tag(f.get_list_item(tags, 1), self.request.user)
+            profile.tag3 = f.get_tag(f.get_list_item(tags, 2), self.request.user)
+            profile.tag4 = f.get_tag(f.get_list_item(tags, 3), self.request.user)
+            profile.tag5 = f.get_tag(f.get_list_item(tags, 4), self.request.user)
 
         profile.save()
 

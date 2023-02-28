@@ -58,11 +58,11 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
         tags_str = f.get_dict_item(request.POST, 'tags')
         if not f.is_empty(tags_str):
             tags = tags_str.split(',')
-            post.tag1, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 0))
-            post.tag2, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 1))
-            post.tag3, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 2))
-            post.tag4, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 3))
-            post.tag5, _ = Tag.objects.get_or_create(tag=f.get_list_item(tags, 4))
+            post.tag1 = f.get_tag(f.get_list_item(tags, 0), self.request.user)
+            post.tag2 = f.get_tag(f.get_list_item(tags, 1), self.request.user)
+            post.tag3 = f.get_tag(f.get_list_item(tags, 2), self.request.user)
+            post.tag4 = f.get_tag(f.get_list_item(tags, 3), self.request.user)
+            post.tag5 = f.get_tag(f.get_list_item(tags, 4), self.request.user)
         
         post.save()
         PostImgs.objects.create(

@@ -3,6 +3,8 @@ from django.utils.crypto import get_random_string
 from django.utils.timezone import make_naive
 from django.http import JsonResponse
 
+
+from base.models import Tag
 import ast
 import magic
 import os
@@ -285,3 +287,13 @@ def get_domain(url):
 
     url = url.replace('http://', '').replace('https://', '')
     return url.split('/')[0]
+
+def get_tag(val, created_by=None):
+    if is_empty(val):
+        return None
+
+    tag = Tag.objects.get_or_none(tag=val)
+    if tag is not None:
+        return tag
+    
+    return Tag.objects.create(tag=val, created_by=created_by)
