@@ -40,6 +40,11 @@ class Room(models.Model):
     tag8 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag8')
     tag9 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag9')
     tag10 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag10')
+    img1 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
+    img2 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
+    img3 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
+    img4 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
+    img5 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
     good_count = models.IntegerField(default=0)
     bad_count = models.IntegerField(default=0)
     participant_count = models.IntegerField(default=0)
@@ -52,14 +57,6 @@ class Room(models.Model):
     
     class Meta:
         ordering = ['-created_at']
-
-class RoomImgs(models.Model):
-    room = models.OneToOneField(Room, primary_key=True, on_delete=models.CASCADE)
-    img1 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
-    img2 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
-    img3 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
-    img4 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
-    img5 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
 
 class RoomRequestInformation(models.Model):
     objects = BaseManager()

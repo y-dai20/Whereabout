@@ -296,8 +296,8 @@ class RoomBase(object):
     def get_room_img_list(self):
         if not self.vr.is_room_exist():
             return [] 
-        room_imgs = self.room.roomimgs
-        return [room_imgs.img1, room_imgs.img2, room_imgs.img3, room_imgs.img4, room_imgs.img5]
+
+        return [self.room.img1, self.room.img2, self.room.img3, self.room.img4, self.room.img5]
 
     def get_room_img_size(self):
         img_sizes = []

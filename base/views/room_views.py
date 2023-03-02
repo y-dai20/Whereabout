@@ -10,7 +10,7 @@ from base.views.exceptions import MyBadRequest
 from base.models.general_models import Personal, Tag
 from base.models.account_models import User, UserBlock
 from base.models.post_models import Post, PostFavorite
-from base.models.room_models import Room, RoomGuest, RoomImgs, RoomUser, RoomGood, RoomAuthority, RoomTab, \
+from base.models.room_models import Room, RoomGuest, RoomUser, RoomGood, RoomAuthority, RoomTab, \
     RoomTabItem, RoomInviteUser, RoomReplyType, RoomTabSequence, RoomRequestInformation, RoomInformation
 from base.views.general_views import ShowRoomBaseView, PostItemView, RoomItemView, RoomBase, SearchBaseView, GoodView
 from base.views.validate_views import ValidateRoomView
@@ -182,17 +182,14 @@ class CreateRoomView(LoginRequiredMixin, CreateView):
         img_list = f.get_img_list(request.POST, files, self.max_img)
         if f.get_file_size(img_list) > self.max_img_size:
             return JsonResponse(f.get_json_error_message(['画像サイズが{}を超えています'.format(f.get_file_size_by_unit(self.max_img_size, unit='MB'))]))
+        
+        room.img1 = img_list[0]
+        room.img2 = img_list[1]
+        room.img3 = img_list[2]
+        room.img4 = img_list[3]
+        room.img5 = img_list[4]
 
         room.save()
-        if not f.is_all_none(img_list):
-            RoomImgs.objects.create(
-                room=room,
-                img1 = img_list[0],
-                img2 = img_list[1],
-                img3 = img_list[2],
-                img4 = img_list[3],
-                img5 = img_list[4],
-            )
 
         return JsonResponse(f.get_json_success_message(['ルームを作成しました'], {'room_id':room.id, 'room_title':room.title}))
 
@@ -545,18 +542,17 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         self.room.video = video_list[0]
         self.room.save()
 
-        room_imgs = self.room.roomimgs
-        img_list = f.get_img_list(form_data, self.files, self.max_img, [room_imgs.img1, room_imgs.img2, room_imgs.img3, room_imgs.img4, room_imgs.img5])
+        img_list = f.get_img_list(form_data, self.files, self.max_img, [self.room.img1, self.room.img2, self.room.img3, self.room.img4, self.room.img5])
 
         if f.get_file_size(img_list) > self.max_img_size:
             return JsonResponse(f.get_json_error_message(['画像サイズが{}を超えています'.format(f.get_file_size_by_unit(self.max_img_size, unit='MB'))]))
 
-        room_imgs.img1 = img_list[0]
-        room_imgs.img2 = img_list[1]  
-        room_imgs.img3 = img_list[2]  
-        room_imgs.img4 = img_list[3]  
-        room_imgs.img5 = img_list[4]  
-        room_imgs.save()
+        self.room.img1 = img_list[0]
+        self.room.img2 = img_list[1]  
+        self.room.img3 = img_list[2]  
+        self.room.img4 = img_list[3]  
+        self.room.img5 = img_list[4]  
+        self.room.save()
 
         return JsonResponse(f.get_json_success_message(['保存しました']))
 
