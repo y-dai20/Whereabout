@@ -21,6 +21,10 @@ class Post(models.Model):
     tag3 = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='post_tag3')
     tag4 = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='post_tag4')
     tag5 = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='post_tag5')
+    img1 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
+    img2 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
+    img3 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
+    img4 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
     agree_count = models.IntegerField(default=0)
     disagree_count = models.IntegerField(default=0)
     true_count = models.IntegerField(default=0)
@@ -33,13 +37,6 @@ class Post(models.Model):
 
     class Meta:
         ordering = ['-created_at']
-
-class PostImgs(models.Model):
-    post = models.OneToOneField(Post, primary_key=True, on_delete=models.CASCADE)
-    img1 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
-    img2 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
-    img3 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
-    img4 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
 
 class PostAgree(models.Model):
     objects = BaseManager()

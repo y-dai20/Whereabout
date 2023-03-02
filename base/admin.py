@@ -30,7 +30,6 @@ admin.site.register(UserFollow)
 admin.site.register(UserBlock)
 
 admin.site.register(Post)
-admin.site.register(PostImgs)
 admin.site.register(PostAgree)
 admin.site.register(PostFavorite)
 admin.site.register(PostDemagogy)

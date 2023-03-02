@@ -9,7 +9,7 @@ from django.db.models.functions import Length
 
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
-from base.models.post_models import Post, PostImgs, PostAgree, PostFavorite, PostDemagogy
+from base.models.post_models import Post, PostAgree, PostFavorite, PostDemagogy
 from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy, ReplyPosition
 from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, RoomReplyType, RoomTabItem,\
     RoomGood, RoomRequestInformation, RoomInformation
@@ -466,10 +466,8 @@ class PostItemView(View):
         user_agree = PostAgree.objects.filter(obj=post, user=user, is_deleted=False).values('is_agree')
         user_demagogy = PostDemagogy.objects.filter(obj=post, user=user, is_deleted=False).values('is_true')        
         favorite_state = PostFavorite.objects.filter(obj=post, user=user, is_deleted=False)
-        post_imgs = PostImgs.objects.filter(post=post)
         img_paths = []
-        if post_imgs.exists():
-            for img_field in [post_imgs[0].img1, post_imgs[0].img2, post_imgs[0].img3, post_imgs[0].img4]:
+        for img_field in [post.img1, post.img2, post.img3, post.img4]:
                 img_paths.append(f.get_img_path(img_field))
         
         post_dict = {

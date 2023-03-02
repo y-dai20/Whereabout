@@ -6,7 +6,7 @@ from django.http import JsonResponse, Http404
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.models.reply_models import ReplyPost, ReplyPosition
-from base.models.post_models import Post, PostAgree, PostFavorite, PostImgs
+from base.models.post_models import Post, PostAgree, PostFavorite
 from base.forms import PostForm
 from base.views.general_views import DemagogyView, AgreeView, FavoriteView, DetailBaseView,\
     PostItemView, ReplyItemView, PostDemagogy, RoomBase, DeleteBaseView
@@ -52,6 +52,10 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
         
         if f.get_file_size(video_list) > 0 and f.get_file_size(img_list) > 0:
             raise MyBadRequest('only img or video.')
+        post.img1 = img_list[0]
+        post.img2 = img_list[1]
+        post.img3 = img_list[2]
+        post.img4 = img_list[3]
 
         tags_str = f.get_dict_item(request.POST, 'tags')
         if not f.is_empty(tags_str):
@@ -63,13 +67,6 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
             post.tag5 = f.get_tag(f.get_list_item(tags, 4), self.request.user)
         
         post.save()
-        PostImgs.objects.create(
-            post=post,
-            img1 = img_list[0],
-            img2 = img_list[1],
-            img3 = img_list[2],
-            img4 = img_list[3],
-        )
 
         return JsonResponse(f.get_json_success_message(['投稿しました'], {'post':self.get_post_item(post)}))
 
