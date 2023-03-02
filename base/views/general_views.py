@@ -214,15 +214,15 @@ class AgreeView(UpdateBaseView):
         else:
             agree_obj.create(user=self.request.user, obj=obj, is_agree=is_agree)
 
-        obj.expansion.agree_count = self.model.objects.filter(obj=obj, is_agree=True, is_deleted=False).count()
-        obj.expansion.disagree_count = self.model.objects.filter(obj=obj, is_agree=False, is_deleted=False).count()
-        obj.expansion.save()
+        obj.agree_count = self.model.objects.filter(obj=obj, is_agree=True, is_deleted=False).count()
+        obj.disagree_count = self.model.objects.filter(obj=obj, is_agree=False, is_deleted=False).count()
+        obj.save()
 
         return f.get_json_success_message(add_dict={
             'is_agree':is_agree,
             'is_deleted':agree_obj[0].is_deleted,
-            'agree_count':f.get_number_unit(obj.expansion.agree_count),
-            'disagree_count':f.get_number_unit(obj.expansion.disagree_count),
+            'agree_count':f.get_number_unit(obj.agree_count),
+            'disagree_count':f.get_number_unit(obj.disagree_count),
         })
 
 class DemagogyView(UpdateBaseView):
@@ -243,15 +243,15 @@ class DemagogyView(UpdateBaseView):
         else:
             demagogy.create(user=self.request.user, obj=obj, is_true=is_true)
         
-        obj.expansion.true_count = self.model.objects.filter(obj=obj, is_true=True, is_deleted=False).count()
-        obj.expansion.false_count = self.model.objects.filter(obj=obj, is_true=False, is_deleted=False).count()
-        obj.expansion.save()
+        obj.true_count = self.model.objects.filter(obj=obj, is_true=True, is_deleted=False).count()
+        obj.false_count = self.model.objects.filter(obj=obj, is_true=False, is_deleted=False).count()
+        obj.save()
 
         return f.get_json_success_message(add_dict={
             'is_true':is_true,
             'is_deleted':(demagogy[0].is_deleted),
-            'true_count':f.get_number_unit(obj.expansion.true_count),
-            'false_count':f.get_number_unit(obj.expansion.false_count),
+            'true_count':f.get_number_unit(obj.true_count),
+            'false_count':f.get_number_unit(obj.false_count),
         })
 
 class FavoriteView(UpdateBaseView):
@@ -268,12 +268,12 @@ class FavoriteView(UpdateBaseView):
         else:
             favorite.create(obj=obj, user=self.request.user)
 
-        obj.expansion.favorite_count = self.model.objects.filter(obj=obj, is_deleted=False).count()
-        obj.expansion.save()
+        obj.favorite_count = self.model.objects.filter(obj=obj, is_deleted=False).count()
+        obj.save()
 
         return f.get_json_success_message(add_dict={
             'is_favorite':not favorite[0].is_deleted,
-            'favorite_count':f.get_number_unit(obj.expansion.favorite_count),
+            'favorite_count':f.get_number_unit(obj.favorite_count),
         })
 
 class RoomBase(object):
@@ -484,14 +484,14 @@ class PostItemView(View):
             'username':post.user.username,
             'user_img':f.get_img_path(post.user.profile.img),
             'created_at':f.get_display_datetime(datetime.now() - make_naive(post.created_at)),
-            'agree_count':f.get_number_unit(post.expansion.agree_count),
-            'disagree_count':f.get_number_unit(post.expansion.disagree_count),
+            'agree_count':f.get_number_unit(post.agree_count),
+            'disagree_count':f.get_number_unit(post.disagree_count),
             'agree_state':user_agree[0]['is_agree'] if user_agree.exists() else None,
-            'reply_count':f.get_number_unit(post.expansion.reply_count),
+            'reply_count':f.get_number_unit(post.reply_count),
             'favorite_state':favorite_state.exists(),
-            'favorite_count':f.get_number_unit(post.expansion.favorite_count),
-            'true_count':f.get_number_unit(post.expansion.true_count),
-            'false_count':f.get_number_unit(post.expansion.false_count),
+            'favorite_count':f.get_number_unit(post.favorite_count),
+            'true_count':f.get_number_unit(post.true_count),
+            'false_count':f.get_number_unit(post.false_count),
             'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
             'can_user_delete':post.user == user,
             'post_tags':self.get_post_tags(post),
@@ -590,7 +590,7 @@ class ReplyItemView(View):
             'room_id':None,
             'post_id':reply.post.id,
             'source':reply.source,
-            'reply_count':f.get_number_unit(reply.expansion.reply_count),
+            'reply_count':f.get_number_unit(reply.reply_count),
             'text':reply.text,
             'username':reply.user.username,
             'user_img':f.get_img_path(reply.user.profile.img),
@@ -601,14 +601,14 @@ class ReplyItemView(View):
             'is_disagree':True if reply.position == ReplyPosition.DISAGREE else False,
             'created_at':f.get_display_datetime(datetime.now() - make_naive(reply.created_at)),
             'img_path':f.get_img_path(reply.img) if not f.is_empty(reply.img) else '',
-            'agree_count':f.get_number_unit(reply.expansion.agree_count),
-            'disagree_count':f.get_number_unit(reply.expansion.disagree_count),
+            'agree_count':f.get_number_unit(reply.agree_count),
+            'disagree_count':f.get_number_unit(reply.disagree_count),
             'agree_state': user_agree[0]['is_agree'] if user_agree.exists() else None,
-            'true_count':f.get_number_unit(reply.expansion.true_count),
-            'false_count':f.get_number_unit(reply.expansion.false_count),
+            'true_count':f.get_number_unit(reply.true_count),
+            'false_count':f.get_number_unit(reply.false_count),
             'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
             'favorite_state':favorite_state.exists(),
-            'favorite_count':f.get_number_unit(reply.expansion.favorite_count),
+            'favorite_count':f.get_number_unit(reply.favorite_count),
             'can_user_delete':reply.user == user,
         }
 
@@ -653,14 +653,14 @@ class Reply2ItemView(View):
             'is_disagree':True if reply2.position == ReplyPosition.DISAGREE else False,
             'created_at':f.get_display_datetime(datetime.now() - make_naive(reply2.created_at)),
             'img_path':f.get_img_path(reply2.img) if not f.is_empty(reply2.img) else '',
-            'agree_count':f.get_number_unit(reply2.expansion.agree_count),
-            'disagree_count':f.get_number_unit(reply2.expansion.disagree_count),
+            'agree_count':f.get_number_unit(reply2.agree_count),
+            'disagree_count':f.get_number_unit(reply2.disagree_count),
             'agree_state': user_agree[0]['is_agree'] if user_agree.exists() else None,
-            'true_count':f.get_number_unit(reply2.expansion.true_count),
-            'false_count':f.get_number_unit(reply2.expansion.false_count),
+            'true_count':f.get_number_unit(reply2.true_count),
+            'false_count':f.get_number_unit(reply2.false_count),
             'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
             'favorite_state':favorite_state.exists(),
-            'favorite_count':f.get_number_unit(reply2.expansion.favorite_count),
+            'favorite_count':f.get_number_unit(reply2.favorite_count),
             'can_user_delete':reply2.user == user,
         }
 
@@ -704,9 +704,9 @@ class DetailBaseView(SearchBaseView):
         self.order[params['order']] = True
 
         if self.order['favorite_count']:
-            return replies.order_by('-expansion__favorite_count')
+            return replies.order_by('-favorite_count')
         if self.order['reaction_count']:
-            return replies.annotate(reaction_count=F('expansion__agree_count')+F('expansion__disagree_count')).order_by('-reaction_count')
+            return replies.annotate(reaction_count=F('agree_count')+F('disagree_count')).order_by('-reaction_count')
         
         return replies
 

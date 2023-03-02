@@ -5,7 +5,7 @@ from django.conf import settings
 from base.models import create_id
 from base.models.functions import post_directory_path, video_directory_path
 from base.models.room_models import Room
-from base.models.general_models import BaseManager, ObjectExpansion, Tag
+from base.models.general_models import BaseManager, Tag
 
 class Post(models.Model):
     objects = BaseManager()
@@ -21,7 +21,12 @@ class Post(models.Model):
     tag3 = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='post_tag3')
     tag4 = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='post_tag4')
     tag5 = models.ForeignKey(Tag, on_delete=models.CASCADE, null=True, related_name='post_tag5')
-    expansion = models.ForeignKey(ObjectExpansion, on_delete=models.CASCADE)
+    agree_count = models.IntegerField(default=0)
+    disagree_count = models.IntegerField(default=0)
+    true_count = models.IntegerField(default=0)
+    false_count = models.IntegerField(default=0)
+    favorite_count = models.IntegerField(default=0)
+    reply_count = models.IntegerField(default=0)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

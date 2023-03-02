@@ -5,7 +5,6 @@ from django.http import JsonResponse, Http404
 
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
-from base.models.general_models import ObjectExpansion, Tag
 from base.models.reply_models import ReplyPost, ReplyPosition
 from base.models.post_models import Post, PostAgree, PostFavorite, PostImgs
 from base.forms import PostForm
@@ -40,7 +39,6 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
         post = form.save(commit=False)
         post.user = request.user
         post.room = vr.get_room()
-        post.expansion = ObjectExpansion.objects.create()
 
         files = request.FILES
         video_list = f.get_video_list(request.POST, files, self.max_video)

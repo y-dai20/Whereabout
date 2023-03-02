@@ -51,9 +51,6 @@ class Room(models.Model):
         return 'NAME:{}_ID:{}'.format(self.title, self.id)
     
     class Meta:
-        constraints = [
-            models.UniqueConstraint(fields=['title', 'admin'], name="unique_title_user")
-        ]
         ordering = ['-created_at']
 
 class RoomImgs(models.Model):

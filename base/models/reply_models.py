@@ -5,7 +5,6 @@ from django.conf import settings
 from base.models import create_id
 from base.models.post_models import Post
 from base.models.functions import img_directory_path
-from base.models.general_models import ObjectExpansion
 from base.models.general_models import BaseManager
 
 class ReplyPosition(models.TextChoices):
@@ -20,7 +19,12 @@ class ReplyPost(models.Model):
     source = models.CharField(default='', max_length=255, blank=True)
     post = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    expansion = models.ForeignKey(ObjectExpansion, on_delete=models.CASCADE)
+    agree_count = models.IntegerField(default=0)
+    disagree_count = models.IntegerField(default=0)
+    true_count = models.IntegerField(default=0)
+    false_count = models.IntegerField(default=0)
+    favorite_count = models.IntegerField(default=0)
+    reply_count = models.IntegerField(default=0)
     img = models.ImageField(null=True, blank=True, upload_to=img_directory_path)
     position = models.CharField(default=ReplyPosition.NEUTRAL, choices=ReplyPosition.choices, max_length=16)
     type = models.CharField(max_length=8)
@@ -38,7 +42,12 @@ class ReplyReply(models.Model):
     source = models.CharField(default='', max_length=255, blank=True)
     reply = models.ForeignKey(ReplyPost, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    expansion = models.ForeignKey(ObjectExpansion, on_delete=models.CASCADE)
+    agree_count = models.IntegerField(default=0)
+    disagree_count = models.IntegerField(default=0)
+    true_count = models.IntegerField(default=0)
+    false_count = models.IntegerField(default=0)
+    favorite_count = models.IntegerField(default=0)
+    reply_count = models.IntegerField(default=0)
     img = models.ImageField(null=True, blank=True, upload_to=img_directory_path)
     position = models.CharField(default=ReplyPosition.NEUTRAL, choices=ReplyPosition.choices, max_length=16)
     type = models.CharField(max_length=8)
@@ -106,15 +115,3 @@ class Reply2Demagogy(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-# @receiver(post_save, sender=ReplyPost)
-# def create_onetoone(sender, **kwargs):
-#     if kwargs['created']:
-#         expansion = ObjectExpansion.objects.create()
-#         kwargs['instance'].expansion = expansion
-
-# @receiver(post_save, sender=ReplyReply)
-# def create_onetoone(sender, **kwargs):
-#     if kwargs['created']:
-#         expansion = ObjectExpansion.objects.create()
-#         kwargs['instance'].expansion = expansion

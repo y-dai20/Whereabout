@@ -7,7 +7,6 @@ from django.db.models import F
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.forms import ReplyReplyForm, ReplyPostForm
-from base.models.general_models import ObjectExpansion
 from base.models.post_models import Post, PostAgree
 from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy, ReplyPosition
 from base.views.general_views import AgreeView, FavoriteView, DetailBaseView, DemagogyView, SearchBaseView, IndexBaseView,\
@@ -50,15 +49,14 @@ class ReplyPostView(LoginRequiredMixin, ReplyItemView, CreateView):
             
         reply.user = request.user
         reply.post = post
-        reply.expansion = ObjectExpansion.objects.create()
 
         agree_post = PostAgree.objects.filter(obj=f.get_dict_item(kwargs, 'post_pk'), user=request.user, is_deleted=False)
         if agree_post.exists():
             reply.position = ReplyPosition.AGREE if agree_post[0].is_agree else ReplyPosition.DISAGREE
 
         reply.save()
-        post.expansion.reply_count += 1
-        post.expansion.save()
+        post.reply_count += 1
+        post.save()
 
         return JsonResponse(f.get_json_success_message(['返信しました'], {'reply':self.get_reply_item(reply)}))
 
@@ -95,11 +93,10 @@ class ReplyReplyView(LoginRequiredMixin, Reply2ItemView, CreateView):
         
         reply2.user = request.user
         reply2.reply = reply
-        reply2.expansion = ObjectExpansion.objects.create()
         reply2.save()
 
-        reply.expansion.reply_count += 1
-        reply.expansion.save()
+        reply.reply_count += 1
+        reply.save()
 
         return JsonResponse(f.get_json_success_message(['返信しました'], {'reply':self.get_reply2_item(reply2)}))
 
@@ -247,7 +244,7 @@ class GetReplyView(ReplyItemView, IndexBaseView):
         post = get_object_or_404(Post, id=f.get_dict_item(self.request.POST, 'obj_id'), is_deleted=False)
         self.check_can_access(post.room)
         replies = ReplyPost.objects.filter(post=post, is_deleted=False)
-        replies = replies.annotate(reaction_count=F('expansion__agree_count')+F('expansion__disagree_count')).order_by('-reaction_count')
+        replies = replies.annotate(reaction_count=F('agree_count')+F('disagree_count')).order_by('-reaction_count')
         return self.get_reply_items(self.get_idx_items(replies))
 
 class GetReply2View(Reply2ItemView, IndexBaseView):
@@ -260,5 +257,5 @@ class GetReply2View(Reply2ItemView, IndexBaseView):
         reply = get_object_or_404(ReplyPost, id=f.get_dict_item(self.request.POST, 'obj_id'), is_deleted=False)
         self.check_can_access(reply.post.room)
         replies = ReplyReply.objects.filter(reply=reply, is_deleted=False)
-        replies = replies.annotate(reaction_count=F('expansion__agree_count')+F('expansion__disagree_count')).order_by('-reaction_count')
+        replies = replies.annotate(reaction_count=F('agree_count')+F('disagree_count')).order_by('-reaction_count')
         return self.get_reply2_items(self.get_idx_items(replies))

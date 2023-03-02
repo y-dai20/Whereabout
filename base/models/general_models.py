@@ -11,15 +11,6 @@ class BaseManager(models.Manager):
         except self.model.DoesNotExist:
             return None
 
-class ObjectExpansion(models.Model):
-    id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
-    agree_count = models.IntegerField(default=0)
-    disagree_count = models.IntegerField(default=0)
-    true_count = models.IntegerField(default=0)
-    false_count = models.IntegerField(default=0)
-    favorite_count = models.IntegerField(default=0)
-    reply_count = models.IntegerField(default=0)
-
 class Personal(models.Model):
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     web = models.CharField(default='', max_length=255, blank=True)
