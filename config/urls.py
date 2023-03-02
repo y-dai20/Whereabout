@@ -58,6 +58,7 @@ urlpatterns = [
     path('modal/search/room/', views.ModalSearchRoomView.as_view()),
     path('invite/room/<str:room_pk>/', views.RoomInviteView.as_view()),
     path('create-room/', views.CreateRoomView.as_view()),
+    path('delete/room/<str:room_pk>/', views.DeleteRoomView.as_view()),
     path('manage/room-authority/<str:room_pk>/', views.ManageRoomAuthorityView.as_view()),
     path('manage/room-display/<str:room_pk>/', views.ManageRoomDisplayView.as_view()),
     path('manage/room-tab/<str:room_pk>/', views.ManageRoomTabView.as_view()),
@@ -65,7 +66,6 @@ urlpatterns = [
     path('manage/room-reply-type/<str:room_pk>/', views.ManageRoomPostView.as_view()),
     path('manage/room-information/<str:room_pk>/', views.ManageRoomRequestInformationView.as_view()),
     path('manage/room-personal/<str:room_pk>/', views.ManageRoomPersonalView.as_view()),
-    # path('updateroom/<str:pk>/', views.UpdateRoomView.as_view()),
 
     # Follow
     path('follow/<str:username>/', views.FollowView.as_view()),

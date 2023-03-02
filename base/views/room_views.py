@@ -196,6 +196,18 @@ class CreateRoomView(LoginRequiredMixin, CreateView):
 
         return JsonResponse(f.get_json_success_message(['ルームを作成しました'], {'room_id':room.id, 'room_title':room.title}))
 
+class DeleteRoomView(ManageRoomBaseView, TemplateView):
+    def get(self, request, *args, **kwargs):
+        raise Http404
+
+    def post(self, request, *args, **kwargs):
+        vr = self.get_validate_room()
+        room = vr.get_room()
+        room.is_deleted = True
+        room.save()
+
+        return JsonResponse(f.get_json_success_message(['削除しました']))
+
 #todo (中) request informationがあれば表示するようにする
 class JoinRoomView(LoginRequiredMixin, CreateView):
     model = RoomGuest

@@ -825,7 +825,9 @@ $(document).on('click', '.delete-button', function(){
 
         close_modal('modal-message');
         show_modal_message(data.title, data.message);
-        deleteObject.hide();
+        if (!is_empty(deleteObject)) {
+            deleteObject.hide();
+        }
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
     });
@@ -1349,4 +1351,10 @@ $('#search-room-button').on('click', function() {
 $('.search-reply-button').on('click', function() {
     var url = get_form_href('search-reply-form');
     search_reply_ajax(url);
+});
+
+$('#delete-room-button').on('click', function() {
+    var url = `/delete/room/${$('#manage-room-id').val()}/`;
+    var footer = `<button type="button" class="delete-button btn btn-danger" data-url="${url}">削除</button>`;
+    show_modal_message('確認', ['削除しますか'], footer);
 });
