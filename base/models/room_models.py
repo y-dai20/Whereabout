@@ -124,8 +124,6 @@ class RoomReplyType(models.Model):
     type8 = models.CharField(default='補足', max_length=8)
     type9 = models.CharField(default='証拠', max_length=8)
     type10 = models.CharField(default='その他', max_length=8)
-    is_deleted = models.BooleanField(default=False)
-    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 class RoomGuest(models.Model):
