@@ -362,16 +362,16 @@ class RoomBase(object):
             return []
 
         room_tags = [
-            self.room.tag_sequence.tag1.tag if self.room.tag_sequence.tag1 is not None else '',
-            self.room.tag_sequence.tag2.tag if self.room.tag_sequence.tag2 is not None else '',
-            self.room.tag_sequence.tag3.tag if self.room.tag_sequence.tag3 is not None else '',
-            self.room.tag_sequence.tag4.tag if self.room.tag_sequence.tag4 is not None else '',
-            self.room.tag_sequence.tag5.tag if self.room.tag_sequence.tag5 is not None else '',
-            self.room.tag_sequence.tag6.tag if self.room.tag_sequence.tag6 is not None else '',
-            self.room.tag_sequence.tag7.tag if self.room.tag_sequence.tag7 is not None else '',
-            self.room.tag_sequence.tag8.tag if self.room.tag_sequence.tag8 is not None else '',
-            self.room.tag_sequence.tag9.tag if self.room.tag_sequence.tag9 is not None else '',
-            self.room.tag_sequence.tag10.tag if self.room.tag_sequence.tag10 is not None else '',
+            self.room.tag_sequence.tag1.name if self.room.tag_sequence.tag1 is not None else '',
+            self.room.tag_sequence.tag2.name if self.room.tag_sequence.tag2 is not None else '',
+            self.room.tag_sequence.tag3.name if self.room.tag_sequence.tag3 is not None else '',
+            self.room.tag_sequence.tag4.name if self.room.tag_sequence.tag4 is not None else '',
+            self.room.tag_sequence.tag5.name if self.room.tag_sequence.tag5 is not None else '',
+            self.room.tag_sequence.tag6.name if self.room.tag_sequence.tag6 is not None else '',
+            self.room.tag_sequence.tag7.name if self.room.tag_sequence.tag7 is not None else '',
+            self.room.tag_sequence.tag8.name if self.room.tag_sequence.tag8 is not None else '',
+            self.room.tag_sequence.tag9.name if self.room.tag_sequence.tag9 is not None else '',
+            self.room.tag_sequence.tag10.name if self.room.tag_sequence.tag10 is not None else '',
         ]
 
         return room_tags
@@ -507,11 +507,11 @@ class PostItemView(View):
             return []
 
         tags = [
-            post.tag_sequence.tag1.tag if post.tag_sequence.tag1 is not None else '',
-            post.tag_sequence.tag2.tag if post.tag_sequence.tag2 is not None else '',
-            post.tag_sequence.tag3.tag if post.tag_sequence.tag3 is not None else '',
-            post.tag_sequence.tag4.tag if post.tag_sequence.tag4 is not None else '',
-            post.tag_sequence.tag5.tag if post.tag_sequence.tag5 is not None else '',
+            post.tag_sequence.tag1.name if post.tag_sequence.tag1 is not None else '',
+            post.tag_sequence.tag2.name if post.tag_sequence.tag2 is not None else '',
+            post.tag_sequence.tag3.name if post.tag_sequence.tag3 is not None else '',
+            post.tag_sequence.tag4.name if post.tag_sequence.tag4 is not None else '',
+            post.tag_sequence.tag5.name if post.tag_sequence.tag5 is not None else '',
         ]
 
         return tags
@@ -554,11 +554,11 @@ class UserItemView(View):
             return []
 
         tags = [
-            profile.tag_sequence.tag1.tag if profile.tag_sequence.tag1 is not None else '',
-            profile.tag_sequence.tag2.tag if profile.tag_sequence.tag2 is not None else '',
-            profile.tag_sequence.tag3.tag if profile.tag_sequence.tag3 is not None else '',
-            profile.tag_sequence.tag4.tag if profile.tag_sequence.tag4 is not None else '',
-            profile.tag_sequence.tag5.tag if profile.tag_sequence.tag5 is not None else '',
+            profile.tag_sequence.tag1.name if profile.tag_sequence.tag1 is not None else '',
+            profile.tag_sequence.tag2.name if profile.tag_sequence.tag2 is not None else '',
+            profile.tag_sequence.tag3.name if profile.tag_sequence.tag3 is not None else '',
+            profile.tag_sequence.tag4.name if profile.tag_sequence.tag4 is not None else '',
+            profile.tag_sequence.tag5.name if profile.tag_sequence.tag5 is not None else '',
         ]
 
         return tags

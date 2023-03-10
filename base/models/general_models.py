@@ -41,7 +41,7 @@ class Personal(models.Model):
 class Tag(models.Model):
     objects = BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
-    tag = models.CharField(max_length=15, blank=False, null=False, unique=True)
+    name = models.CharField(max_length=15, blank=False, null=False, unique=True)
     created_by = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
