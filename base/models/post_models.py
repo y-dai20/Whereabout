@@ -5,7 +5,7 @@ from django.conf import settings
 from base.models import create_id
 from base.models.functions import post_directory_path, video_directory_path
 from base.models.room_models import Room
-from base.models.general_models import BaseManager, Tag
+from base.models.general_models import BaseManager, Tag, TagSequence
 
 class Post(models.Model):
     objects = BaseManager()
@@ -16,11 +16,7 @@ class Post(models.Model):
     video = models.FileField(null=True, blank=True, upload_to=video_directory_path)
     room = models.ForeignKey(Room, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    tag1 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='post_tag1')
-    tag2 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='post_tag2')
-    tag3 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='post_tag3')
-    tag4 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='post_tag4')
-    tag5 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='post_tag5')
+    tag_sequence = models.ForeignKey(TagSequence, on_delete=models.CASCADE, null=True)
     img1 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
     img2 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
     img3 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)

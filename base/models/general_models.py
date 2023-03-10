@@ -48,3 +48,20 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.tag
+    
+class TagSequence(models.Model):
+    objects = BaseManager()
+    id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
+    tag1 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='tag1')
+    tag2 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='tag2')
+    tag3 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='tag3')
+    tag4 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='tag4')
+    tag5 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='tag5')
+    tag6 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='tag6')
+    tag7 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='tag7')
+    tag8 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='tag8')
+    tag9 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='tag9')
+    tag10 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='tag10')
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+    updated_at = models.DateTimeField(auto_now=True)

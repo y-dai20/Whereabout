@@ -7,7 +7,7 @@ from base.models import create_id
 
 
 from base.models.functions import img_directory_path
-from base.models.general_models import BaseManager, Tag
+from base.models.general_models import BaseManager, Tag, TagSequence
 
 class UserManager(BaseUserManager, BaseManager):
  
@@ -100,11 +100,7 @@ class Profile(models.Model):
     img = models.ImageField(null=True, blank=True, upload_to=img_directory_path)
     profession = models.CharField(default='', blank=True, max_length=255)
     description = models.CharField(default='', blank=True, max_length=255)
-    tag1 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='user_tag1')
-    tag2 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='user_tag2')
-    tag3 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='user_tag3')
-    tag4 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='user_tag4')
-    tag5 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='user_tag5')
+    tag_sequence = models.ForeignKey(TagSequence, on_delete=models.CASCADE, null=True)
     followed_count = models.IntegerField(default=0)
     blocked_count = models.IntegerField(default=0)
     is_deleted = models.BooleanField(default=False)

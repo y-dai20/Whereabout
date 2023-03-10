@@ -60,11 +60,11 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
         tags_str = f.get_dict_item(request.POST, 'tags')
         if not f.is_empty(tags_str):
             tags = tags_str.split(',')
-            post.tag1 = f.get_tag(f.get_list_item(tags, 0), self.request.user)
-            post.tag2 = f.get_tag(f.get_list_item(tags, 1), self.request.user)
-            post.tag3 = f.get_tag(f.get_list_item(tags, 2), self.request.user)
-            post.tag4 = f.get_tag(f.get_list_item(tags, 3), self.request.user)
-            post.tag5 = f.get_tag(f.get_list_item(tags, 4), self.request.user)
+            post.tag_sequence.tag1 = f.get_tag(f.get_list_item(tags, 0), self.request.user)
+            post.tag_sequence.tag2 = f.get_tag(f.get_list_item(tags, 1), self.request.user)
+            post.tag_sequence.tag3 = f.get_tag(f.get_list_item(tags, 2), self.request.user)
+            post.tag_sequence.tag4 = f.get_tag(f.get_list_item(tags, 3), self.request.user)
+            post.tag_sequence.tag5 = f.get_tag(f.get_list_item(tags, 4), self.request.user)
         
         post.save()
 

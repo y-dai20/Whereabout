@@ -4,7 +4,7 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 from base.models import create_id
-from base.models.general_models import BaseManager, Personal, Tag
+from base.models.general_models import BaseManager, Personal, Tag, TagSequence
 from base.models.functions import room_directory_path, video_directory_path
 
 
@@ -30,16 +30,7 @@ class Room(models.Model):
     need_approval = models.BooleanField(default=False)
     authority = models.ForeignKey(RoomAuthority, on_delete=models.PROTECT)
     personal = models.ForeignKey(Personal, on_delete=models.SET_NULL, null=True)
-    tag1 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag1')
-    tag2 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag2')
-    tag3 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag3')
-    tag4 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag4')
-    tag5 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag5')
-    tag6 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag6')
-    tag7 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag7')
-    tag8 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag8')
-    tag9 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag9')
-    tag10 = models.ForeignKey(Tag, on_delete=models.SET_NULL, null=True, related_name='room_tag10')
+    tag_sequence = models.ForeignKey(TagSequence, on_delete=models.CASCADE, null=True)
     img1 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
     img2 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
     img3 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
