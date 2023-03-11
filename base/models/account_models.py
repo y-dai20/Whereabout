@@ -64,6 +64,7 @@ class User(AbstractBaseUser):
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH)
     username = models.CharField(max_length=255, unique=True, blank=True, default='匿名')
     email = models.EmailField(max_length=255, unique=True)
+    point = models.IntegerField(default=0)
     is_active = models.BooleanField(default=True)
     fail_login_count = models.IntegerField(default=0)
     created_at = models.DateTimeField(auto_now_add=True)

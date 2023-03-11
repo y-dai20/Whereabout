@@ -27,6 +27,7 @@ class Post(models.Model):
     false_count = models.IntegerField(default=0)
     favorite_count = models.IntegerField(default=0)
     reply_count = models.IntegerField(default=0)
+    is_accounted = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

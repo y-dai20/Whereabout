@@ -28,6 +28,7 @@ class ReplyPost(models.Model):
     img = models.ImageField(null=True, blank=True, upload_to=img_directory_path)
     position = models.CharField(default=ReplyPosition.NEUTRAL, choices=ReplyPosition.choices, max_length=16)
     type = models.CharField(max_length=8)
+    is_accounted = models.BooleanField(default=False)
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

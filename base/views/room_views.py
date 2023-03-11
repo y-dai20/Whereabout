@@ -207,7 +207,7 @@ class DeleteRoomView(ManageRoomBaseView, TemplateView):
         room.is_deleted = True
         room.save()
 
-        return JsonResponse(f.get_json_success_message(['削除しました']))
+        return JsonResponse(f.get_json_success_message(['削除しました'], {'href':'/'}))
 
 #todo (中) request informationがあれば表示するようにする
 class JoinRoomView(LoginRequiredMixin, CreateView):
