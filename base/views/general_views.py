@@ -358,7 +358,7 @@ class RoomBase(object):
         return reply_types
 
     def get_room_tags(self):
-        if not self.vr.is_room_exist():
+        if not self.vr.is_room_exist() or self.room.tag_sequence is None:
             return []
 
         room_tags = [
@@ -503,7 +503,7 @@ class PostItemView(View):
         return post_dict
     
     def get_post_tags(self, post):
-        if f.is_empty(post):
+        if f.is_empty(post) or post.tag_sequence is None:
             return []
 
         tags = [
@@ -550,7 +550,7 @@ class UserItemView(View):
         return user_dict
 
     def get_profile_tags(self, profile):
-        if f.is_empty(profile):
+        if f.is_empty(profile) or profile.tag_sequence is None:
             return []
 
         tags = [
@@ -840,5 +840,5 @@ class GetTag(TemplateView):
     def post(self, request, *args, **kwargs):
         tag = f.get_dict_item(request.POST, 'tag')
 
-        candidates = Tag.objects.filter(tag__contains=tag, is_deleted=False).order_by(Length('tag')).values_list('tag')
+        candidates = Tag.objects.filter(name__contains=tag, is_deleted=False).order_by(Length('name')).values_list('name')
         return JsonResponse({'candidates':list(candidates)})

@@ -7,6 +7,7 @@ import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.models.reply_models import ReplyPost, ReplyPosition
 from base.models.post_models import Post, PostAgree, PostFavorite
+from base.models.general_models import TagSequence
 from base.forms import PostForm
 from base.views.general_views import DemagogyView, AgreeView, FavoriteView, DetailBaseView,\
     PostItemView, ReplyItemView, PostDemagogy, RoomBase, DeleteBaseView
@@ -60,11 +61,14 @@ class PostView(LoginRequiredMixin, PostItemView, CreateView):
         tags_str = f.get_dict_item(request.POST, 'tags')
         if not f.is_empty(tags_str):
             tags = tags_str.split(',')
+            if post.tag_sequence is None:
+                post.tag_sequence = TagSequence.objects.create()
             post.tag_sequence.tag1 = f.get_tag(f.get_list_item(tags, 0), self.request.user)
             post.tag_sequence.tag2 = f.get_tag(f.get_list_item(tags, 1), self.request.user)
             post.tag_sequence.tag3 = f.get_tag(f.get_list_item(tags, 2), self.request.user)
             post.tag_sequence.tag4 = f.get_tag(f.get_list_item(tags, 3), self.request.user)
             post.tag_sequence.tag5 = f.get_tag(f.get_list_item(tags, 4), self.request.user)
+            post.tag_sequence.save()
         
         post.save()
 

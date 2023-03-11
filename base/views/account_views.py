@@ -13,7 +13,7 @@ from django.shortcuts import render
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.forms import SignUpForm, ChangePasswordForm, SendMailForm, UserProfileForm
-from base.models import Room, RoomGuest, Tag
+from base.models import Room, RoomGuest, TagSequence
 from base.models.room_models import RoomInviteUser, RoomUser, RoomAuthority
 from base.models.account_models import User, Guest, UserReset
 from base.views.general_views import UserItemView, SendMailView, HeaderView
@@ -298,11 +298,14 @@ class UserProfileView(LoginRequiredMixin, HeaderView, UserItemView, TemplateView
         tags_str = f.get_dict_item(request.POST, 'tags')
         if not f.is_empty(tags_str):
             tags = tags_str.split(',')
+            if profile.tag_sequence is None:
+                profile.tag_sequence = TagSequence.objects.create()
             profile.tag_sequence.tag1 = f.get_tag(f.get_list_item(tags, 0), self.request.user)
             profile.tag_sequence.tag2 = f.get_tag(f.get_list_item(tags, 1), self.request.user)
             profile.tag_sequence.tag3 = f.get_tag(f.get_list_item(tags, 2), self.request.user)
             profile.tag_sequence.tag4 = f.get_tag(f.get_list_item(tags, 3), self.request.user)
             profile.tag_sequence.tag5 = f.get_tag(f.get_list_item(tags, 4), self.request.user)
+            profile.tag_sequence.save()
 
         profile.save()
 

@@ -292,8 +292,8 @@ def get_tag(val, created_by=None):
     if is_empty(val):
         return None
 
-    tag = Tag.objects.get_or_none(tag=val)
+    tag = Tag.objects.get_or_none(name=val)
     if tag is not None:
         return tag
     
-    return Tag.objects.create(tag=val, created_by=created_by)
+    return Tag.objects.create(name=val, created_by=created_by)

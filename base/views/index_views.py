@@ -62,7 +62,11 @@ class IndexPostListView(SearchBaseView, PostItemView):
 
         if not f.is_empty(params['tags']):
             posts = posts.annotate(
-                tags=Concat(V('&'), 'tag1__tag', V('&'), 'tag2__tag', V('&'), 'tag3__tag', V('&'), 'tag4__tag', V('&'), 'tag5__tag', V('&')))
+                tags=Concat(V('&'), 'tag_sequence__tag1__name', 
+                            V('&'), 'tag_sequence__tag2__name', 
+                            V('&'), 'tag_sequence__tag3__name', 
+                            V('&'), 'tag_sequence__tag4__name', 
+                            V('&'), 'tag_sequence__tag5__name', V('&')))
             for tag in params['tags'].split(','):
                 posts = posts.filter(tags__contains='&{}&'.format(tag))
 
@@ -103,9 +107,16 @@ class IndexRoomListView(SearchBaseView, RoomItemView):
 
         if not f.is_empty(params['tags']):
             rooms = rooms.annotate(
-                tags=Concat(
-                    V('&'), 'tag1__tag', V('&'), 'tag2__tag', V('&'), 'tag3__tag', V('&'), 'tag4__tag', V('&'), 'tag5__tag', V('&'),
-                    V('&'), 'tag6__tag', V('&'), 'tag7__tag', V('&'), 'tag8__tag', V('&'), 'tag9__tag', V('&'), 'tag10__tag', V('&')))
+                tags=Concat(V('&'), 'tag_sequence__tag1__name', 
+                            V('&'), 'tag_sequence__tag2__name', 
+                            V('&'), 'tag_sequence__tag3__name', 
+                            V('&'), 'tag_sequence__tag4__name', 
+                            V('&'), 'tag_sequence__tag5__name', 
+                            V('&'), 'tag_sequence__tag6__name', 
+                            V('&'), 'tag_sequence__tag7__name', 
+                            V('&'), 'tag_sequence__tag8__name', 
+                            V('&'), 'tag_sequence__tag9__name', 
+                            V('&'), 'tag_sequence__tag10__name', V('&')))
             for tag in params['tags'].split(','):
                 rooms = rooms.filter(tags__contains='&{}&'.format(tag))
         
@@ -147,7 +158,11 @@ class IndexUserListView(SearchBaseView, UserItemView):
 
         if not f.is_empty(params['tags']):
             profiles = profiles.annotate(
-                tags=Concat(V('&'), 'tag1__tag', V('&'), 'tag2__tag', V('&'), 'tag3__tag', V('&'), 'tag4__tag', V('&'), 'tag5__tag', V('&')))
+                tags=Concat(V('&'), 'tag_sequence__tag1__name', 
+                            V('&'), 'tag_sequence__tag2__name', 
+                            V('&'), 'tag_sequence__tag3__name', 
+                            V('&'), 'tag_sequence__tag4__name', 
+                            V('&'), 'tag_sequence__tag5__name', V('&')))
             for tag in params['tags'].split(','):
                 profiles = profiles.filter(tags__contains='&{}&'.format(tag))
         

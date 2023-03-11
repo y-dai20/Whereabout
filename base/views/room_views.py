@@ -7,7 +7,7 @@ from django.db.models.functions import Concat
 
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
-from base.models.general_models import Personal, Tag
+from base.models.general_models import Personal, TagSequence
 from base.models.account_models import User, UserBlock
 from base.models.post_models import Post, PostFavorite
 from base.models.room_models import Room, RoomGuest, RoomUser, RoomGood, RoomAuthority, RoomTab, \
@@ -51,7 +51,11 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
         
         if not f.is_empty(params['tags']):
             posts = posts.annotate(
-                tags=Concat(V('&'), 'tag1__tag', V('&'), 'tag2__tag', V('&'), 'tag3__tag', V('&'), 'tag4__tag', V('&'), 'tag5__tag', V('&')))
+                tags=Concat(V('&'), 'tag_sequence__tag1__name', 
+                            V('&'), 'tag_sequence__tag2__name', 
+                            V('&'), 'tag_sequence__tag3__name', 
+                            V('&'), 'tag_sequence__tag4__name',
+                            V('&'), 'tag_sequence__tag5__name', V('&')))
             for tag in params['tags'].split(','):
                 posts = posts.filter(tags__contains='&{}&'.format(tag))
 
@@ -525,6 +529,8 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         tags_str = f.get_dict_item(request.POST, 'tags')
         if not f.is_empty(tags_str):
             tags = tags_str.split(',')
+            if self.room.tag_sequence is None:
+                self.room.tag_sequence = TagSequence.objects.create()
             self.room.tag_sequence.tag1 = f.get_tag(f.get_list_item(tags, 0), self.request.user)
             self.room.tag_sequence.tag2 = f.get_tag(f.get_list_item(tags, 1), self.request.user)
             self.room.tag_sequence.tag3 = f.get_tag(f.get_list_item(tags, 2), self.request.user)
@@ -535,6 +541,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             self.room.tag_sequence.tag8 = f.get_tag(f.get_list_item(tags, 7), self.request.user)
             self.room.tag_sequence.tag9 = f.get_tag(f.get_list_item(tags, 8), self.request.user)
             self.room.tag_sequence.tag10 = f.get_tag(f.get_list_item(tags, 9), self.request.user)
+            self.room.tag_sequence.save()
 
         video_list = f.get_video_list(form_data, self.files, self.max_video, [self.room.video])
         if f.get_file_size(video_list) > self.max_video_size:
