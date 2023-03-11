@@ -828,6 +828,9 @@ $(document).on('click', '.delete-button', function(){
         if (!is_empty(deleteObject)) {
             deleteObject.hide();
         }
+        if (data.href) {
+            window.location.href = data.href;
+        }
     }).fail(function (data) {
         show_modal_message(data.status, [data.statusText]);
     });
