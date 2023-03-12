@@ -81,17 +81,19 @@ class SignUpView(CreateView):
         self.guest.save()
         
         # adminのRoomに強制参加
-        room = Room.objects.get_or_none(title="admin", admin__username="admin")
-        if room is not None:
-            RoomUser.objects.create(
-                room=room,
-                user=user,
-                authority=RoomAuthority.objects.create(
-                    can_reply=room.authority.can_reply, 
-                    can_post=room.authority.can_post, 
-                    is_admin=room.authority.is_admin
-                ),
-            )
+        admin = User.objects.get_or_none(username='admin', is_admin=True)
+        if admin is not None:
+            rooms = Room.objects.filter(admin=admin, is_deleted=False)
+            for room in rooms:
+                RoomUser.objects.create(
+                    room=room,
+                    user=user,
+                    authority=RoomAuthority.objects.create(
+                        can_reply=room.authority.can_reply, 
+                        can_post=room.authority.can_post, 
+                        is_admin=room.authority.is_admin
+                    ),
+                )      
 
         login(request, user)
         return JsonResponse(f.get_json_success_message(['ユーザー登録しました']))

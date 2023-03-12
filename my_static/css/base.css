@@ -55,6 +55,10 @@ span.error, p.error {
     color: #0090ff;
 }
 
+.c-yellow {
+    color: yellow;
+}
+
 .c-orange {
     color: #ffaf58;
 }

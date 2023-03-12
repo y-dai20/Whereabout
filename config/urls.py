@@ -47,9 +47,9 @@ urlpatterns = [
 
     # Room
     path('room/<str:room_pk>/', views.ShowRoomView.as_view()),
-    path('room/<str:room_pk>/<str:room_tab_pk>/', views.ShowRoomTabView.as_view()),
     path('room/good/<str:room_pk>/', views.RoomGoodView.as_view()),
     path('room/information/<str:room_pk>/', views.RoomInformationView.as_view()),
+    path('room/<str:room_pk>/<str:room_tab_pk>/', views.ShowRoomTabView.as_view()),
     path('join/room/<str:room_pk>/', views.JoinRoomView.as_view()),
     path('leave/room/<str:room_pk>/', views.LeaveRoomView.as_view()),
     path('manage/room/<str:room_pk>/', views.ManageRoomView.as_view()),

@@ -23,6 +23,7 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
     template_name = 'pages/room.html'
     model = Room
     load_by = 20
+    max_star = 100
 
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
@@ -61,6 +62,14 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
 
 
         return self.get_post_items(self.get_idx_items(posts))
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        context['star_denominator'] = self.room.good_count + self.room.bad_count
+        context['max_star'] = self.max_star
+        context['star_rate'] = round(self.room.good_count / context['star_denominator'], 2) * self.max_star if context['star_denominator'] > 0 else 0.0
+
+        return context
 
 #todo (高) ルームの情報をどこかに表示する
 class ShowRoomTabView(ShowRoomView):
@@ -878,6 +887,7 @@ class RoomGoodView(GoodView):
     template_name = 'pages/index_room.html'
     
     def get(self, request, *args, **kwargs):
+        print(f.get_dict_item(kwargs, 'room_pk'))
         room = get_object_or_404(Room, pk=f.get_dict_item(kwargs, 'room_pk'), is_deleted=False)
         return JsonResponse(self.get_json_data(obj=room))
 
