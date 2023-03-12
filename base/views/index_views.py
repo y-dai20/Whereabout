@@ -92,13 +92,12 @@ class IndexRoomListView(SearchBaseView, RoomItemView):
     def get_items(self):
         params = self.get_params()
         rooms = Room.objects.active(
-            is_public=True,
             admin__username__icontains=params['username'],
             title__icontains=params['title'], 
             created_at__gte=params['date_from'], 
             created_at__lte=params['date_to'],
             participant_count__gte=params['participant_from'] if f.is_int(params['participant_from']) else 0,
-        ).exclude(admin__id__in=self.get_blocked_user_list())
+        ).public().exclude(admin__id__in=self.get_blocked_user_list())
 
         if f.is_int(params['participant_to']):
             rooms = rooms.filter(participant_count__lte=params['participant_to'])

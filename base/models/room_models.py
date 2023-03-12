@@ -117,6 +117,7 @@ class RoomTabItem(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class RoomReplyType(models.Model):
+    objects = m.BaseManager()
     room = models.OneToOneField(Room, primary_key=True, on_delete=models.CASCADE)
     type1 = models.CharField(default='つぶやき', max_length=8)
     type2 = models.CharField(default='根拠', max_length=8)

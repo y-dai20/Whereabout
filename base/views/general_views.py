@@ -410,7 +410,7 @@ class RoomBase(object):
 
     @staticmethod
     def get_other_room_list(rooms=[]):
-        return list(Room.objects.active(is_public=True).exclude(id__in=rooms).values_list('id', flat=True))
+        return list(Room.objects.active().public().exclude(id__in=rooms).values_list('id', flat=True))
 
 class RoomItemView(View):
 
@@ -532,7 +532,7 @@ class UserItemView(View):
             'created_at':f.get_display_datetime(datetime.now() - make_naive(profile.user.created_at)),
             'img':f.get_img_path(profile.img),
             'user_tags':self.get_profile_tags(profile),
-            'user_rooms':list(Room.objects.active(admin=profile.user, is_public=True).values(id_=F('id'), title_=F('title'))),
+            'user_rooms':list(Room.objects.active(admin=profile.user).public().values(id_=F('id'), title_=F('title'))),
             'profession':profile.profession,
             'description':profile.description,
             'followed_count':f.get_number_unit(profile.followed_count),

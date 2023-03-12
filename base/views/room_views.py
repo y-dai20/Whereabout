@@ -389,7 +389,7 @@ class ModalSearchRoomView(ListView):
         word = f.get_dict_item(request.GET, 'search_word')
         if not f.is_str(word):
             raise MyBadRequest('search_word is not str.')
-        rooms = Room.objects.active(is_public=True, title__icontains=word)\
+        rooms = Room.objects.active(title__icontains=word).public()\
                 .exclude(id__in=RoomBase.get_my_room_list(request.user))\
                     .order_by('-title')\
                         .order_by(Length('title').desc())
@@ -831,6 +831,7 @@ class RoomInformationView(TemplateView):
     def get(self, request, *args, **kwargs):
         raise Http404
 
+    #todo ルームユーザーかチェックが必要では？
     def post(self, request, *args, **kwargs):
         room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
         rris = RoomRequestInformation.objects.active(room=room, is_active=True)
@@ -882,6 +883,7 @@ class RoomGoodView(GoodView):
     model = RoomGood
     template_name = 'pages/index_room.html'
     
+     #todo 非公開ならルームユーザーかどうかのチェックが必要or出来なくする
     def get(self, request, *args, **kwargs):
         print(f.get_dict_item(kwargs, 'room_pk'))
         room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
@@ -893,6 +895,7 @@ class GetRoomView(RoomItemView, TemplateView):
     def get(self, request, *args, **kwargs):
         raise Http404
 
+    #todo 非公開ならルームユーザーかどうかチェックが日長
     def post(self, request, *args, **kwargs):
         room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
         return JsonResponse(f.get_json_success_message(add_dict=self.get_room_item(room)))
@@ -902,7 +905,8 @@ class GetRoomRequestInformationView(TemplateView):
 
     def get(self, request, *args, **kwargs):
         raise Http404
-
+    
+    #todo 非公開ならルームユーザーかどうかチェックが日長
     def post(self, request, *args, **kwargs):
         room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
         room_base = RoomBase(room)
