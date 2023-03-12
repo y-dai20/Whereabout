@@ -1,7 +1,7 @@
 from django.conf import settings
 from django.utils.crypto import get_random_string
 from django.utils.timezone import make_naive
-from django.http import JsonResponse
+from django.http import JsonResponse, Http404
 
 
 from base.models import Tag
@@ -297,3 +297,15 @@ def get_tag(val, created_by=None):
         return tag
     
     return Tag.objects.create(name=val, created_by=created_by)
+
+def get_from_queryset(queryset):
+    if is_empty(queryset):
+        return None
+    
+    return queryset[0] if queryset.exists() else None
+
+def get_object_or_404_from_q(queryset):
+    obj = get_from_queryset(queryset)
+    if obj is None:
+        raise Http404()
+    return obj

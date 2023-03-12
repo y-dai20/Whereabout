@@ -1,5 +1,6 @@
 from django.views.generic import View
 
+import base.views.functions as f
 from base.views.functions import is_str, is_empty
 from base.models.room_models import Room, RoomUser
 
@@ -8,7 +9,7 @@ class ValidateRoomView(View):
         super().__init__()
         self.error_messages = []
         if is_str(room):
-            self.room = Room.objects.get_or_none(id=room, is_deleted=False)
+            self.room = f.get_from_queryset(Room.objects.active(id=room))
         elif isinstance(room, Room):
             self.room = room
         else:
@@ -30,13 +31,13 @@ class ValidateRoomView(View):
         if self.is_admin(user):
             return True
 
-        return RoomUser.objects.filter(room=self.room, user=user, is_deleted=False, is_blocked=False).exists()
+        return RoomUser.objects.active(room=self.room, user=user, is_blocked=False).exists()
 
     def is_user_blocked(self, user):
         if not self.is_room_exist() or not self.is_user(user):
             return None
         
-        if RoomUser.objects.filter(room=self.room, user=user, is_deleted=False, is_blocked=True).exists():
+        if RoomUser.objects.active(room=self.room, user=user, is_blocked=True).exists():
             return True
 
         return False
@@ -61,7 +62,7 @@ class ValidateRoomView(View):
             return False
         if not self.is_room_exist() or self.is_admin(user):
             return True
-        if RoomUser.objects.filter(room=self.room, user=user, authority__can_reply=True, is_deleted=False, is_blocked=False).exists():
+        if RoomUser.objects.active(room=self.room, user=user, authority__can_reply=True, is_blocked=False).exists():
             return True
 
         return False
@@ -71,7 +72,7 @@ class ValidateRoomView(View):
             return False
         if self.is_admin(user) or not self.is_room_exist():
             return True
-        if RoomUser.objects.filter(room=self.room, user=user, authority__can_post=True, is_deleted=False, is_blocked=False).exists():
+        if RoomUser.objects.active(room=self.room, user=user, authority__can_post=True, is_blocked=False).exists():
             return True
 
         return False

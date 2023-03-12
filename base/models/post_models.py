@@ -5,10 +5,11 @@ from django.conf import settings
 from base.models import create_id
 from base.models.functions import post_directory_path, video_directory_path
 from base.models.room_models import Room
-from base.models.general_models import BaseManager, Tag, TagSequence
+from base.models.general_models import TagSequence
+import base.models.managers as m
 
 class Post(models.Model):
-    objects = BaseManager()
+    objects = m.PostManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     title = models.CharField(default='', max_length=50, blank=False)
     text = models.CharField(default='', max_length=255, blank=False)
@@ -36,7 +37,7 @@ class Post(models.Model):
         ordering = ['-created_at']
 
 class PostAgree(models.Model):
-    objects = BaseManager()
+    objects = m.BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     is_agree = models.BooleanField(null=False, blank=False)
     obj = models.ForeignKey(Post, on_delete=models.CASCADE)
@@ -46,7 +47,7 @@ class PostAgree(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class PostFavorite(models.Model):
-    objects = BaseManager()
+    objects = m.BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     obj = models.ForeignKey(Post, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -55,7 +56,7 @@ class PostFavorite(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class PostDemagogy(models.Model):
-    objects = BaseManager()
+    objects = m.BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     is_true = models.BooleanField(null=False, blank=False)
     obj = models.ForeignKey(Post, on_delete=models.CASCADE)

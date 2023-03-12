@@ -4,11 +4,13 @@ from django.dispatch import receiver
 from django.db.models.signals import post_save
 
 from base.models import create_id
-from base.models.general_models import BaseManager, Personal, Tag, TagSequence
+from base.models.general_models import Personal, TagSequence
+import base.models.managers as m
 from base.models.functions import room_directory_path, video_directory_path
 
 
 class RoomAuthority(models.Model):
+    objects = m.BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     can_reply = models.BooleanField(default=False)
     can_post = models.BooleanField(default=False)
@@ -20,7 +22,7 @@ class RoomAuthority(models.Model):
 #todo (中) 関連するRoomの情報を付与
 #todo (中) 文字数の見直し
 class Room(models.Model):
-    objects = BaseManager()
+    objects = m.RoomManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     title = models.CharField(default='', max_length=255, blank=False)
     subtitle = models.CharField(default='', max_length=255, blank=False)
@@ -51,7 +53,7 @@ class Room(models.Model):
         ordering = ['-created_at']
 
 class RoomRequestInformation(models.Model):
-    objects = BaseManager()
+    objects = m.BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     sequence = models.IntegerField(default=1)
@@ -66,7 +68,7 @@ class RoomRequestInformation(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class RoomInformation(models.Model):
-    objects = BaseManager()
+    objects = m.BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     rri = models.ForeignKey(RoomRequestInformation, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
@@ -75,7 +77,7 @@ class RoomInformation(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
 
 class RoomTab(models.Model):
-    objects = BaseManager()
+    objects = m.BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     title = models.CharField(default='title', max_length=32, blank=False, null=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE, null=True)
@@ -84,6 +86,7 @@ class RoomTab(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class RoomTabSequence(models.Model):
+    objects = m.BaseManager()
     room = models.OneToOneField(Room, primary_key=True, on_delete=models.CASCADE)
     tab1 = models.ForeignKey(RoomTab, null=True, on_delete=models.SET_NULL, related_name="tab1")
     tab2 = models.ForeignKey(RoomTab, null=True, on_delete=models.SET_NULL, related_name="tab2")
@@ -100,7 +103,7 @@ class RoomTabSequence(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class RoomTabItem(models.Model):
-    objects = BaseManager()
+    objects = m.BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     title = models.CharField(default='', max_length=255, blank=True)
     text = models.CharField(default='', max_length=1024, blank=True)
@@ -125,10 +128,12 @@ class RoomReplyType(models.Model):
     type8 = models.CharField(default='補足', max_length=8)
     type9 = models.CharField(default='証拠', max_length=8)
     type10 = models.CharField(default='その他', max_length=8)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
 class RoomGuest(models.Model):
-    objects = BaseManager()
+    objects = m.RoomGuestManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     guest = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="guest")
@@ -142,7 +147,7 @@ class RoomGuest(models.Model):
         ]
 
 class RoomUser(models.Model):
-    objects = BaseManager()
+    objects = m.RoomUserManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="user")
@@ -158,7 +163,7 @@ class RoomUser(models.Model):
         ]
 
 class RoomInviteUser(models.Model):
-    objects = BaseManager()
+    objects = m.RoomUserManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     room = models.ForeignKey(Room, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE, related_name="invite_user")
@@ -167,6 +172,7 @@ class RoomInviteUser(models.Model):
     updated_at = models.DateTimeField(auto_now=True)
 
 class RoomGood(models.Model):
+    objects = m.BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
     is_good = models.BooleanField(null=False, blank=False)
     obj = models.ForeignKey(Room, on_delete=models.CASCADE)

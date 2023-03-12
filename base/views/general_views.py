@@ -1,6 +1,5 @@
 from django.views.generic import View, TemplateView, UpdateView, ListView
 from django.db.models import F
-from django.shortcuts import get_object_or_404
 from django.utils.timezone import make_aware, make_naive
 from django.core.mail import send_mail
 from django.conf import settings
@@ -32,16 +31,16 @@ class HeaderView(View):
         if not self.request.user.is_authenticated:
             return context
         
-        my_rooms = Room.objects.filter(admin=self.request.user, is_deleted=False).values(id_=F('id'), title_=F('title'))
+        my_rooms = Room.objects.active(admin=self.request.user).values(id_=F('id'), title_=F('title'))
         context['my_rooms'] = list(my_rooms)
 
-        other_rooms = RoomUser.objects.filter(user=self.request.user, is_deleted=False, is_blocked=False).values(
+        other_rooms = RoomUser.objects.active(user=self.request.user, is_blocked=False).values(
             id_=F('room__id'), title_=F('room__title'), admin_=F('room__admin__username'))
         context['other_rooms'] = other_rooms
 
         #todo (低) notificationをmodelとして持つべきか
-        notifications = RoomGuest.objects.filter(room__admin=self.request.user, is_deleted=False).count()
-        notifications += RoomInviteUser.objects.filter(user=self.request.user, is_deleted=False).count()
+        notifications = RoomGuest.objects.active(room__admin=self.request.user).count()
+        notifications += RoomInviteUser.objects.active(user=self.request.user).count()
         context['notifications'] = notifications
 
         return context 
@@ -62,7 +61,7 @@ class IndexBaseView(HeaderView, ListView):
     
     def get_blocked_user_list(self):
         if self.request.user.is_authenticated:
-            return UserBlock.objects.filter(blocker=self.request.user ,is_deleted=False).values_list('blockee__id', flat=True)
+            return UserBlock.objects.active(blocker=self.request.user).values_list('blockee__id', flat=True)
         return []
 
     def check_can_access(self, room):
@@ -186,8 +185,8 @@ class GoodView(UpdateBaseView):
         else:
             good_obj.create(user=self.request.user, obj=obj, is_good=is_good)
         
-        obj.good_count = self.model.objects.filter(obj=obj, is_good=True, is_deleted=False).count()
-        obj.bad_count = self.model.objects.filter(obj=obj, is_good=False, is_deleted=False).count()
+        obj.good_count = self.model.objects.active(obj=obj, is_good=True).count()
+        obj.bad_count = self.model.objects.active(obj=obj, is_good=False).count()
         obj.save()
 
         return f.get_json_success_message(add_dict={
@@ -215,8 +214,8 @@ class AgreeView(UpdateBaseView):
         else:
             agree_obj.create(user=self.request.user, obj=obj, is_agree=is_agree)
 
-        obj.agree_count = self.model.objects.filter(obj=obj, is_agree=True, is_deleted=False).count()
-        obj.disagree_count = self.model.objects.filter(obj=obj, is_agree=False, is_deleted=False).count()
+        obj.agree_count = self.model.objects.active(obj=obj, is_agree=True).count()
+        obj.disagree_count = self.model.objects.active(obj=obj, is_agree=False).count()
         obj.save()
 
         return f.get_json_success_message(add_dict={
@@ -244,8 +243,8 @@ class DemagogyView(UpdateBaseView):
         else:
             demagogy.create(user=self.request.user, obj=obj, is_true=is_true)
         
-        obj.true_count = self.model.objects.filter(obj=obj, is_true=True, is_deleted=False).count()
-        obj.false_count = self.model.objects.filter(obj=obj, is_true=False, is_deleted=False).count()
+        obj.true_count = self.model.objects.active(obj=obj, is_true=True).count()
+        obj.false_count = self.model.objects.active(obj=obj, is_true=False).count()
         obj.save()
 
         return f.get_json_success_message(add_dict={
@@ -269,7 +268,7 @@ class FavoriteView(UpdateBaseView):
         else:
             favorite.create(obj=obj, user=self.request.user)
 
-        obj.favorite_count = self.model.objects.filter(obj=obj, is_deleted=False).count()
+        obj.favorite_count = self.model.objects.active(obj=obj).count()
         obj.save()
 
         return f.get_json_success_message(add_dict={
@@ -331,16 +330,14 @@ class RoomBase(object):
         return {'id':room_tab.id, 'title':room_tab.title} if room_tab else {'id':'', 'title':none_val}
 
     def get_room_tab_items(self, room_tab):
-        return list(RoomTabItem.objects.filter(
-            room_tab=room_tab, 
-            is_deleted=False
-            ).order_by('row', 'column').values('title', 'text', 'img', 'row', 'column', 'col'))
+        return list(RoomTabItem.objects.active(room_tab=room_tab)
+                .order_by('row', 'column').values('title', 'text', 'img', 'row', 'column', 'col'))
 
     def get_room_reply_types(self, is_unique=True):
         if not self.vr.is_room_exist():
             return f.get_reply_types()
 
-        reply_type_obj = get_object_or_404(RoomReplyType, room=self.room, room__is_deleted=False)
+        reply_type_obj = f.get_object_or_404_from_q(RoomReplyType.objects.active(room=self.room))
         reply_types = [
             reply_type_obj.type1,
             reply_type_obj.type2,
@@ -384,10 +381,10 @@ class RoomBase(object):
         rri_list = [None for _ in range(self.max_request_information)]
         is_active = f.get_boolean_or_none(is_active)
         if is_active is None:
-            rri_objects = RoomRequestInformation.objects.filter(room=self.room, is_deleted=False).values(
+            rri_objects = RoomRequestInformation.objects.active(room=self.room).values(
                 'id', 'sequence', 'title', 'type', 'choice', 'min_length', 'max_length', 'is_active', 'is_deleted')
         else:
-            rri_objects = RoomRequestInformation.objects.filter(room=self.room, is_active=is_active, is_deleted=False).values(
+            rri_objects = RoomRequestInformation.objects.active(room=self.room, is_active=is_active).values(
                 'id', 'sequence', 'title', 'type', 'choice', 'min_length', 'max_length', 'is_active', 'is_deleted')
 
         for rri_object in rri_objects:
@@ -401,19 +398,19 @@ class RoomBase(object):
     @staticmethod
     def get_my_room_list(user):
         if not f.is_empty(user) and user.is_authenticated:
-            return list(Room.objects.filter(is_deleted=False, admin=user).values_list('id', flat=True))
+            return list(Room.objects.active(admin=user).values_list('id', flat=True))
         
         return []
 
     @staticmethod
     def get_attend_room_list(user):
         if not f.is_empty(user) and user.is_authenticated:
-            return list(RoomUser.objects.filter(is_deleted=False, is_blocked=False, user=user).values_list('room', flat=True))
+            return list(RoomUser.objects.active(is_blocked=False, user=user).values_list('room', flat=True))
         return []
 
     @staticmethod
     def get_other_room_list(rooms=[]):
-        return list(Room.objects.filter(is_deleted=False, is_public=True).exclude(id__in=rooms).values_list('id', flat=True))
+        return list(Room.objects.active(is_public=True).exclude(id__in=rooms).values_list('id', flat=True))
 
 class RoomItemView(View):
 
@@ -430,7 +427,7 @@ class RoomItemView(View):
 
         room = vr.get_room()
         user = self.request.user if self.request.user.is_authenticated else None
-        user_good = RoomGood.objects.filter(obj=room, user=user, is_deleted=False).values('is_good')
+        user_good = RoomGood.objects.active(obj=room, user=user).values('is_good')
         room_base = RoomBase(room)
         room_dict = {
             'id':room.id,
@@ -464,9 +461,9 @@ class PostItemView(View):
             return {}
         
         user = self.request.user if self.request.user.is_authenticated else None
-        user_agree = PostAgree.objects.filter(obj=post, user=user, is_deleted=False).values('is_agree')
-        user_demagogy = PostDemagogy.objects.filter(obj=post, user=user, is_deleted=False).values('is_true')        
-        favorite_state = PostFavorite.objects.filter(obj=post, user=user, is_deleted=False)
+        user_agree = PostAgree.objects.active(obj=post, user=user).values('is_agree')
+        user_demagogy = PostDemagogy.objects.active(obj=post, user=user).values('is_true')        
+        favorite_state = PostFavorite.objects.active(obj=post, user=user)
         img_paths = []
         for img_field in [post.img1, post.img2, post.img3, post.img4]:
                 img_paths.append(f.get_img_path(img_field))
@@ -535,7 +532,7 @@ class UserItemView(View):
             'created_at':f.get_display_datetime(datetime.now() - make_naive(profile.user.created_at)),
             'img':f.get_img_path(profile.img),
             'user_tags':self.get_profile_tags(profile),
-            'user_rooms':list(Room.objects.filter(admin=profile.user, is_public=True, is_deleted=False).values(id_=F('id'), title_=F('title'))),
+            'user_rooms':list(Room.objects.active(admin=profile.user, is_public=True).values(id_=F('id'), title_=F('title'))),
             'profession':profile.profession,
             'description':profile.description,
             'followed_count':f.get_number_unit(profile.followed_count),
@@ -545,8 +542,8 @@ class UserItemView(View):
         if not self.request.user.is_authenticated:
             return user_dict
 
-        user_dict['is_follow'] = UserFollow.objects.filter(followee=profile.user, is_deleted=False, follower=self.request.user).exists()
-        user_dict['is_block'] = UserBlock.objects.filter(blockee=profile.user, is_deleted=False, blocker=self.request.user).exists()
+        user_dict['is_follow'] = UserFollow.objects.active(followee=profile.user, follower=self.request.user).exists()
+        user_dict['is_block'] = UserBlock.objects.active(blockee=profile.user, blocker=self.request.user).exists()
 
         return user_dict
 
@@ -577,9 +574,9 @@ class ReplyItemView(View):
             return {}
 
         user = self.request.user if self.request.user.is_authenticated else None
-        user_agree = ReplyAgree.objects.filter(obj=reply, user=user, is_deleted=False).values('is_agree')
-        user_demagogy = ReplyDemagogy.objects.filter(obj=reply, user=user, is_deleted=False).values('is_true')
-        favorite_state = ReplyFavorite.objects.filter(obj=reply, user=user, is_deleted=False)
+        user_agree = ReplyAgree.objects.active(obj=reply, user=user).values('is_agree')
+        user_demagogy = ReplyDemagogy.objects.active(obj=reply, user=user).values('is_true')
+        favorite_state = ReplyFavorite.objects.active(obj=reply, user=user)
 
         vr = ValidateRoomView(reply.post.room)
         room_base = RoomBase(vr.get_room())
@@ -630,9 +627,9 @@ class Reply2ItemView(View):
             return {}
 
         user = self.request.user if self.request.user.is_authenticated else None
-        user_agree = Reply2Agree.objects.filter(obj=reply2, user=user, is_deleted=False).values('is_agree')
-        user_demagogy = Reply2Demagogy.objects.filter(obj=reply2, user=user, is_deleted=False).values('is_true')
-        favorite_state = Reply2Favorite.objects.filter(obj=reply2, user=user, is_deleted=False)
+        user_agree = Reply2Agree.objects.active(obj=reply2, user=user).values('is_agree')
+        user_demagogy = Reply2Demagogy.objects.active(obj=reply2, user=user).values('is_true')
+        favorite_state = Reply2Favorite.objects.active(obj=reply2, user=user)
 
         vr = ValidateRoomView(reply2.reply.post.room)
         room_base = RoomBase(vr.get_room())
@@ -773,7 +770,7 @@ class ShowRoomBaseView(HeaderView):
         context['do_pass_request_information'] = False
         if not self.vr.is_admin(self.request.user) and\
             self.vr.is_room_user(self.request.user) and\
-                not RoomInformation.objects.filter(rri__room=room, user=self.request.user, is_deleted=False).exists():
+                not RoomInformation.objects.active(rri__room=room, user=self.request.user).exists():
             context['do_pass_request_information'] = True
         
         profile = room.admin.profile
@@ -790,7 +787,7 @@ class ShowRoomBaseView(HeaderView):
             return context
 
         #todo (低) 基本的にobjects.filterは共通で書くようにする
-        room_user = RoomUser.objects.get_or_none(room=room, user=self.request.user, is_deleted=False)
+        room_user = f.get_from_queryset(RoomUser.objects.active(room=room, user=self.request.user))
         if room_user is not None:
             if room_user.is_blocked:
                 context['is_blocked'] = True
@@ -798,7 +795,7 @@ class ShowRoomBaseView(HeaderView):
                 context['is_room_user'] = True
             return context
         
-        room_guest = RoomGuest.objects.get_or_none(room=room, guest=self.request.user, is_deleted=False)
+        room_guest = f.get_from_queryset(RoomGuest.objects.active(room=room, guest=self.request.user))
         if room_guest is not None:
             context['is_waiting'] = True
     
@@ -841,5 +838,5 @@ class GetTag(TemplateView):
     def post(self, request, *args, **kwargs):
         tag = f.get_dict_item(request.POST, 'tag')
 
-        candidates = Tag.objects.filter(name__contains=tag, is_deleted=False).order_by(Length('name')).values_list('name')
+        candidates = Tag.objects.active(name__contains=tag).order_by(Length('name')).values_list('name')
         return JsonResponse({'candidates':list(candidates)})

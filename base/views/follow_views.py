@@ -1,4 +1,3 @@
-from django.shortcuts import get_object_or_404
 from django.views.generic import DetailView
 from django.http import JsonResponse, Http404
 
@@ -17,11 +16,11 @@ class FollowView(LoginRequiredMixin, DetailView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        target_user = get_object_or_404(User, username=f.get_dict_item(self.kwargs, 'username'), is_active=True)
+        target_user = f.get_object_or_404_from_q(User.objects.active(username=f.get_dict_item(self.kwargs, 'username')))
         if request.user.username == target_user.username:
             return JsonResponse(f.get_json_error_message(['自身をフォローできません']))
 
-        if UserBlock.objects.filter(blocker=request.user, blockee=target_user, is_deleted=False).exists():
+        if UserBlock.objects.active(blocker=request.user, blockee=target_user).exists():
             raise MyBadRequest('user is blocked.')
         
         follow = UserFollow.objects.get_or_none(follower=request.user, followee=target_user)
@@ -32,7 +31,7 @@ class FollowView(LoginRequiredMixin, DetailView):
             follow.save()
         
         profile = target_user.profile
-        profile.followed_count = UserFollow.objects.filter(followee=target_user, is_deleted=False).count()
+        profile.followed_count = UserFollow.objects.active(followee=target_user).count()
         profile.save()
 
         return JsonResponse(f.get_json_success_message(add_dict={'is_follow':not follow.is_deleted}))
@@ -45,7 +44,7 @@ class BlockView(LoginRequiredMixin, DetailView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        target_user = get_object_or_404(User, username=f.get_dict_item(self.kwargs, 'username'), is_active=True)
+        target_user = f.get_object_or_404_from_q(User.objects.active(username=f.get_dict_item(self.kwargs, 'username')))
         if request.user.username == target_user.username:
             return JsonResponse(f.get_json_error_message(['自身をブロックできません']))
 
@@ -57,12 +56,12 @@ class BlockView(LoginRequiredMixin, DetailView):
             block.save()
 
         if not block.is_deleted:
-            UserFollow.objects.filter(follower=request.user, followee=target_user, is_deleted=False).update(is_deleted=True)
+            UserFollow.objects.active(follower=request.user, followee=target_user).update(is_deleted=True)
             RoomUser.objects.filter(room__admin=request.user, user=target_user).update(is_blocked=True)
         
         profile = target_user.profile
-        profile.followed_count = UserFollow.objects.filter(followee=target_user, is_deleted=False).count()
-        profile.blocked_count = UserBlock.objects.filter(blockee=target_user, is_deleted=False).count()
+        profile.followed_count = UserFollow.objects.active(followee=target_user).count()
+        profile.blocked_count = UserBlock.objects.active(blockee=target_user).count()
         profile.save()
 
         return JsonResponse(f.get_json_success_message(add_dict={

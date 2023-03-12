@@ -1,5 +1,4 @@
-from django.shortcuts import get_object_or_404
-from django.views.generic import CreateView, TemplateView
+from django.views.generic import CreateView
 from django.http import JsonResponse, Http404
 from django.db.models import F
 
@@ -26,7 +25,7 @@ class ReplyPostView(LoginRequiredMixin, ReplyItemView, CreateView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        post = get_object_or_404(Post, id=f.get_dict_item(kwargs, 'post_pk'), is_deleted=False)
+        post = f.get_object_or_404_from_q(Post.objects.active(id=f.get_dict_item(kwargs, 'post_pk')))
         files = request.FILES
 
         vr = ValidateRoomView(post.room)
@@ -50,7 +49,7 @@ class ReplyPostView(LoginRequiredMixin, ReplyItemView, CreateView):
         reply.user = request.user
         reply.post = post
 
-        agree_post = PostAgree.objects.filter(obj=f.get_dict_item(kwargs, 'post_pk'), user=request.user, is_deleted=False)
+        agree_post = PostAgree.objects.active(obj=f.get_dict_item(kwargs, 'post_pk'), user=request.user)
         if agree_post.exists():
             reply.position = ReplyPosition.AGREE if agree_post[0].is_agree else ReplyPosition.DISAGREE
 
@@ -70,7 +69,7 @@ class ReplyReplyView(LoginRequiredMixin, Reply2ItemView, CreateView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyPost, id=f.get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
+        reply = f.get_object_or_404_from_q(ReplyPost.objects.active(id=f.get_dict_item(kwargs, 'reply_pk')))
         files = request.FILES
 
         vr = ValidateRoomView(reply.post.room)
@@ -105,7 +104,7 @@ class ReplyDetailView(ReplyItemView, Reply2ItemView, DetailBaseView):
     model = ReplyPost
 
     def get(self, request, *args, **kwargs):
-        self.reply = get_object_or_404(ReplyPost, id=f.get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
+        self.reply = f.get_object_or_404_from_q(ReplyPost.objects.active(id=f.get_dict_item(kwargs, 'reply_pk')))
         self.check_can_access(self.reply.post.room)
         
         return super().get(request, *args, **kwargs)
@@ -122,14 +121,13 @@ class ReplyDetailView(ReplyItemView, Reply2ItemView, DetailBaseView):
 
     def get_items(self):
         params = self.get_params()
-        replies = ReplyReply.objects.filter(
+        replies = ReplyReply.objects.active(
             reply=f.get_dict_item(self.kwargs, 'reply_pk'),
             user__username__icontains=params['username'],
             text__icontains=params['text'], 
             created_at__gte=params['date_from'], 
             created_at__lte=params['date_to'],
             type__icontains=params['type'],
-            is_deleted=False,
         )
         
         items = []
@@ -156,7 +154,7 @@ class ReplyDeleteView(LoginRequiredMixin, DeleteBaseView):
     model = ReplyPost
 
     def post(self, request, *args, **kwargs):
-        reply = get_object_or_404(self.model, pk=f.get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
+        reply = f.get_object_or_404_from_q(self.model.objects.active(pk=f.get_dict_item(kwargs, 'reply_pk')))
         self.validate_delete(reply.post.room, reply.user)
         reply.is_deleted = True
         reply.save()
@@ -167,7 +165,7 @@ class Reply2DeleteView(LoginRequiredMixin, DeleteBaseView):
     model = ReplyReply
 
     def post(self, request, *args, **kwargs):
-        reply2 = get_object_or_404(self.model, pk=f.get_dict_item(kwargs, 'reply2_pk'), is_deleted=False)
+        reply2 = f.get_object_or_404_from_q(self.model.objects.active(pk=f.get_dict_item(kwargs, 'reply2_pk')))
         self.validate_delete(reply2.reply.post.room, reply2.user)
         reply2.is_deleted = True
         reply2.save()
@@ -179,7 +177,7 @@ class ReplyAgreeView(AgreeView):
     template_name = 'pages/index.html'
     
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyPost, pk=f.get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
+        reply = f.get_object_or_404_from_q(ReplyPost.objects.active(pk=f.get_dict_item(kwargs, 'reply_pk')))
         json_data = self.get_json_data(obj=reply, room=reply.post.room)
 
         return JsonResponse(json_data)
@@ -189,7 +187,7 @@ class Reply2AgreeView(AgreeView):
     template_name = 'pages/index.html'
     
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyReply, pk=f.get_dict_item(kwargs, 'reply2_pk'), is_deleted=False)
+        reply = f.get_object_or_404_from_q(ReplyReply.objects.active(pk=f.get_dict_item(kwargs, 'reply2_pk')))
         json_data = self.get_json_data(obj=reply, room=reply.reply.post.room)
 
         return JsonResponse(json_data)
@@ -199,7 +197,7 @@ class ReplyFavoriteView(FavoriteView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyPost, pk=f.get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
+        reply = f.get_object_or_404_from_q(ReplyPost.objects.active(pk=f.get_dict_item(kwargs, 'reply_pk')))
         json_data = self.get_json_data(obj=reply, room=reply.post.room)
         
         return JsonResponse(json_data)
@@ -209,7 +207,7 @@ class Reply2FavoriteView(FavoriteView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyReply, pk=f.get_dict_item(kwargs, 'reply2_pk'), is_deleted=False)
+        reply = f.get_object_or_404_from_q(ReplyReply.objects.active(pk=f.get_dict_item(kwargs, 'reply2_pk')))
         json_data = self.get_json_data(obj=reply, room=reply.reply.post.room)
         
         return JsonResponse(json_data)
@@ -219,7 +217,7 @@ class ReplyDemagogyView(DemagogyView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyPost, pk=f.get_dict_item(kwargs, 'reply_pk'), is_deleted=False)
+        reply = f.get_object_or_404_from_q(ReplyPost.objects.active(pk=f.get_dict_item(kwargs, 'reply_pk')))
         json_data = self.get_json_data(obj=reply, room=reply.post.room)
         
         return JsonResponse(json_data)
@@ -229,7 +227,7 @@ class Reply2DemagogyView(DemagogyView):
     template_name = 'pages/index.html'
 
     def get(self, request, *args, **kwargs):
-        reply = get_object_or_404(ReplyReply, pk=f.get_dict_item(kwargs, 'reply2_pk'), is_deleted=False)
+        reply = f.get_object_or_404_from_q(ReplyReply.objects.active(pk=f.get_dict_item(kwargs, 'reply2_pk')))
         json_data = self.get_json_data(obj=reply, room=reply.reply.post.room)
         
         return JsonResponse(json_data)
@@ -241,9 +239,9 @@ class GetReplyView(ReplyItemView, IndexBaseView):
         raise Http404
 
     def get_items(self):
-        post = get_object_or_404(Post, id=f.get_dict_item(self.request.POST, 'obj_id'), is_deleted=False)
+        post = f.get_object_or_404_from_q(Post.objects.active(id=f.get_dict_item(self.request.POST, 'obj_id')))
         self.check_can_access(post.room)
-        replies = ReplyPost.objects.filter(post=post, is_deleted=False)
+        replies = ReplyPost.objects.active(post=post)
         replies = replies.annotate(reaction_count=F('agree_count')+F('disagree_count')).order_by('-reaction_count')
         return self.get_reply_items(self.get_idx_items(replies))
 
@@ -254,8 +252,8 @@ class GetReply2View(Reply2ItemView, IndexBaseView):
         raise Http404
 
     def get_items(self):
-        reply = get_object_or_404(ReplyPost, id=f.get_dict_item(self.request.POST, 'obj_id'), is_deleted=False)
+        reply = f.get_object_or_404_from_q(ReplyPost.objects.active(id=f.get_dict_item(self.request.POST, 'obj_id')))
         self.check_can_access(reply.post.room)
-        replies = ReplyReply.objects.filter(reply=reply, is_deleted=False)
+        replies = ReplyReply.objects.active(reply=reply)
         replies = replies.annotate(reaction_count=F('agree_count')+F('disagree_count')).order_by('-reaction_count')
         return self.get_reply2_items(self.get_idx_items(replies))

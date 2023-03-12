@@ -1,5 +1,4 @@
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView, View
-from django.shortcuts import redirect, get_object_or_404
 from django.http import JsonResponse, Http404
 from django.db.models.functions import Length
 from django.db.models import Value as V
@@ -38,8 +37,7 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
 
     def get_items(self):
         params = self.get_params()
-        posts = Post.objects.filter(
-            is_deleted=False, 
+        posts = Post.objects.active(
             user__username__icontains=params['username'],
             title__icontains=params['title'], 
             created_at__gte=params['date_from'], 
@@ -47,7 +45,7 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
             room=self.room,
         )
         if params['is_favorite'] and self.request.user.is_authenticated:
-            fav_ids = PostFavorite.objects.filter(user=self.request.user, obj__room=self.room, is_deleted=False).values_list('obj__id', flat=True)
+            fav_ids = PostFavorite.objects.active(user=self.request.user, obj__room=self.room).values_list('obj__id', flat=True)
             posts = posts.filter(id__in=fav_ids)
         
         if not f.is_empty(params['tags']):
@@ -77,7 +75,7 @@ class ShowRoomTabView(ShowRoomView):
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
 
-        room_tab = get_object_or_404(RoomTab, id=f.get_dict_item(self.kwargs, 'room_tab_pk'), room=self.room, is_deleted=False)
+        room_tab = f.get_object_or_404_from_q(RoomTab.objects.active(id=f.get_dict_item(self.kwargs, 'room_tab_pk'), room=self.room))
         context['target_tab_title'] = room_tab.title
         context['target_tab_id'] = room_tab.id
         context['target_tab_items'] = self.room_base.get_room_tab_items(room_tab)
@@ -126,10 +124,10 @@ class ManageRoomView(ManageRoomBaseView, ShowRoomBaseView, ListView):
             self.vr = self.get_validate_room()
         
         room = self.vr.get_room()
-        room_users = RoomUser.objects.filter(room=room, is_blocked=False, is_deleted=False)
-        room_invite_users = RoomInviteUser.objects.filter(room=room, is_deleted=False)
-        room_blocked_users = RoomUser.objects.filter(room=room, is_blocked=True, is_deleted=False)
-        room_guests = RoomGuest.objects.filter(room=room, is_deleted=False)
+        room_users = RoomUser.objects.active(room=room, is_blocked=False)
+        room_invite_users = RoomInviteUser.objects.active(room=room)
+        room_blocked_users = RoomUser.objects.active(room=room, is_blocked=True)
+        room_guests = RoomGuest.objects.active(room=room)
 
         room_base = RoomBase(room)
         context['defo_authority'] = room.authority
@@ -152,7 +150,7 @@ class ManageRoomView(ManageRoomBaseView, ShowRoomBaseView, ListView):
                 if f.is_empty(rri):
                     information.append('')
                     continue
-                ri = RoomInformation.objects.get_or_none(rri=rri['id'], user=room_user.user, is_deleted=False)
+                ri = f.get_from_queryset(RoomInformation.objects.active(rri=rri['id'], user=room_user.user))
                 if ri is None:
                     information.append('')
                 else:
@@ -182,10 +180,10 @@ class CreateRoomView(LoginRequiredMixin, CreateView):
             return JsonResponse(f.get_json_error_message(f.get_form_error_message(form)))
 
         room = form.save(commit=False)
-        if Room.objects.filter(title=room.title, admin=request.user, is_deleted=False).exists():
+        if Room.objects.active(title=room.title, admin=request.user).exists():
             return JsonResponse(f.get_json_error_message(['同じタイトルのルームは作成できません']))
 
-        if Room.objects.filter(admin=request.user, is_deleted=False).count() >= self.max_room_count and not request.user.is_admin:
+        if Room.objects.active(admin=request.user).count() >= self.max_room_count and not request.user.is_admin:
             return JsonResponse(f.get_json_error_message(['{}個以上のRoomは作成できません'.format(self.max_room_count)]))
 
         room.admin = request.user
@@ -228,7 +226,7 @@ class JoinRoomView(LoginRequiredMixin, CreateView):
             raise MyBadRequest('room is not exist.')
         
         room = vr.get_room()
-        if UserBlock.objects.filter(blocker=room.admin, blockee=request.user, is_deleted=False):
+        if UserBlock.objects.active(blocker=room.admin, blockee=request.user).exists():
             return JsonResponse(f.get_json_error_message(['管理者にブロックされています']))
 
         room_user = RoomUser.objects.get_or_none(user=request.user, room=room)
@@ -275,7 +273,7 @@ class LeaveRoomView(LoginRequiredMixin, UpdateView):
             raise MyBadRequest('room is not exist.')
         
         room = vr.get_room()
-        room_user = RoomUser.objects.get_or_none(user=request.user, room=room, is_blocked=False, is_deleted=False)
+        room_user = f.get_from_queryset(RoomUser.objects.active(user=request.user, room=room, is_blocked=False))
         if room_user is None:
             raise MyBadRequest('RoomUser is not exist.')
 
@@ -297,7 +295,7 @@ class AcceptRoomInviteView(LoginRequiredMixin, CreateView):
         if not vr.is_room_exist():
             raise MyBadRequest('room is not exist.')
         room = vr.get_room()
-        room_invite = get_object_or_404(RoomInviteUser, room=room, user=request.user, is_deleted=False)
+        room_invite = f.get_object_or_404_from_q(RoomInviteUser.objects.active(room=room, user=request.user))
 
         is_accept = f.get_boolean_or_none(f.get_dict_item(request.POST, 'is_accept'))
         if is_accept is None:
@@ -347,13 +345,13 @@ class AcceptRoomGuestView(ManageRoomBaseView, CreateView):
         return JsonResponse(f.get_json_success_message())
 
     def accept_room_guest(self, username, room, is_blocked=False):
-        guest = get_object_or_404(User, username=username, is_active=True)
+        guest = f.get_object_or_404_from_q(User.objects.active(username=username))
         vr = ValidateRoomView(room)
         if not vr.is_room_exist() or not vr.is_admin(self.request.user):
             return False
         
         room = vr.get_room()
-        room_guest = get_object_or_404(RoomGuest, room=room, guest=guest, is_deleted=False)
+        room_guest = f.get_object_or_404_from_q(RoomGuest.objects.active(room=room, guest=guest))
         
         room_user = RoomUser.objects.get_or_none(room=room, user=guest)
         if room_user is not None and not room_user.is_deleted:
@@ -391,7 +389,7 @@ class ModalSearchRoomView(ListView):
         word = f.get_dict_item(request.GET, 'search_word')
         if not f.is_str(word):
             raise MyBadRequest('search_word is not str.')
-        rooms = Room.objects.filter(is_deleted=False, is_public=True, title__icontains=word)\
+        rooms = Room.objects.active(is_public=True, title__icontains=word)\
                 .exclude(id__in=RoomBase.get_my_room_list(request.user))\
                     .order_by('-title')\
                         .order_by(Length('title').desc())
@@ -408,7 +406,7 @@ class ModalSearchUserView(ListView):
         if not f.is_str(word):
             raise MyBadRequest('search_word is not str.')
 
-        users = User.objects.filter(is_active=True, username__icontains=word)
+        users = User.objects.active(username__icontains=word)
         if request.user.is_authenticated:
             users = users.exclude(id=request.user.id)
         users = users.order_by('-username').order_by(Length('username').desc())
@@ -429,8 +427,8 @@ class ManageRoomAuthorityView(ManageRoomBaseView, TemplateView):
         json_data = json.loads(request.body.decode('utf-8'))
 
         for jd in f.get_dict_item_list(json_data, 'checks'):
-            ru = get_object_or_404(RoomUser, room=room, user__username=f.get_dict_item(jd, 'username'), is_deleted=False)
-            auth = RoomAuthority.objects.get(is_deleted=False, id=ru.authority.id)
+            ru = f.get_object_or_404_from_q(RoomUser.objects.active(room=room, user__username=f.get_dict_item(jd, 'username')))
+            auth = f.get_from_queryset(RoomAuthority.objects.active(id=ru.authority.id))
             can_reply, can_post, is_admin = self.get_authority_check(jd)
             if can_reply is not None:
                 auth.can_reply = can_reply
@@ -442,7 +440,7 @@ class ManageRoomAuthorityView(ManageRoomBaseView, TemplateView):
 
         default = f.get_dict_item_list(json_data, 'defa')
         if not f.is_empty(default):
-            auth = RoomAuthority.objects.get(is_deleted=False, id=room.authority.id)
+            auth = f.get_from_queryset(RoomAuthority.objects.active(id=room.authority.id))
             can_reply, can_post, is_admin = self.get_authority_check(default)
             if can_reply is not None:
                 auth.can_reply = can_reply
@@ -482,7 +480,7 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
         for username in f.get_dict_item_list(json_data, 'cancel_invite_users'):
             self.cancel_invite_user(username)
         
-        self.room.participant_count = RoomUser.objects.filter(room=self.room, is_deleted=False).count()
+        self.room.participant_count = RoomUser.objects.active(room=self.room).count()
         self.room.save()
 
         return JsonResponse(f.get_json_success_message(['保存しました']))
@@ -490,7 +488,7 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
     def toggle_banish_user(self, username):
         if f.is_empty(username):
             return False
-        room_user = get_object_or_404(RoomUser, room=self.room, user__username=username, is_deleted=False)
+        room_user = f.get_object_or_404_from_q(RoomUser.objects.active(room=self.room, user__username=username))
         room_user.is_blocked = not room_user.is_blocked
         room_user.save()
         return True
@@ -498,7 +496,7 @@ class ManageRoomParticipantView(AcceptRoomGuestView, TemplateView):
     def cancel_invite_user(self, username):
         if f.is_empty(username):
             return False
-        invite_obj = get_object_or_404(RoomInviteUser, room=self.room, user__username=username, is_deleted=False)
+        invite_obj = f.get_object_or_404_from_q(RoomInviteUser.objects.active(room=self.room, user__username=username))
         invite_obj.is_deleted = True
         invite_obj.save()
         return True
@@ -590,7 +588,7 @@ class ManageRoomTabView(ManageRoomBaseView, TemplateView):
         self.files = request.FILES
 
         tabs = f.literal_eval(f.get_dict_item(form_data, 'tabs'))
-        room_tab_sequence = get_object_or_404(RoomTabSequence, room=self.room, room__is_deleted=False)
+        room_tab_sequence = f.get_object_or_404_from_q(RoomTabSequence.objects.active(room=self.room))
         room_tab_sequence.tab1 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 0), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 0), 'title'))
         room_tab_sequence.tab2 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 1), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 1), 'title'))
         room_tab_sequence.tab3 = self.get_room_tab(f.get_dict_item(f.get_list_item(tabs, 2), 'room_tab_id'), f.get_dict_item(f.get_list_item(tabs, 2), 'title'))
@@ -626,7 +624,7 @@ class ManageRoomTabView(ManageRoomBaseView, TemplateView):
             self.error_messages.append('タブのタイトルは{}文字以内に収めてください'.format(self.max_tab_title_len))
             return None
         
-        room_tab = RoomTab.objects.get_or_none(id=room_tab_id, is_deleted=False)
+        room_tab = f.get_from_queryset(RoomTab.objects.active(id=room_tab_id))
         if room_tab is None:
             return RoomTab.objects.create(title=title, room=self.room)
         
@@ -678,11 +676,10 @@ class ManageRoomTabView(ManageRoomBaseView, TemplateView):
             if not f.is_same_empty_count([title, text, img], 2):
                 raise MyBadRequest('is_same_empty error at create_room_tab_items.')
 
-            items = RoomTabItem.objects.filter(
+            items = RoomTabItem.objects.active(
                 row=row, 
                 column=column, 
                 room_tab=room_tab,
-                is_deleted=False
             )
 
             if items.exists():
@@ -710,12 +707,11 @@ class ManageRoomTabView(ManageRoomBaseView, TemplateView):
             if not f.is_int(row) or not f.is_int(column) or not f.is_int(col):
                 raise MyBadRequest('is_int error at create_room_tab_items.')
 
-            items = RoomTabItem.objects.filter(
+            items = RoomTabItem.objects.active(
                 row=row, 
                 column=column,
                 col=col, 
                 room_tab=room_tab,
-                is_deleted=False
             )
 
             if items.exists():
@@ -732,7 +728,7 @@ class ManageRoomPostView(ManageRoomBaseView, TemplateView):
         room = vr.get_room()
         form_data = request.POST
 
-        reply_type = get_object_or_404(RoomReplyType, room=room, room__is_deleted=False)
+        reply_type = f.get_object_or_404_from_q(RoomReplyType.objects.active(room=room))
         reply_type.type1 = f.get_dict_item(form_data, 'type1')
         reply_type.type2 = f.get_dict_item(form_data, 'type2')
         reply_type.type3 = f.get_dict_item(form_data, 'type3')
@@ -774,7 +770,7 @@ class ManageRoomRequestInformationView(ManageRoomBaseView, TemplateView):
         if sequence < 1 or room_base.max_request_information < sequence:
             raise MyBadRequest('sequence is out of range.')
         
-        rri_exist = RoomRequestInformation.objects.filter(room=room, sequence=sequence, is_deleted=False)
+        rri_exist = RoomRequestInformation.objects.active(room=room, sequence=sequence)
         if rri_exist.exists():
             rri_exist.update(is_deleted=True)
 
@@ -836,8 +832,8 @@ class RoomInformationView(TemplateView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        room = get_object_or_404(Room, pk=f.get_dict_item(kwargs, 'room_pk'), is_deleted=False)
-        rris = RoomRequestInformation.objects.filter(room=room, is_deleted=False, is_active=True)
+        room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
+        rris = RoomRequestInformation.objects.active(room=room, is_active=True)
         form_data = request.POST
         for sequence, value in form_data.items():
             rri = rris.filter(sequence=sequence)
@@ -862,10 +858,10 @@ class RoomInviteView(ManageRoomBaseView, TemplateView):
 
     def post(self, request, *args, **kwargs):
         json_data = json.loads(request.body.decode('utf-8'))
-        invite_user = get_object_or_404(User, username=f.get_dict_item(json_data, 'username'), is_active=True)
+        invite_user = f.get_object_or_404_from_q(User.objects.active(username=f.get_dict_item(json_data, 'username')))
         vr = self.get_validate_room()
         room = vr.get_room()
-        if RoomUser.objects.filter(user=invite_user, room=room, is_deleted=False).exists():
+        if RoomUser.objects.active(user=invite_user, room=room).exists():
             return JsonResponse(f.get_json_error_message(['既に参加しています']))
 
         room_invite = RoomInviteUser.objects.get_or_none(room=room, user=invite_user)
@@ -888,7 +884,7 @@ class RoomGoodView(GoodView):
     
     def get(self, request, *args, **kwargs):
         print(f.get_dict_item(kwargs, 'room_pk'))
-        room = get_object_or_404(Room, pk=f.get_dict_item(kwargs, 'room_pk'), is_deleted=False)
+        room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
         return JsonResponse(self.get_json_data(obj=room))
 
 class GetRoomView(RoomItemView, TemplateView):
@@ -898,7 +894,7 @@ class GetRoomView(RoomItemView, TemplateView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        room = get_object_or_404(Room, pk=f.get_dict_item(kwargs, 'room_pk'), is_deleted=False)
+        room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
         return JsonResponse(f.get_json_success_message(add_dict=self.get_room_item(room)))
 
 class GetRoomRequestInformationView(TemplateView):
@@ -908,6 +904,6 @@ class GetRoomRequestInformationView(TemplateView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        room = get_object_or_404(Room, pk=f.get_dict_item(kwargs, 'room_pk'), is_deleted=False)
+        room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
         room_base = RoomBase(room)
         return JsonResponse(f.get_json_success_message(add_dict={'rri':room_base.get_room_request_information(is_active=True)}))

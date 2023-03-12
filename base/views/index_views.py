@@ -37,8 +37,7 @@ class IndexPostListView(SearchBaseView, PostItemView):
                 self.search['no_room_check'] = True
 
         params = self.get_params()
-        posts = Post.objects.filter(
-            is_deleted=False, 
+        posts = Post.objects.active(
             user__username__icontains=params['username'],
             title__icontains=params['title'], 
             created_at__gte=params['date_from'], 
@@ -46,7 +45,7 @@ class IndexPostListView(SearchBaseView, PostItemView):
         ).exclude(user__id__in=self.get_blocked_user_list())
         
         if params['is_favorite'] and self.request.user.is_authenticated:
-            fav_ids = PostFavorite.objects.filter(user=self.request.user, is_deleted=False).values_list('obj__id', flat=True)
+            fav_ids = PostFavorite.objects.active(user=self.request.user).values_list('obj__id', flat=True)
             posts = posts.filter(id__in=fav_ids)
 
         my_rooms = RoomBase.get_my_room_list(self.request.user)
@@ -92,8 +91,7 @@ class IndexRoomListView(SearchBaseView, RoomItemView):
     #todo (中) タグ検索の追加
     def get_items(self):
         params = self.get_params()
-        rooms = Room.objects.filter(
-            is_deleted=False, 
+        rooms = Room.objects.active(
             is_public=True,
             admin__username__icontains=params['username'],
             title__icontains=params['title'], 
@@ -141,9 +139,7 @@ class IndexUserListView(SearchBaseView, UserItemView):
 
     def get_items(self):
         params = self.get_params()
-        profiles = Profile.objects.filter(
-            is_deleted=False,
-            user__is_active=True,
+        profiles = Profile.objects.active(
             user__username__icontains=params['username'],
             profession__icontains=params['profession'], 
             description__icontains=params['description'], 

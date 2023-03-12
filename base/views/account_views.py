@@ -19,7 +19,7 @@ from base.models.account_models import User, Guest, UserReset
 from base.views.general_views import UserItemView, SendMailView, HeaderView
 from base.views.mixins import LoginRequiredMixin
 
-from datetime import datetime, timedelta
+from datetime import timedelta
 
 class LoginView(LoginView):
     template_name = 'pages/login.html'
@@ -51,7 +51,7 @@ class LoginView(LoginView):
         return super().form_invalid(form)
     
     def get_user(self):
-        return User.objects.get_or_none(username=f.get_dict_item(self.request.POST, 'username'), is_active=True)
+        return f.get_from_queryset(User.objects.active(username=f.get_dict_item(self.request.POST, 'username')))
 
 class SignUpView(CreateView):
     form_class = SignUpForm
@@ -83,7 +83,7 @@ class SignUpView(CreateView):
         # adminのRoomに強制参加
         admin = User.objects.get_or_none(username='admin', is_admin=True)
         if admin is not None:
-            rooms = Room.objects.filter(admin=admin, is_deleted=False)
+            rooms = Room.objects.active(admin=admin)
             for room in rooms:
                 RoomUser.objects.create(
                     room=room,
@@ -104,7 +104,7 @@ class SignUpView(CreateView):
         return context
 
     def get_guest(self):
-        return get_object_or_404(Guest, one_time_id=f.get_dict_item(self.kwargs, 'one_time_id'), is_deleted=False)
+        return f.get_object_or_404_from_q(Guest.objects.active(one_time_id=f.get_dict_item(self.kwargs, 'one_time_id')))
 
 class SendMailForSignupView(SendMailView):
     form_class = SendMailForm
@@ -215,7 +215,7 @@ class ResetPasswordView(ResetPasswordBaseView, TemplateView):
         return JsonResponse(f.get_json_success_message(['パスワードをリセットしました','続けてログインしてください']))
     
     def get_user_reset(self):
-        return get_object_or_404(UserReset, one_time_id=f.get_dict_item(self.kwargs, 'one_time_id'), is_deleted=False)
+        return f.get_object_or_404_from_q(UserReset.objects.active(one_time_id=f.get_dict_item(self.kwargs, 'one_time_id')))
 
 class SendMailForResetPasswordView(SendMailView, ResetPasswordBaseView):
     form_class = SendMailForm
@@ -230,7 +230,7 @@ class SendMailForResetPasswordView(SendMailView, ResetPasswordBaseView):
         username = f.get_dict_item(request.POST, 'username')
         email = form.clean_email()
         
-        user = User.objects.get_or_none(username=username ,email=email, is_active=True)
+        user = f.get_from_queryset(User.objects.active(username=username ,email=email))
         #todo (低) メールを送信しない場合とする場合のレスポンス時間を同一にする
         if user is None:
             return self.get_success_json_response()
@@ -269,7 +269,7 @@ class GetUserView(UserItemView, ListView):
         raise Http404
 
     def post(self, request, *args, **kwargs):
-        target_user = get_object_or_404(User, username=f.get_dict_item(self.kwargs, 'username'), is_active=True)
+        target_user = f.get_object_or_404_from_q(User.objects.active(username=f.get_dict_item(self.kwargs, 'username')))
         return JsonResponse(self.get_user_item(target_user.profile))
 
 class UserProfileView(LoginRequiredMixin, HeaderView, UserItemView, TemplateView):
@@ -328,9 +328,9 @@ class UserProfileView(LoginRequiredMixin, HeaderView, UserItemView, TemplateView
 
     def get_accept_room_guests(self):
         data = []
-        rooms = Room.objects.filter(admin=self.request.user, is_deleted=False)
+        rooms = Room.objects.active(admin=self.request.user)
         for room in rooms:
-            room_guests = list(RoomGuest.objects.filter(room=room, is_deleted=False).values_list('guest__username', flat=True))
+            room_guests = list(RoomGuest.objects.active(room=room).values_list('guest__username', flat=True))
             if len(room_guests) == 0:
                 continue
             data.append({
@@ -343,7 +343,7 @@ class UserProfileView(LoginRequiredMixin, HeaderView, UserItemView, TemplateView
 
     def get_invited_rooms(self):
         data = []
-        invite_rooms = RoomInviteUser.objects.filter(user=self.request.user, is_deleted=False)
+        invite_rooms = RoomInviteUser.objects.active(user=self.request.user)
         for invite_room in invite_rooms:
             data.append({
                 'room_id':invite_room.room.id,
