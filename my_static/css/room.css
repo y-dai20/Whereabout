@@ -365,3 +365,8 @@ label.form-check-label {
 input.time-input {
     width: initial;
 }
+
+input#input-room-title, textarea#input-room-subtitle {
+    max-width: 600px;
+    width: 100%;
+}

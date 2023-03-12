@@ -1361,3 +1361,13 @@ $('#delete-room-button').on('click', function() {
     var footer = `<button type="button" class="delete-button btn btn-danger" data-url="${url}">削除</button>`;
     show_modal_message('確認', ['削除しますか'], footer);
 });
+
+$('.toggle-button').on('click', function() {
+    var id = $(this).data('target-id');
+    $(`#${id}`).toggle();
+}); 
+
+$('.expand-area').on('click change keyup keydown paste cut input', function(){
+    $(this).height(0);
+    $(this).height(this.scrollHeight);
+});

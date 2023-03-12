@@ -5,10 +5,10 @@ function get_parsed_str(value) {
     return value;
 }
 
-function create_post_items(appendTo, posts, is_link=false) {
+function create_post_items(appendTo, posts, is_link=false, need_room=true) {
     posts = get_parsed_str(posts);
     $.each(posts, function(idx, post) {
-        var html = get_post_item(post, is_link);
+        var html = get_post_item(post, is_link, need_room);
         $(appendTo).append(html);
         active_luminous(post.obj_id);
     });
@@ -72,7 +72,7 @@ function get_delete_btn(is_delete=true) {
     return '';
 }
 
-function get_post_item(post, is_link=false) {
+function get_post_item(post, is_link=false, need_room=true) {
     if (is_empty(post)) {
         return '';
     }
@@ -90,7 +90,7 @@ function get_post_item(post, is_link=false) {
     }
 
     html += get_item_warning(post.false_count, post.true_count);
-    html += get_post_header(post);
+    html += get_post_header(post, need_room);
     html += get_post_content(post);
     html += get_item_footer(post);
     html += `</div></div></div>`;
@@ -98,10 +98,12 @@ function get_post_item(post, is_link=false) {
     return html;
 }
 
-function get_post_header(post) {
+function get_post_header(post, need_room=true) {
     var html = `<div class="post-item-header item-header">`;
     html += get_item_user_area(post.username, post.user_img);
-    html += get_item_room_area(post.room_id, post.room_title);
+    if (need_room) {
+        html += get_item_room_area(post.room_id, post.room_title);
+    }
     html += '<div class="margin-left">';
     html += get_created_at(post.created_at);
     html += get_item_detail_link(`/post/${post.obj_id}/`);

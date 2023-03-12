@@ -37,7 +37,7 @@
         {{dumps_object_list | json_script:'dumps_object_list'}}
         <script>
           var posts = JSON.parse(document.getElementById('dumps_object_list').textContent);
-          create_post_items('.post-list', posts, true);
+          create_post_items('.post-list', posts, true, false);
         </script>
       </div>
       {% include '../snippets/load_more.html' with type="post" %}

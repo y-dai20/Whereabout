@@ -631,7 +631,8 @@ function escapeHTML(string){
     .replace(/>/g, '&gt;')
     .replace(/"/g, '&quot;')
     .replace(/'/g, '&#x27;')
-    .replace(/ /g, '&nbsp;');
+    .replace(/ /g, '&nbsp;')
+    .replace(/　/g, '&emsp;');
 }
 
 function append_removable_tag(val, append_to) {

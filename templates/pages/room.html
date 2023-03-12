@@ -37,6 +37,7 @@
 </div>
 <h2 id="room-tab-link"></h2>
 <div id="room-tab-title-links-list">目次</div>
+<button type="button" class="btn btn-sm btn-secondary toggle-button mb-1" data-target-id="room-tab-pane-list">表示・非表示</button>
 <div class="tab-content show-room c-white" id="room-tab-pane-list">
   {{room_tabs | json_script:'room_tabs'}}
   {{room_tab_items | json_script:'room_tab_items'}}
