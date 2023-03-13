@@ -33,7 +33,7 @@ class Room(models.Model):
     need_approval = models.BooleanField(default=False)
     authority = models.ForeignKey(RoomAuthority, on_delete=models.PROTECT)
     personal = models.ForeignKey(Personal, on_delete=models.SET_NULL, null=True)
-    tag_sequence = models.ForeignKey(TagSequence, on_delete=models.CASCADE, null=True)
+    tag_sequence = models.ForeignKey(TagSequence, on_delete=models.SET_NULL, null=True)
     img1 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
     img2 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)
     img3 = models.ImageField(null=True, blank=True, upload_to=room_directory_path)

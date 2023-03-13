@@ -21,6 +21,8 @@ import json
 from datetime import datetime, timedelta
 from abc import abstractmethod
 
+
+#todo (中) 外部キーがあるモデルはマネージャーを作成する
 #todo (中) roomの親子関係を作成し、評価やユーザーを結合するなど
 #todo (高) detail画面でh1などを作成して，SEO対策をする
 #todo (高) sourceを画面に表示する方法を考える

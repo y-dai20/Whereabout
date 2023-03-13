@@ -17,7 +17,7 @@ class Post(models.Model):
     video = models.FileField(null=True, blank=True, upload_to=video_directory_path)
     room = models.ForeignKey(Room, null=True, on_delete=models.CASCADE)
     user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
-    tag_sequence = models.ForeignKey(TagSequence, on_delete=models.CASCADE, null=True)
+    tag_sequence = models.ForeignKey(TagSequence, on_delete=models.SET_NULL, null=True)
     img1 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
     img2 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
     img3 = models.ImageField(null=True, blank=True, upload_to=post_directory_path)
