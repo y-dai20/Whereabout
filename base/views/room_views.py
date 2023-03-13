@@ -3,6 +3,7 @@ from django.http import JsonResponse, Http404
 from django.db.models.functions import Length
 from django.db.models import Value as V
 from django.db.models.functions import Concat
+from django.shortcuts import redirect
 
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
@@ -14,7 +15,7 @@ from base.models.room_models import Room, RoomGuest, RoomUser, RoomGood, RoomAut
 from base.views.general_views import ShowRoomBaseView, PostItemView, RoomItemView, RoomBase, SearchBaseView, GoodView
 from base.views.validate_views import ValidateRoomView
 from base.forms import CreateRoomForm, UpdateRoomForm, RoomRequestInformationForm, PersonalForm
-from base.views.mixins import LoginRequiredMixin, RoomAdminRequiredMixin
+from base.views.mixins import LoginRequiredMixin, RoomAdminRequiredMixin, RoomAccessRequiredMixin
 
 import json
 
@@ -100,7 +101,8 @@ class ManageRoomBaseView(LoginRequiredMixin, RoomAdminRequiredMixin, View):
         if not vr.is_room_exist():
             raise MyBadRequest('room is not exist.')
         return vr
-    
+
+#todo (高) ルームアクセスできるかチェック
 class GetRoomTabItems(TemplateView):
     def post(self, request, *args, **kwargs):
         room_tab_id = f.get_dict_item(request.POST, 'room_tab_id')
@@ -272,13 +274,14 @@ class LeaveRoomView(LoginRequiredMixin, UpdateView):
         if not vr.is_room_exist() or vr.is_admin(request.user):
             raise MyBadRequest('room is not exist.')
         
-        room = vr.get_room()
-        room_user = f.get_from_queryset(RoomUser.objects.active(user=request.user, room=room, is_blocked=False))
-        if room_user is None:
+        room_user = vr.get_room_user(request.user)
+        if not room_user.exists():
             raise MyBadRequest('RoomUser is not exist.')
 
         room_user.is_deleted = True
         room_user.save()
+
+        room = vr.get_room()
         room.participant_count -= 1
         room.save()
 
@@ -825,16 +828,15 @@ class ManageRoomPersonalView(ManageRoomBaseView, TemplateView):
 
         return JsonResponse(f.get_json_success_message(['保存しました']))
 
-class RoomInformationView(TemplateView):
+class RoomInformationView(RoomAccessRequiredMixin, TemplateView):
     model = RoomInformation
 
     def get(self, request, *args, **kwargs):
         raise Http404
 
-    #todo ルームユーザーかチェックが必要では？
     def post(self, request, *args, **kwargs):
-        room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
-        rris = RoomRequestInformation.objects.active(room=room, is_active=True)
+        vr = ValidateRoomView(f.get_dict_item(kwargs, 'room_pk'))
+        rris = RoomRequestInformation.objects.active(room=vr.get_room(), is_active=True)
         form_data = request.POST
         for sequence, value in form_data.items():
             rri = rris.filter(sequence=sequence)
@@ -846,7 +848,7 @@ class RoomInformationView(TemplateView):
             if (type == 'num' and not f.is_int(value)) or (type == 'choice' and value not in rri[0].choice):
                 raise MyBadRequest("RoomInformation's type is error.")
             
-            RoomInformation.objects.create(rri=rri[0], user=self.request.user, text=value)
+            RoomInformation.objects.create(rri=rri[0], user=request.user, text=value)
 
         return JsonResponse(f.get_json_success_message(['保存しました']))
 
@@ -879,35 +881,31 @@ class RoomInviteView(ManageRoomBaseView, TemplateView):
 
         return JsonResponse(f.get_json_success_message(['招待しました']))
 
-class RoomGoodView(GoodView):
+class RoomGoodView(RoomAccessRequiredMixin, GoodView):
     model = RoomGood
     template_name = 'pages/index_room.html'
     
-     #todo 非公開ならルームユーザーかどうかのチェックが必要or出来なくする
     def get(self, request, *args, **kwargs):
-        print(f.get_dict_item(kwargs, 'room_pk'))
-        room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
-        return JsonResponse(self.get_json_data(obj=room))
+        vr = ValidateRoomView(f.get_dict_item(kwargs, 'room_pk'))
+        return JsonResponse(self.get_json_data(obj=vr.get_room()))
 
-class GetRoomView(RoomItemView, TemplateView):
+class GetRoomView(RoomAccessRequiredMixin, RoomItemView, TemplateView):
     model = Room
 
     def get(self, request, *args, **kwargs):
         raise Http404
 
-    #todo 非公開ならルームユーザーかどうかチェックが日長
     def post(self, request, *args, **kwargs):
-        room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
-        return JsonResponse(f.get_json_success_message(add_dict=self.get_room_item(room)))
+        vr = ValidateRoomView(f.get_dict_item(kwargs, 'room_pk'))
+        return JsonResponse(f.get_json_success_message(add_dict=self.get_room_item(vr.get_room())))
 
-class GetRoomRequestInformationView(TemplateView):
+class GetRoomRequestInformationView(RoomAccessRequiredMixin, TemplateView):
     model = RoomRequestInformation
 
     def get(self, request, *args, **kwargs):
         raise Http404
     
-    #todo 非公開ならルームユーザーかどうかチェックが日長
     def post(self, request, *args, **kwargs):
-        room = f.get_object_or_404_from_q(Room.objects.active(pk=f.get_dict_item(kwargs, 'room_pk')))
-        room_base = RoomBase(room)
+        vr = ValidateRoomView(f.get_dict_item(kwargs, 'room_pk'))
+        room_base = vr.get_room_base()
         return JsonResponse(f.get_json_success_message(add_dict={'rri':room_base.get_room_request_information(is_active=True)}))

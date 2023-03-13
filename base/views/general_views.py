@@ -14,7 +14,7 @@ from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, R
     RoomGood, RoomRequestInformation, RoomInformation
 from base.models.account_models import UserFollow, UserBlock, Profile
 from base.models.general_models import Tag
-from base.views.mixins import LoginRequiredMixin
+from base.views.mixins import LoginRequiredMixin, RoomAccessRequiredMixin
 from base.views.validate_views import ValidateRoomView
 
 import json
@@ -708,15 +708,11 @@ class DetailBaseView(SearchBaseView):
         
         return replies
 
-class ShowRoomBaseView(HeaderView):
+class ShowRoomBaseView(RoomAccessRequiredMixin, HeaderView):
     def validate_room(self):
         self.vr = ValidateRoomView(f.get_dict_item(self.kwargs, 'room_pk'))
-        if not self.vr.is_room_exist():
-            raise Http404
-        if not self.vr.is_public() and not self.vr.is_room_user(self.request.user):
-            raise PermissionError
         self.room = self.vr.get_room()
-        self.room_base = RoomBase(self.room)
+        self.room_base = self.vr.get_room_base()
 
     def get(self, request, *args, **kwargs):
         self.validate_room()

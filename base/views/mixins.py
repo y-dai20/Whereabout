@@ -27,7 +27,7 @@ def room_admin_required(view):
     @wraps(view)
     def inner(request, *args, **kwargs):
         vr = ValidateRoomView(f.get_dict_item(kwargs, 'room_pk'))
-        if not vr.is_room_exist() or not vr.is_admin(request.user):
+        if not vr.is_admin(request.user):
             if request.is_ajax():
                 return JsonResponse(f.get_json_error_message(['不正なアクセスです']))
             else:
@@ -39,3 +39,20 @@ class RoomAdminRequiredMixin(object):
     @classmethod
     def as_view(cls, **kwds):
         return room_admin_required(super().as_view(**kwds))
+
+def room_access_required(view):
+    @wraps(view)
+    def inner(request, *args, **kwargs):
+        vr = ValidateRoomView(f.get_dict_item(kwargs, 'room_pk'))
+        if not vr.can_access(request.user):
+            if request.is_ajax():
+                return JsonResponse(f.get_json_error_message(['不正なアクセスです']))
+            else:
+                return redirect('/error/')
+        return view(request, *args, **kwargs)
+    return inner
+
+class RoomAccessRequiredMixin(object):
+    @classmethod
+    def as_view(cls, **kwds):
+        return room_access_required(super().as_view(**kwds))
