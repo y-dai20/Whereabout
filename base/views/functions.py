@@ -4,7 +4,9 @@ from django.utils.timezone import make_naive
 from django.http import JsonResponse, Http404
 
 
-from base.models import Tag
+from base.models import Tag, User
+
+
 import ast
 import magic
 import os
@@ -309,3 +311,6 @@ def get_object_or_404_from_q(queryset):
     if obj is None:
         raise Http404()
     return obj
+
+def get_admin_user():
+    return User.objects.get_or_none(username='admin', is_admin=True)

@@ -3,7 +3,7 @@ from django.http import JsonResponse, Http404
 from django.db.models.functions import Length
 from django.db.models import Value as V
 from django.db.models.functions import Concat
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect
 
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
@@ -911,5 +911,5 @@ class GetRoomRequestInformationView(RoomAccessRequiredMixin, TemplateView):
     
     def post(self, request, *args, **kwargs):
         vr = ValidateRoomView(f.get_dict_item(kwargs, 'room_pk'))
-        room_base = vr.get_room_base()
+        room_base = RoomBase(vr.get_room())
         return JsonResponse(f.get_json_success_message(add_dict={'rri':room_base.get_room_request_information(is_active=True)}))

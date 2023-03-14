@@ -31,6 +31,9 @@ class HeaderView(View):
         context = super().get_context_data(**kwargs)
 
         if not self.request.user.is_authenticated:
+            admin = f.get_admin_user()
+            context['other_rooms'] = Room.objects.active(admin=admin).values(
+                id_=F('id'), title_=F('title'), admin_=F('admin__username'))
             return context
         
         my_rooms = Room.objects.active(admin=self.request.user).values(id_=F('id'), title_=F('title'))
@@ -712,7 +715,7 @@ class ShowRoomBaseView(RoomAccessRequiredMixin, HeaderView):
     def validate_room(self):
         self.vr = ValidateRoomView(f.get_dict_item(self.kwargs, 'room_pk'))
         self.room = self.vr.get_room()
-        self.room_base = self.vr.get_room_base()
+        self.room_base = RoomBase(self.room)
 
     def get(self, request, *args, **kwargs):
         self.validate_room()

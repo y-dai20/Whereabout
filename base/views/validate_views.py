@@ -1,7 +1,6 @@
 from django.views.generic import View
 
 import base.views.functions as f
-from base.views.general_views import RoomBase
 from base.models.room_models import Room, RoomUser
 
 class ValidateRoomView(View):
@@ -27,9 +26,6 @@ class ValidateRoomView(View):
             return RoomUser.objects.active(room=self.room, user=user)
 
         return RoomUser.objects.active(room=self.room, user=user, is_blocked=is_blocked)
-
-    def get_room_base(self):
-        return RoomBase(self.room)
 
     def get_error_messages(self):
         return self.error_messages

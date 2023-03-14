@@ -21,7 +21,7 @@ from base.views.mixins import LoginRequiredMixin
 
 from datetime import timedelta
 
-class LoginView(LoginView):
+class LoginView(HeaderView, LoginView):
     template_name = 'pages/login.html'
     max_fail_login_count = 5
     
@@ -53,7 +53,7 @@ class LoginView(LoginView):
     def get_user(self):
         return f.get_from_queryset(User.objects.active(username=f.get_dict_item(self.request.POST, 'username')))
 
-class SignUpView(CreateView):
+class SignUpView(HeaderView, CreateView):
     form_class = SignUpForm
     template_name = 'pages/signup.html'
     registrable_seconds = 10 * 60
@@ -106,7 +106,7 @@ class SignUpView(CreateView):
     def get_guest(self):
         return f.get_object_or_404_from_q(Guest.objects.active(one_time_id=f.get_dict_item(self.kwargs, 'one_time_id')))
 
-class SendMailForSignupView(SendMailView):
+class SendMailForSignupView(HeaderView, SendMailView):
     form_class = SendMailForm
     template_name = 'pages/send_mail_for_signup.html'
     mail_title = settings.TITLE + '：ユーザー登録'
