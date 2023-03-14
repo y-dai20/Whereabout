@@ -3,7 +3,7 @@ from django.http import JsonResponse, Http404
 from django.db.models.functions import Length
 from django.db.models import Value as V
 from django.db.models.functions import Concat
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
@@ -102,12 +102,16 @@ class ManageRoomBaseView(LoginRequiredMixin, RoomAdminRequiredMixin, View):
             raise MyBadRequest('room is not exist.')
         return vr
 
-#todo (高) ルームアクセスできるかチェック
 class GetRoomTabItems(TemplateView):
     def post(self, request, *args, **kwargs):
         room_tab_id = f.get_dict_item(request.POST, 'room_tab_id')
         if f.is_empty(room_tab_id) or not f.is_str(room_tab_id):
             raise MyBadRequest('room_tab_id is error.')
+        
+        room_tab = RoomTab.objects.get_object_or_404(id=room_tab_id)
+        vr = ValidateRoomView(room_tab.room)
+        if not vr.check_access(request.user):
+            raise MyBadRequest('room access error.')
 
         room_base = RoomBase()
         return JsonResponse(f.get_json_success_message(add_dict={
