@@ -32,7 +32,7 @@ class HeaderView(View):
 
         if not self.request.user.is_authenticated:
             admin = f.get_admin_user()
-            context['other_rooms'] = Room.objects.active(admin=admin).values(
+            context['other_rooms'] = Room.objects.active(admin=admin).public().values(
                 id_=F('id'), title_=F('title'), admin_=F('admin__username'))
             return context
         
