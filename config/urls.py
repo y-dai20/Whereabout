@@ -98,8 +98,8 @@ urlpatterns = [
     # Error
     path('error/', views.ShowErrorView.as_view()),
     
-    path('', views.IndexPostListView.as_view()),
-    path('room/', views.IndexRoomListView.as_view()),
+    path('', views.IndexRoomListView.as_view()),
+    path('posts/', views.IndexPostListView.as_view()),
     path('user/', views.IndexUserListView.as_view()),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
