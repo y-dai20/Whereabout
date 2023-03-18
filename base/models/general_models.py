@@ -33,6 +33,9 @@ class Personal(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+    class Meta:
+        ordering = ['-created_at']
+
 class Tag(models.Model):
     objects = m.BaseManager()
     id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
@@ -43,6 +46,9 @@ class Tag(models.Model):
 
     def __str__(self):
         return self.name
+    
+    class Meta:
+        ordering = ['-created_at']
     
 class TagSequence(models.Model):
     objects = m.BaseManager()

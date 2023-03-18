@@ -58,9 +58,13 @@ class Profile(models.Model):
     blocked_count = models.IntegerField(default=0)
     is_deleted = models.BooleanField(default=False)
     updated_at = models.DateTimeField(auto_now=True)
+    created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
         return self.user.username
+    
+    class Meta:
+        ordering = ['-created_at']
 
 class Guest(models.Model):
     objects = m.BaseManager()
@@ -74,6 +78,9 @@ class Guest(models.Model):
 
     def __str__(self):
         return self.email
+    
+    class Meta:
+        ordering = ['-created_at']
 
 class UserReset(models.Model):
     objects = m.BaseManager()
@@ -85,9 +92,6 @@ class UserReset(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
-    class Meta:
-        ordering = ['-created_at']
 
 class UserEvaluate(models.Model):
     objects = m.BaseManager()
