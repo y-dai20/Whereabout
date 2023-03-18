@@ -235,6 +235,12 @@ a.sidebar-button {
     flex-wrap: wrap;
 }
 
+.flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
 .align-center {
     align-items: center;
     display: flex;

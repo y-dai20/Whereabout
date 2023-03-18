@@ -9,7 +9,9 @@
   {% if is_public == False %}
   <script>document.write(get_lock_img());</script>
   {% endif %}
-  <p class="c-yellow">{{star_rate}}点 / {{max_star}}（{{star_denominator}}）</p>
+  <script>
+    document.write(get_room_star({{star_rate}}, {{max_star}}, {{star_denominator}}));
+  </script>
   <h1 class="room-title c-white">{{title}}</h1>
   <h2 class="room-subtitle c-white">
     {{subtitle | linebreaks}}

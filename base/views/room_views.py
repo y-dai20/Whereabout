@@ -66,7 +66,7 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
         context = super().get_context_data(**kwargs)
         context['star_denominator'] = self.room.good_count + self.room.bad_count
         context['max_star'] = self.max_star
-        context['star_rate'] = round(self.room.good_count / context['star_denominator'], 2) * self.max_star if context['star_denominator'] > 0 else 0.0
+        context['star_rate'] = round(self.room.good_count / context['star_denominator'], 1) * self.max_star if context['star_denominator'] > 0 else 0.0
 
         return context
 
