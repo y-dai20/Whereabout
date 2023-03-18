@@ -116,7 +116,7 @@ function get_post_header(post, need_room=true) {
 function get_post_content(post) {
     var html = `<div class="post-content">
             ${get_tags(post.post_tags, 'posts')}
-            <span class="post-title">${escapeHTML(post.title)}</span><br>
+            <h2 class="post-title">${escapeHTML(post.title)}</h2>
             <span class="post-text">${adapt_linebreaks(escapeHTML(post.text))}</span><br>
             <span class="post-source">${get_item_source(post.source)}</span>
         </div>
@@ -342,11 +342,11 @@ function get_room_content(room) {
     var html = `<div class="room-item-content">
         ${get_tags(room.room_tags, 'rooms')}
         <div class="room-item-title">
-            <span>${escapeHTML(room.title)}</span>
+            <h2 class="room-item-title-font">${escapeHTML(room.title)}</h2>
         </div>
         <div class="room-item-subtitle">
-            <span>${adapt_linebreaks(escapeHTML(room.subtitle))}</span>
-        </div>`;
+            <h3 class="room-item-subtitle-font">${adapt_linebreaks(escapeHTML(room.subtitle))}</h3>
+        </div></div>`;
     if (!is_empty(room.video_path)) {
         html += `<div class="video-area px-1">
         <video controls src="${room.video_path}" class="w-100"></video>
@@ -354,7 +354,7 @@ function get_room_content(room) {
     } else if (!is_empty(room.img_paths)) {
         html += `<div class="room-item-img">${get_slider_imgs_html('search-room-slider', room.img_paths)}</div>`;
     }
-    html += `</div>
+    html += `
     <div class="thinking">
         参加人数：<span>${room.user_count}</span>
     </div>`

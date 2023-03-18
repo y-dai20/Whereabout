@@ -1,4 +1,5 @@
 from django.db import models
+from django.db.models import Q
 from django.contrib.auth.models import BaseUserManager
 
 class BaseQueryset(models.QuerySet):
@@ -66,7 +67,7 @@ class ProfileManager(BaseManager):
 
 class PostQueryset(models.QuerySet):
     def active(self, **kwargs):
-        return self.filter(is_deleted=False, user__is_active=True, room__is_deleted=False, **kwargs)
+        return self.filter(Q(room=None) | Q(room__is_deleted=False), is_deleted=False, user__is_active=True, **kwargs)
 class PostManager(BaseManager):
     def get_queryset(self):
         return PostQueryset(self.model, using=self._db)

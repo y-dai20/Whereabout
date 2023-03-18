@@ -9,12 +9,21 @@
 .room-item-title {
     font-size: 25px;
     text-align: center;
+}
+
+.room-item-title-font {
+    font-size: 25px;
     font-weight: bold;
 }
 
 .room-item-subtitle {
     font-size: 20px;
     text-align: center;
+}
+
+.room-item-subtitle-font {
+    font-size: 20px;
+    font-weight: normal;
 }
 
 .not-display {
