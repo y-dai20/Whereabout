@@ -115,7 +115,7 @@ function get_post_header(post, need_room=true) {
 
 function get_post_content(post) {
     var html = `<div class="post-content">
-            ${get_tags(post.post_tags)}
+            ${get_tags(post.post_tags, 'posts')}
             <span class="post-title">${escapeHTML(post.title)}</span><br>
             <span class="post-text">${adapt_linebreaks(escapeHTML(post.text))}</span><br>
             <span class="post-source">${get_item_source(post.source)}</span>
@@ -276,7 +276,7 @@ function get_user_header(user) {
 
 function get_user_content(user){
 	var html = `<div class="user-item-content">
-    ${get_tags(user.user_tags, 'user')}
+    ${get_tags(user.user_tags, 'users')}
     <div class="user-item-img user-img-area">`;
 	if (!is_empty(user.img)) {
 		html += `<img src="${user.img}" alt="" class="user-img">`;
@@ -288,7 +288,6 @@ function get_user_content(user){
 
     $.each(user.user_rooms, function(idx, room) {
         html += get_item_room_area(room.id_, room.title_, 'blue');
-        // html += `<a href="/room/${room.id_}" class="room-link">${room.title_}</a>`;
     });
 
 	html += `</div><div class="user-profession"><div class="headline">職業</div>${escapeHTML(user.profession)}</div>
@@ -341,7 +340,7 @@ function get_room_header(room) {
 
 function get_room_content(room) {
     var html = `<div class="room-item-content">
-        ${get_tags(room.room_tags, 'room')}
+        ${get_tags(room.room_tags, 'rooms')}
         <div class="room-item-title">
             <span>${escapeHTML(room.title)}</span>
         </div>
@@ -387,7 +386,7 @@ function get_tags(tags, item='') {
     var html = '<div class="flex-area">';
     $.each(tags, function(idx, tag) {
         if (!is_empty(tag)) {
-            html += `<div class="tag-item"><a href="#" class="tag-link-button" data-item="${item}">${escapeHTML(tag)}</a></div>`;
+            html += `<div class="tag-item"><a href="#" class="tag-link-button" data-path="/${item}/">${escapeHTML(tag)}</a></div>`;
         }
     });
     html += '</div>';

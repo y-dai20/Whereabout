@@ -208,6 +208,7 @@ def get_combined_list(name1:str, list1:list, name2:str, list2:list):
     return combined_list
 
 def get_diff_seconds_from_now(model_time):
+    print(type(model_time))
     return (datetime.now() - make_naive(model_time)).seconds
 
 def get_unit_time(seconds, unit):

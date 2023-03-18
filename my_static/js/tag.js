@@ -52,10 +52,10 @@ $(document).on('click', '.removable-tag-item', function() {
 
 $(document).on('click', '.tag-link-button', function() {
     var url = new URL(window.location.href);
-    var item = $(this).data('item');
+    var path = $(this).data('path');
     var tag = $(this).text();
-    if (!is_empty(item) & url.pathname != `/${item}/`) {
-        window.location.href = `/${item}/?tags=${tag}`;
+    if (!is_empty(path) & url.pathname != path) {
+        window.location.href = `${path}?tags=${tag}`;
         return false;
     }
 

@@ -220,7 +220,7 @@ class DeleteRoomView(ManageRoomBaseView, TemplateView):
         room.is_deleted = True
         room.save()
 
-        return JsonResponse(f.get_json_success_message(['削除しました'], {'href':'/'}))
+        return JsonResponse(f.get_json_success_message(['削除しました'], {'href':'/rooms/'}))
 
 #todo (中) request informationがあれば表示するようにする
 class JoinRoomView(LoginRequiredMixin, CreateView):
@@ -289,7 +289,7 @@ class LeaveRoomView(LoginRequiredMixin, UpdateView):
         room.participant_count -= 1
         room.save()
 
-        return redirect('/')
+        return redirect('/rooms/')
 
 class AcceptRoomInviteView(LoginRequiredMixin, CreateView):
     model = RoomInviteUser

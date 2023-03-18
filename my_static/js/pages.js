@@ -1221,7 +1221,7 @@ $('#signup-button').on('click', function(){
         timeout:60000,
     }).done(function (data) {
         if (data.is_success) {
-            window.location.href = '/';
+            window.location.href = '/rooms/';
         }
         show_modal_message(data.title, data.message);
     }).fail(function (data) {

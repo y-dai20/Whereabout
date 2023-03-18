@@ -1,5 +1,6 @@
 from django.db.models import Q, Value as V
-from django.db.models.functions import Concat
+import django.db.models.functions as mf
+from django.db.models import F, DateTimeField
 
 import base.views.functions as f
 from base.models.post_models import Post, PostFavorite
@@ -61,7 +62,7 @@ class IndexPostListView(SearchBaseView, PostItemView):
 
         if not f.is_empty(params['tags']):
             posts = posts.annotate(
-                tags=Concat(V('&'), 'tag_sequence__tag1__name', 
+                tags=mf.Concat(V('&'), 'tag_sequence__tag1__name', 
                             V('&'), 'tag_sequence__tag2__name', 
                             V('&'), 'tag_sequence__tag3__name', 
                             V('&'), 'tag_sequence__tag4__name', 
@@ -104,7 +105,7 @@ class IndexRoomListView(SearchBaseView, RoomItemView):
 
         if not f.is_empty(params['tags']):
             rooms = rooms.annotate(
-                tags=Concat(V('&'), 'tag_sequence__tag1__name', 
+                tags=mf.Concat(V('&'), 'tag_sequence__tag1__name', 
                             V('&'), 'tag_sequence__tag2__name', 
                             V('&'), 'tag_sequence__tag3__name', 
                             V('&'), 'tag_sequence__tag4__name', 
@@ -117,6 +118,10 @@ class IndexRoomListView(SearchBaseView, RoomItemView):
             for tag in params['tags'].split(','):
                 rooms = rooms.filter(tags__contains='&{}&'.format(tag))
         
+        # rooms = rooms.annotate(diff_now=mf.Cast(mf.Now() - F('created_at'), output_field=DateTimeField())).annotate(
+        #     rank=mf.Round((mf.ExtractYear('diff_now')*365+mf.ExtractMonth('diff_now')*30+mf.ExtractDay('diff_now'))/(F('good_count')+F('bad_count')*0.5+F('participant_count')*1.5))
+        # ).order_by('rank')
+        # print(rooms[0].rank)
         return self.get_room_items(self.get_idx_items(rooms))
 
 class IndexUserListView(SearchBaseView, UserItemView):
@@ -153,7 +158,7 @@ class IndexUserListView(SearchBaseView, UserItemView):
 
         if not f.is_empty(params['tags']):
             profiles = profiles.annotate(
-                tags=Concat(V('&'), 'tag_sequence__tag1__name', 
+                tags=mf.Concat(V('&'), 'tag_sequence__tag1__name', 
                             V('&'), 'tag_sequence__tag2__name', 
                             V('&'), 'tag_sequence__tag3__name', 
                             V('&'), 'tag_sequence__tag4__name', 
