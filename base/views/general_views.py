@@ -128,10 +128,12 @@ class SearchBaseView(IndexBaseView):
     def __init__(self, **kwargs):
         super().__init__(**kwargs)
         self.search = {}
+        self.order = {}
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
         context['search'] = self.search
+        context['order'] = self.order
         return context
 
     def get_params(self):
@@ -153,7 +155,22 @@ class SearchBaseView(IndexBaseView):
                     params[key] = make_aware(datetime.strptime(self.search[key], '%Y-%m-%d') + timedelta(hours=24))
                 else:
                     params[key] = self.search[key]
+
         return params
+    
+    def get_order(self):
+        if f.is_empty(self.order):
+            return {}
+
+        request_params = dict(self.request.GET)
+        if ('order' not in request_params) or \
+            request_params['order'][0] not in self.order.keys():
+            return self.order
+        
+        for key in self.order.keys():
+            self.order[key] = False
+        self.order[request_params['order'][0]] = True
+        return self.order
 
 class ShowErrorView(TemplateView):
     template_name = 'pages/error.html'
@@ -685,7 +702,6 @@ class DetailBaseView(SearchBaseView):
             'date_to':'', 
             'position':'',
             'type':'',
-            'order':'',
         }
         self.order = {
             'created_at':True,
@@ -693,23 +709,12 @@ class DetailBaseView(SearchBaseView):
             'favorite_count':False,
         }
 
-    def get_context_data(self, **kwargs):
-        context = super().get_context_data(**kwargs)
-        context['order'] = self.order
-        return context
-
     def get_replies_after_order(self, replies):
-        params = self.get_params()
-        if params['order'] not in self.order.keys():
-            return replies
+        order = self.get_order()
 
-        for key in self.order.keys():
-            self.order[key] = False
-        self.order[params['order']] = True
-
-        if self.order['favorite_count']:
+        if order['favorite_count']:
             return replies.order_by('-favorite_count')
-        if self.order['reaction_count']:
+        if order['reaction_count']:
             return replies.annotate(reaction_count=F('agree_count')+F('disagree_count')).order_by('-reaction_count')
         
         return replies

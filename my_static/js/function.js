@@ -605,11 +605,13 @@ function get_choice_html(text, name, divider='&') {
 }
 
 function get_char_html(min_length, max_length, name) {
-    return `<input type="text" name="${name}" class="validate-length" data-min-len="${min_length}" data-max-len="${max_length}"><div class="char-len c-green"></div>`;
+    return `<input type="text" name="${name}" class="validate-length" data-min-len="${min_length}" data-max-len="${max_length}" placeholder="文字列">
+    <div class="char-len c-green"></div>`;
 }
 
 function get_num_html(min_length, max_length, name) {
-    return `<input type="text" name="${name}" class="validate-length num-autocomplete" data-min-len="${min_length}" data-max-len="${max_length}"><div class="char-len c-green"></div>`;
+    return `<input type="text" name="${name}" class="validate-length num-autocomplete" data-min-len="${min_length}" data-max-len="${max_length}" placeholder="${min_length}~${max_length}の数値">
+    <div class="char-len c-green"></div>`;
 }
 
 function show_modal(id) {

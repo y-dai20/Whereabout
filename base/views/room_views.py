@@ -1,8 +1,7 @@
 from django.views.generic import ListView, CreateView, UpdateView, TemplateView, View
 from django.http import JsonResponse, Http404
-from django.db.models.functions import Length
-from django.db.models import Value as V
-from django.db.models.functions import Concat
+from django.db.models.functions import Length, Concat
+from django.db.models import F, Value as V
 from django.shortcuts import redirect
 
 import base.views.functions as f
@@ -35,6 +34,11 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
             'is_favorite':'',
             'tags':'',
         }
+        self.order = {
+            'ranking':True,
+            'created_at':False,
+            'favorite_count':False,
+        }
 
     def get_items(self):
         params = self.get_params()
@@ -59,6 +63,11 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
             for tag in params['tags'].split(','):
                 posts = posts.filter(tags__contains='&{}&'.format(tag))
 
+        order = self.get_order()
+        if order['ranking']:
+            posts = posts.annotate(rank=F('agree_count') - F('disagree_count')).order_by('-rank')
+        elif order['favorite_count']:
+            posts = posts.order_by('-favorite_count')
 
         return self.get_post_items(self.get_idx_items(posts))
     

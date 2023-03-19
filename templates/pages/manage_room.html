@@ -470,6 +470,9 @@
             <thead>
               <tr>
                 <th scope="col">
+                  順番
+                </th>
+                <th scope="col">
                   <input type="text" id="search-information-user" data-filter="filter-1" placeholder="検索ワード">
                   <br>
                   ユーザー名
@@ -488,6 +491,9 @@
             <tbody id="request-information-table">
               {% for room_information in room_information_list %}
                 <tr>
+                  <td scope="col">
+                    {{forloop.counter}}
+                  </td>
                   <td scope="col">
                     <a class="c-black show-modal-user-button filter-1" href="#" data-username="{{room_information.username}}">{{room_information.username}}</a>
                   </td>
