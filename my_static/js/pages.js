@@ -1331,7 +1331,7 @@ $('.calender-accordion').accordion({
     active:false,
 });
 
-$('#search-post-button').on('click', function() {
+$('.search-post-button').on('click', function() {
     var url = get_form_href('search-post-form');
     search_post_ajax(url);
 });

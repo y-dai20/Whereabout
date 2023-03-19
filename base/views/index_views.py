@@ -29,6 +29,11 @@ class IndexPostListView(SearchBaseView, PostItemView):
             # 'agree-state':'', 
             # 'true-state':''
         }
+        self.order = {
+            'ranking':True,
+            'created_at':False,
+            'favorite_count':False,
+        }
 
     def get_items(self):
         if f.is_empty(dict(self.request.GET)):
@@ -69,6 +74,12 @@ class IndexPostListView(SearchBaseView, PostItemView):
                             V('&'), 'tag_sequence__tag5__name', V('&')))
             for tag in params['tags'].split(','):
                 posts = posts.filter(tags__contains='&{}&'.format(tag))
+
+        order = self.get_order()
+        if order['ranking']:
+            posts = posts.annotate(rank=F('agree_count') - F('disagree_count')).order_by('-rank')
+        elif order['favorite_count']:
+            posts = posts.order_by('-favorite_count')
 
         return self.get_post_items(self.get_idx_items(posts))
 

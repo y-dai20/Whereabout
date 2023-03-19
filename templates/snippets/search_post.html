@@ -1,3 +1,4 @@
+<form id="search-post-form">
 <div class="accordion" id="search-post-accordion">
     <div class="accordion-item index-search">
         <p class="accordion-header" id="search-post-accordion-hearder1">
@@ -7,7 +8,6 @@
         </p>
         <div id="search-post-accordion-collapse1" class="accordion-collapse collapse show" aria-labelledby="search-post-accordion-hearder1" data-bs-parent="#search-post-accordion">
         <div class="accordion-body">
-            <form id="search-post-form">
                 <table class="table"> 
                     <tr>
                         <th scope="row" class="search-post-th"><label for="post-search-username">ユーザー</label></th>
@@ -80,11 +80,55 @@
                 </table>
                 <div class="right-button">
                     <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
-                    <button type="button" class="btn btn-secondary" id="search-post-button">検索</button>
+                    <button type="button" class="btn btn-secondary search-post-button">検索</button>
                 </div>
-            </form>
         </div>
       </div>
     </div>
+    <div class="accordion-item index-search">
+        <p class="accordion-header" id="order-post-header1">
+            <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#order-post-collapse1" aria-expanded="true" aria-controls="order-post-collapse1">
+            【並べ替え】
+            </button>
+        </p>
+        <div id="order-post-collapse1" class="accordion-collapse collapse" aria-labelledby="order-post-header1" data-bs-parent="#search-post-accordion">
+            <div class="accordion-body">
+                <div class="radio-button-area">
+                {% if order.created_at %}
+                <input type="radio" id="order-created" name="order" value="created_at" checked>
+                {% else %}
+                <input type="radio" id="order-created" name="order" value="created_at">
+                {% endif %}
+                <label for="order-created">最新順</label>
+                <div class="radio-check"></div>
+                </div>
+    
+                <div class="radio-button-area">
+                {% if order.ranking %}
+                <input type="radio" id="order-ranking" name="order" value="ranking" checked>
+                {% else %}
+                <input type="radio" id="order-ranking" name="order" value="ranking">
+                {% endif %}
+                <label for="order-ranking">ランキング</label>
+                <div class="radio-check"></div>
+                </div>
+    
+                <div class="radio-button-area">
+                {% if order.favorite_count %}
+                <input type="radio" id="order-favorite-count" name="order" value="favorite_count" checked>
+                {% else %}
+                <input type="radio" id="order-favorite-count" name="order" value="favorite_count">
+                {% endif %}
+                <label for="order-favorite-count">お気に入り数順</label>
+                <div class="radio-check"></div>
+                </div>
+    
+                <div class="right-button">
+                    {% comment %} <button type="submit" class="btn btn-secondary">並べ替え</button> {% endcomment %}
+                    <button type="button" class="btn btn-secondary search-post-button">並び替え</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
-
+</form>
