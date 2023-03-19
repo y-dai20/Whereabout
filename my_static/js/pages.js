@@ -1325,12 +1325,6 @@ $(document).on('click', '.copy-link', function() {
     });
 });
 
-$('.calender-accordion').accordion({
-    header:'p',
-    collapsible:true,
-    active:false,
-});
-
 $('.search-post-button').on('click', function() {
     var url = get_form_href('search-post-form');
     search_post_ajax(url);
