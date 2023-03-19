@@ -1,6 +1,6 @@
 .slider {/*横幅94%で左右に余白を持たせて中央寄せ*/
     width:90%;
-    margin: auto;
+    margin: 0;
     padding: 0;
 }
 

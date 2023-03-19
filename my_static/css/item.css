@@ -39,6 +39,7 @@
 .room-item-img {
     height: 200px;
     max-width: 95%;
+    width: auto;
     display: flex;
     justify-content: center;
     align-items: center;
