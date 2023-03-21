@@ -19,7 +19,7 @@ class StaticSitemap(Sitemap):
     priority = 0.5
 
     def items(self):
-        return ['rooms', 'posts', 'users']
+        return ['login', 'send-mail-signup', 'send-mail-reset-password', 'rooms', 'posts', 'users']
 
     def location(self, obj):
         return reverse(obj)
