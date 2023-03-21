@@ -1,6 +1,6 @@
 from django.db import models
 from django.conf import settings
-
+from django.urls import reverse
 
 from base.models import create_id
 from base.models.post_models import Post
@@ -32,6 +32,9 @@ class ReplyPost(models.Model):
     is_deleted = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
+
+    def get_absolute_url(self):
+        return reverse('reply-detail', kwargs={'reply_pk':self.id})
 
     class Meta:
         ordering = ['-created_at']

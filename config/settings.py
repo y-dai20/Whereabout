@@ -44,6 +44,8 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django.contrib.sites',
+    'django.contrib.sitemaps',
 
     'base',
     # 'silk',
@@ -231,3 +233,5 @@ LOGGING = {
         'level': 'INFO',
     },
 }
+
+SITE_ID = 1

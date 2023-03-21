@@ -31,8 +31,8 @@
         </div>
       </form>
       <div class="text-center c-white">
-        <p>パスワードを忘れた場合は<a href="/reset-password/">こちら</a></p>
-        <p>新規登録の場合は<a href="/signup/">こちら</a></p>
+        <p>パスワードを忘れた場合は<a href="{% url 'send-mail-reset-password' %}">こちら</a></p>
+        <p>新規登録の場合は<a href="{% url 'send-mail-signup' %}">こちら</a></p>
       </div>
     </div>
   </div>

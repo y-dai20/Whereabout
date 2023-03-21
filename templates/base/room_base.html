@@ -48,15 +48,15 @@
 <div class="room-admin-sidebar right-sidebar sidebar">
   <div class="sidebar-item">
     {% if is_admin %}
-      <a href="/manage/room/{{room_id}}/" role="button" type="button" class="sidebar-button btn btn-secondary" value="">Roomの管理</a>
+    <a href="{% url 'manage-room' room_id %}" role="button" type="button" class="sidebar-button btn btn-secondary" value="">Roomの管理</a>
     {% elif is_blocked %}
       <a href="#" role="button" type="button" class="sidebar-button btn btn-secondary" value="" disabled>ブロックされています</a>
     {% elif is_room_user %}
-      <a href="#" data-url="/leave/room/{{room_id}}/" role="button" type="button" class="sidebar-button btn btn-secondary leave-room-confirm-button" value="">退出する</a>
+      <a href="#" data-url="{% url 'leave-room' room_id %}" role="button" type="button" class="sidebar-button btn btn-secondary leave-room-confirm-button" value="">退出する</a>
     {% elif is_waiting %}
       <a href="#" role="button" type="button" class="sidebar-button btn btn-secondary" value="" disabled>許可待ち</a>
     {% else %}
-      <a href="#" data-url="/join/room/{{room_id}}/" role="button" type="button" class="join-room-button sidebar-button btn btn-secondary" value="">参加</a>
+      <a href="#" data-url="{% url 'join-room' room_id %}" role="button" type="button" class="join-room-button sidebar-button btn btn-secondary" value="">参加</a>
     {% endif %}
   </div>
   <div class="sidebar-item">

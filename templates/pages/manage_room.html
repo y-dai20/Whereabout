@@ -39,7 +39,7 @@
 
 <div class="content manage-room-content">
   <div class="my-container c-white">
-    <a href="/room/{{room_id}}/" role="button" class="btn btn-secondary">Roomに戻る</a>
+    <a href="{% url 'room' room_id %}" role="button" class="btn btn-secondary">Roomに戻る</a>
     <h1 class="manage-room-title">Roomの管理：{{title}}</h1>
 
     <div class="tab-content">

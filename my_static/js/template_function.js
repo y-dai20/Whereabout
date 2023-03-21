@@ -116,7 +116,7 @@ function get_post_header(post, need_room=true) {
 function get_post_content(post) {
     var html = `<div class="post-content">
             ${get_tags(post.post_tags, 'posts')}
-            <h2 class="post-title">${escapeHTML(post.title)}</h2>
+            <span class="post-title">${escapeHTML(post.title)}</span><br>
             <span class="post-text">${adapt_linebreaks(escapeHTML(post.text))}</span><br>
             <span class="post-source">${get_item_source(post.source)}</span>
         </div>
@@ -365,7 +365,7 @@ function get_room_content(room) {
 
 function get_room_footer(room) {
     var html = `<div class="footer-button item-footer" data-id="${room.id}" data-type="room">
-    <button data-href="/room/${room.id}/" class="new-window-open btn btn-secondary" type="button">移動</button>`;
+    <button data-href="${room.url}" class="new-window-open btn btn-secondary" type="button">移動</button>`;
     if (room.good_state) {
         html += `<button type="button" class="good-button btn btn-success">Good</button>`;
     } else {
@@ -438,6 +438,7 @@ function get_item_source(source, color='blue') {
     return '';
 }
 
+//todo url
 function create_search_room_result(room) {
     room = get_parsed_str(room);
     return `<div class="search-result">
@@ -453,6 +454,7 @@ function create_search_user_result(user) {
     <button type="button" data-username="${user.username}" class="invite-user btn btn-secondary btn-sm">招待</button></div>`;
 }
 
+//todo url
 function create_myroom_dropdown(id, title) {
     $('.myroom-list').prepend(`<a class="dropdown-item" href="/room/${id}/">${escapeHTML(title)}</a>`);
 }

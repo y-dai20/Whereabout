@@ -308,6 +308,9 @@ $(document).ready(function() {
 			video:{
 				extension: VIDEO_EXTENSION,
 			},
+			tags:{
+
+			},
 		},
 
 		messages:{
@@ -324,6 +327,9 @@ $(document).ready(function() {
 			},
 			video:{
 				extension:get_extension_message(VIDEO_EXTENSION),
+			},
+			tags:{
+
 			},
 		},
 
@@ -722,6 +728,7 @@ function show_reply_types(obj, reply_types) {
 	}
 
 	$('#reply-form').find('.select-reply-type').html(reply_type_html);
+	//todo url
 	$('#reply-form').find('#submit-reply-button').data('href', `/${obj.type}/${obj.id}/reply/`);
 
 	show_modal('modal-reply');

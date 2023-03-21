@@ -2,6 +2,7 @@ from django.db import models
 from django.conf import settings
 from django.dispatch import receiver
 from django.db.models.signals import post_save
+from django.urls import reverse
 
 from base.models import create_id
 from base.models.general_models import Personal, TagSequence
@@ -48,6 +49,9 @@ class Room(models.Model):
 
     def __str__(self):
         return 'NAME:{}_ID:{}'.format(self.title, self.id)
+    
+    def get_absolute_url(self):
+        return reverse('room', kwargs={'room_pk':self.id})
     
     class Meta:
         ordering = ['-created_at']

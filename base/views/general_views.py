@@ -468,6 +468,7 @@ class RoomItemView(View):
             'good_state':user_good[0]['is_good'] if user_good.exists() else None,
             'star_denominator':room.good_count + room.bad_count,
             'max_star':self.max_star,
+            'url':room.get_absolute_url()
         }
         room_dict['star_rate'] = round(room.good_count / room_dict['star_denominator'], 1) * self.max_star if room_dict['star_denominator'] > 0 else 0.0
         
@@ -517,6 +518,7 @@ class PostItemView(View):
             'demagogy_state':user_demagogy[0]['is_true'] if user_demagogy.exists() else None,
             'can_user_delete':post.user == user,
             'post_tags':self.get_post_tags(post),
+            'url':post.get_absolute_url()
         }
 
         if post.room is not None:
@@ -631,6 +633,7 @@ class ReplyItemView(View):
             'favorite_state':favorite_state.exists(),
             'favorite_count':f.get_number_unit(reply.favorite_count),
             'can_user_delete':reply.user == user,
+            'url':reply.get_absolute_url()
         }
 
         if vr.is_room_exist():

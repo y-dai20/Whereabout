@@ -428,6 +428,7 @@ $('#submit-create-room-button').on('click', function(event) {
         }
         create_myroom_dropdown(data.room_id, data.room_title);
         close_modal('modal-create-room');
+        //todo url
         var footer = !is_empty(data.room_id) ? `<a href="/room/${data.room_id}/" role="button" class="btn btn-success">移動</a>` : "";
         show_modal_message(data.title, data.message, footer);
     }).fail(function (data) {
@@ -1038,6 +1039,7 @@ $(document).on('click', '.get-reply-link', function() {
     add_class($('.index-post-reply2-sidebar'), 'not-display');
 
     $('.reply-list').html($(this).clone());
+    //todo url
     $('.post-detail-link').html(`<a href="/post/${obj.id}/" role="button" type="button" class="sidebar-button btn btn-secondary">投稿へ移動</a>`)
     $('.post-detail-link').data('obj-id', obj.id);
     $.ajax({
@@ -1070,6 +1072,7 @@ $(document).on('click', '.get-reply2-link', function() {
 
     $('.index-post-reply2-sidebar').removeClass('not-display');
     $('.reply2-list').html($(this).clone());
+    //todo url
     $('.reply-detail-link').html(`<a href="/reply/${obj.id}/" role="button" type="button" class="btn btn-secondary sidebar-button">返信へ移動</a>`)
     $('.reply-detail-link').data('obj-id', obj.id);
 
@@ -1197,6 +1200,7 @@ $('#change-password-button').on('click', function(){
     }).done(function (data) {
         var footer = '';
         if (data.is_success) {
+            //todo url
             footer = `<a class="btn btn-success" href="/logout/">ログアウト</a>`;
         }
         show_modal_message(data.title, data.message, footer);
@@ -1221,6 +1225,7 @@ $('#signup-button').on('click', function(){
         timeout:60000,
     }).done(function (data) {
         if (data.is_success) {
+            //todo url
             window.location.href = '/rooms/';
         }
         show_modal_message(data.title, data.message);

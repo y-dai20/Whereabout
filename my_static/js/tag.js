@@ -1,13 +1,14 @@
 $(document).ready(function() {
     $('.tag-input').on('keyup keydown', function() {
         var self = this;
-        if (self.timer) {
+        if (!is_empty(self.timer)) {
             clearTimeout(self.timer);
         }
         self.timer = setTimeout(function(){
             self.timer = null;
             var val = $(self).val();
             $.ajax({
+                //todo url
                 url:'/get/tag/',
                 type:'POST',
                 data:{'tag':val},
