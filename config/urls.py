@@ -21,6 +21,13 @@ from django.conf.urls.static import static
 from django.conf import settings
 from django.contrib.sitemaps.views import sitemap
 
+from .sitemaps import RoomSitemap, StaticSitemap
+
+sitemaps = {
+    'room':RoomSitemap,
+    'static':StaticSitemap,
+}
+
 urlpatterns = [
     path('admin/', admin.site.urls),
 
@@ -104,7 +111,7 @@ urlpatterns = [
     path('posts/', views.IndexPostListView.as_view(), name='posts'),
     path('users/', views.IndexUserListView.as_view(), name='users'),
 
-    # path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
+    path('sitemap.xml', sitemap, {'sitemaps': sitemaps}, name='sitemap'),
 ]
 urlpatterns += static(settings.STATIC_URL, document_root=settings.STATIC_ROOT)
 urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

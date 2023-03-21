@@ -4,10 +4,7 @@ from django.urls import reverse
 from base.models import Room
 
 
-class BlogPostSitemap(Sitemap):
-    """
-    ブログ記事のサイトマップ
-    """
+class RoomSitemap(Sitemap):
     changefreq = "daily"
     priority = 0.8
 
@@ -16,3 +13,13 @@ class BlogPostSitemap(Sitemap):
 
     def lastmod(self, obj):
         return obj.created_at
+    
+class StaticSitemap(Sitemap):
+    changefreq = "never"
+    priority = 0.5
+
+    def items(self):
+        return ['rooms', 'posts', 'users']
+
+    def location(self, obj):
+        return reverse(obj)
