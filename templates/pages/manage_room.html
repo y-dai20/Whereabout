@@ -121,6 +121,7 @@
             </span>
           </p>
           <div class="form-group">
+            <p>フォルダから追加はこちら</p>
             <label class="manage-room-video-preview-uploaders video-upload-label">
               動画の追加
               {% if video_path == None %}
@@ -138,6 +139,10 @@
               </div>
               {% endif %}
             </div>
+            <span data-bs-toggle="tooltip" data-bs-placement="right" title="動画IDはURLに含まれている">
+              YouTubeの動画はこちら<script>document.write(get_question_img());</script>
+            </span>
+            <input type="text" class="form-control manage-room-embed-video" name="embed_video" placeholder="動画ID" value="{{embed_video}}">
           </div>
         </form>
       </div>

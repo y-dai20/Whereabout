@@ -747,6 +747,7 @@ class ShowRoomBaseView(RoomAccessRequiredMixin, HeaderView):
         context['need_approval'] = room.need_approval
 
         context['video_path'] = f.get_img_path(room.video)
+        context['embed_video'] = room.embed_video
         context['img_paths'] = self.room_base.get_room_img_paths()
         context['room_tabs'] = self.room_base.get_room_tabs()
         context['room_tab_items'] = self.room_base.get_room_tab_items(self.room.roomtabsequence.tab1)

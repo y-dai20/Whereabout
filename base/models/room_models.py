@@ -29,6 +29,7 @@ class Room(models.Model):
     subtitle = models.CharField(default='', max_length=255, blank=False)
     point = models.IntegerField(default=0)
     video = models.FileField(null=True, blank=True, upload_to=video_directory_path)
+    embed_video = models.CharField(default='', max_length=255, blank=True)
     admin = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)
     is_public = models.BooleanField(default=True)
     need_approval = models.BooleanField(default=False)

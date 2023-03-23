@@ -176,10 +176,19 @@
 
 .room-file-content {
     max-width: 600px;
-    width: 90%;
+    width: 100%;
     height: auto;
     margin: 0 auto;
     padding: 5px;
+}
+
+.yt-wrapper {
+    aspect-ratio: 16 / 9;
+}
+
+.yt-wrapper iframe {
+    width: 100%;
+    height: 100%;
 }
 
 .room-tab-table-col {
@@ -254,12 +263,6 @@
 
 .room-video {
     width: 100%;
-}
-
-#room-video-area {
-    max-width: 800px;
-    width: 100%;
-    margin: auto;
 }
 
 .manage-headline {

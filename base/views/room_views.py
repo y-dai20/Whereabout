@@ -570,6 +570,8 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         if f.get_file_size(video_list) > self.max_video_size:
             return JsonResponse(f.get_json_error_message(['動画サイズが{}を超えています'.format(f.get_file_size_by_unit(self.max_video_size, unit='MB'))]))
         self.room.video = video_list[0]
+
+        self.room.embed_video = f.get_dict_item(form_data, 'embed_video')
         self.room.save()
 
         img_list = f.get_img_list(form_data, self.files, self.max_img, [self.room.img1, self.room.img2, self.room.img3, self.room.img4, self.room.img5])

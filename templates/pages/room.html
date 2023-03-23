@@ -21,10 +21,17 @@
       <button type="button" class="btn btn-sm btn-secondary" id="change-video-img-button">動画⇄画像</button>
     {% endif %}
     {{img_paths | json_script:'img_paths'}}
-    {% if video_path %}
+    {% if video_path or embed_video %}
       <div id="room-video-area">
         <button class="close-button not-display" id="room-video-close-button">x</button>
+        {% if embed_video %}
+        <script>
+          var id = "{{embed_video}}";
+          document.write(get_youtube_embed(id));
+        </script>
+        {% elif video_path %}
         <video controls autoplay muted src="{{video_path}}" class="room-video"></video>
+        {% endif %}
       </div>
       <script>
         var img_paths = JSON.parse(document.getElementById('img_paths').textContent);

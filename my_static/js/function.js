@@ -703,3 +703,22 @@ function set_url_parameter(_url, label, val) {
     url.search = params.toString();
     return url.toString();
 }
+
+function get_youtube_embed(id) {
+    return `
+    <div class="yt-wrapper">
+    <iframe
+    width="500" height="500"
+    src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1" 
+    title="YouTube video player" 
+    frameborder="0" 
+    allow="accelerometer; 
+    clipboard-write; 
+    encrypted-media; 
+    gyroscope; 
+    picture-in-picture; 
+    web-share" 
+    allowfullscreen></iframe>
+    </div>
+    `;
+}
