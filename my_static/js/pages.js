@@ -1340,12 +1340,12 @@ $('.search-pir-button').on('click', function() {
     search_post_ajax(url);
 });
 
-$('#search-user-button').on('click', function() {
+$('.search-user-button').on('click', function() {
     var url = get_form_href('search-user-form');
     search_user_ajax(url);
 });
 
-$('#search-room-button').on('click', function() {
+$('.search-room-button').on('click', function() {
     var url = get_form_href('search-room-form');
     search_room_ajax(url);
 });

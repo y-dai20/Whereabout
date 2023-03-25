@@ -1,0 +1,25 @@
+<div class="radio-button-area">
+  {% if order.created_at %}
+  <input
+    type="radio"
+    id="order-created"
+    name="order"
+    value="created_at"
+    checked
+  />
+  {% else %}
+  <input type="radio" id="order-created" name="order" value="created_at" />
+  {% endif %}
+  <label for="order-created">最新順</label>
+  <div class="radio-check"></div>
+</div>
+
+<div class="radio-button-area">
+  {% if order.ranking %}
+  <input type="radio" id="order-ranking" name="order" value="ranking" checked />
+  {% else %}
+  <input type="radio" id="order-ranking" name="order" value="ranking" />
+  {% endif %}
+  <label for="order-ranking">ランキング</label>
+  <div class="radio-check"></div>
+</div>

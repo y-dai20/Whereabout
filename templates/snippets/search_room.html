@@ -1,94 +1,96 @@
-<form id="search-room-form">
-<div class="accordion" id="search-room-accordion">
-  <div class="accordion-item index-search">
-    <p class="accordion-header" id="search-room-header1">
-      <button class="accordion-button" type="button" data-bs-toggle="collapse" data-bs-target="#search-room-collapse1" aria-expanded="true" aria-controls="search-room-collapse1">
-        【Room検索】
-      </button>
-    </p>
-    <div id="search-room-collapse1" class="accordion-collapse collapse show" aria-labelledby="search-room-header1" data-bs-parent="#search-room-accordion">
-      <div class="accordion-body">
-          <table class="table"> 
-            <tr>
-              <th scope="row"><label for="room-search-username">管理者</label></th>
-              <td><input type="text" id="room-search-username" placeholder="管理者" name="username" value="{{search.username}}"></td>
-            </tr>
-            <tr>
-              <th scope="row"><label for="room-search-title">タイトル</label></th>
-              <td><input type="text" id="room-search-title" placeholder="タイトル" name="title" value="{{search.title}}"></td>
-            </tr>
-            <tr>
-              <th scope="row"><label for="">作成日</label></th>
-              <td>
-                <input type="date" id="room-search-date-from" name="date_from" value="{{search.date_from}}">
-                  〜
-                <input type="date" id="room-search-date-to" name="date_to" value="{{search.date_to}}">
-              </td>
-            </tr>
-            <tr>
-              <th scope="row"><label for="">参加人数</label></th>
-              <td>
-                <input type="text" id="room-search-participant-from" class="num-autocomplete" placeholder="最小人数" name="participant_from" value="{{search.participant_from}}">
-                〜
-                <input type="text" id="room-search-participant-to" class="num-autocomplete" placeholder="最大人数" name="participant_to" value="{{search.participant_to}}">
-              </td>
-            </tr>
-            <tr>
-              <th scope="row"><label for="">タグ</label></th>
-              <td>
-                <input type="text" class="tag-input" autocomplete="on" list="search-tag-list" placeholder="例)カフェ">
-                <datalist id="search-tag-list"></datalist>
-                <input type="button" class="btn btn-sm btn-primary add-tag-button" value="追加" data-max-len="10">
-                <div class="added-tag-list flex-area" id="added-search-room-tag-list"></div>
-                <input type="hidden" value="" name="tags">
-                <script>
-                    var tags = "{{search.tags}}".split(',');
-                    $.each(tags, function(idx, tag) {
-                        append_removable_tag(tag, '#added-search-room-tag-list');
-                    });
-                </script>
-              </td>
-            </tr>
-          </table>
-          <div class="right-button">
-            <button type="button" class="input-clear-btn btn btn-outline-secondary">クリア</button>
-            <button type="button" class="btn btn-secondary" id="search-room-button">検索</button>
-          </div>
-      </div>
-    </div>
-  </div>
-  <div class="accordion-item index-search">
-    <p class="accordion-header" id="order-room-header1">
-      <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#order-room-collapse1" aria-expanded="false" aria-controls="order-room-collapse1">
-      【並べ替え】
-      </button>
-    </p>
-    <div id="order-room-collapse1" class="accordion-collapse collapse" aria-labelledby="order-room-header1" data-bs-parent="#search-room-accordion">
-        <div class="accordion-body">
-            <div class="radio-button-area">
-              {% if order.created_at %}
-              <input type="radio" id="order-created" name="order" value="created_at" checked>
-              {% else %}
-              <input type="radio" id="order-created" name="order" value="created_at">
-              {% endif %}
-              <label for="order-created">最新順</label>
-              <div class="radio-check"></div>
-            </div>
-
-            <div class="radio-button-area">
-              {% if order.ranking %}
-              <input type="radio" id="order-ranking" name="order" value="ranking" checked>
-              {% else %}
-              <input type="radio" id="order-ranking" name="order" value="ranking">
-              {% endif %}
-              <label for="order-ranking">ランキング</label>
-              <div class="radio-check"></div>
-            </div>
-            <div class="right-button">
-              <button type="button" class="btn btn-secondary search-room-button">並び替え</button>
-            </div>
-        </div>
-    </div>
-</div>
-</div>
-</form>
+<table class="table">
+  <tr>
+    <th scope="row"><label for="room-search-username">管理者</label></th>
+    <td>
+      <input
+        type="text"
+        id="room-search-username"
+        placeholder="管理者"
+        name="username"
+        value="{{search.username}}"
+      />
+    </td>
+  </tr>
+  <tr>
+    <th scope="row"><label for="room-search-title">タイトル</label></th>
+    <td>
+      <input
+        type="text"
+        id="room-search-title"
+        placeholder="タイトル"
+        name="title"
+        value="{{search.title}}"
+      />
+    </td>
+  </tr>
+  <tr>
+    <th scope="row"><label for="">作成日</label></th>
+    <td>
+      <input
+        type="date"
+        id="room-search-date-from"
+        name="date_from"
+        value="{{search.date_from}}"
+      />
+      〜
+      <input
+        type="date"
+        id="room-search-date-to"
+        name="date_to"
+        value="{{search.date_to}}"
+      />
+    </td>
+  </tr>
+  <tr>
+    <th scope="row"><label for="">参加人数</label></th>
+    <td>
+      <input
+        type="text"
+        id="room-search-participant-from"
+        class="num-autocomplete"
+        placeholder="最小人数"
+        name="participant_from"
+        value="{{search.participant_from}}"
+      />
+      〜
+      <input
+        type="text"
+        id="room-search-participant-to"
+        class="num-autocomplete"
+        placeholder="最大人数"
+        name="participant_to"
+        value="{{search.participant_to}}"
+      />
+    </td>
+  </tr>
+  <tr>
+    <th scope="row"><label for="">タグ</label></th>
+    <td>
+      <input
+        type="text"
+        class="tag-input"
+        autocomplete="on"
+        list="search-tag-list"
+        placeholder="例)カフェ"
+      />
+      <datalist id="search-tag-list"></datalist>
+      <input
+        type="button"
+        class="btn btn-sm btn-primary add-tag-button"
+        value="追加"
+        data-max-len="10"
+      />
+      <div
+        class="added-tag-list flex-area"
+        id="added-search-room-tag-list"
+      ></div>
+      <input type="hidden" value="" name="tags" />
+      <script>
+        var tags = "{{search.tags}}".split(",");
+        $.each(tags, function (idx, tag) {
+          append_removable_tag(tag, "#added-search-room-tag-list");
+        });
+      </script>
+    </td>
+  </tr>
+</table>
