@@ -100,6 +100,12 @@ class IndexRoomListView(SearchBaseView, RoomItemView):
             'participant_to':'',
             'tags':'',
         }
+
+        self.order = {
+            'ranking':True,
+            'created_at':False,
+        }
+
     #todo (中) タグ検索の追加
     def get_items(self):
         params = self.get_params()
@@ -129,10 +135,10 @@ class IndexRoomListView(SearchBaseView, RoomItemView):
             for tag in params['tags'].split(','):
                 rooms = rooms.filter(tags__contains='&{}&'.format(tag))
         
-        # rooms = rooms.annotate(diff_now=mf.Cast(mf.Now() - F('created_at'), output_field=DateTimeField())).annotate(
-        #     rank=mf.Round((mf.ExtractYear('diff_now')*365+mf.ExtractMonth('diff_now')*30+mf.ExtractDay('diff_now'))/(F('good_count')+F('bad_count')*0.5+F('participant_count')*1.5))
-        # ).order_by('rank')
-        # print(rooms[0].rank)
+        order = self.get_order()
+        if order['ranking']:
+            rooms = rooms.annotate(rank=F('good_count') - F('bad_count')).order_by('-rank')
+
         return self.get_room_items(self.get_idx_items(rooms))
 
 class IndexUserListView(SearchBaseView, UserItemView):
