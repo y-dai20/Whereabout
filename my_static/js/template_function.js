@@ -340,7 +340,7 @@ function get_room_header(room) {
 
 function get_room_content(room) {
     var html = `<div class="room-item-content">
-        ${get_room_star(room.star_rate, room.max_star, room.star_denominator)}
+        ${get_room_star(room.star_rate, room.star_denominator)}
         ${get_tags(room.room_tags, 'rooms')}
         <div class="room-item-title">
             <h2 class="room-item-title-font">${escapeHTML(room.title)}</h2>
@@ -511,6 +511,6 @@ function get_calender_img() {
     return `<img src="${calenderImg}">`;
 }
 
-function get_room_star(star_rate, max_star, star_denominator) {
-    return `<div class="flex-center"><img class="room-star" src="${yellowStarImg}"><span class="c-yellow">${star_rate}点 / ${max_star}（${star_denominator}）</span></div>`;
+function get_room_star(star_rate, star_denominator) {
+    return `<div class="flex-center"><img class="room-star" src="${yellowStarImg}"><span class="c-yellow">${star_rate}%（${star_denominator}）</span></div>`;
 }

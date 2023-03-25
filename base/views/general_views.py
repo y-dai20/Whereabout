@@ -436,7 +436,6 @@ class RoomBase(object):
         return list(Room.objects.active().public().exclude(id__in=rooms).values_list('id', flat=True))
 
 class RoomItemView(View):
-    max_star = 100
 
     def get_room_items(self, rooms):
         queryset = []
@@ -468,10 +467,9 @@ class RoomItemView(View):
             'bad_count':f.get_number_unit(room.bad_count),
             'good_state':user_good[0]['is_good'] if user_good.exists() else None,
             'star_denominator':room.good_count + room.bad_count,
-            'max_star':self.max_star,
             'url':room.get_absolute_url()
         }
-        room_dict['star_rate'] = round(room.good_count / room_dict['star_denominator'], 1) * self.max_star if room_dict['star_denominator'] > 0 else 0.0
+        room_dict['star_rate'] = round(room.good_count / room_dict['star_denominator'], 1) * 100 if room_dict['star_denominator'] > 0 else 0.0
         
         return room_dict
 
