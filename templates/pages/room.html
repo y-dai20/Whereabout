@@ -18,7 +18,9 @@
   </h2>
   <div class="room-file-content">
     {% if video_path and img_paths %}
+    <div class="left-button">
       <button type="button" class="btn btn-sm btn-secondary" id="change-video-img-button">動画⇄画像</button>
+    </div>
     {% endif %}
     {{img_paths | json_script:'img_paths'}}
     {% if video_path or embed_video %}
@@ -33,15 +35,19 @@
         <video controls autoplay muted src="{{video_path}}" class="room-video"></video>
         {% endif %}
       </div>
+      <div id="room-img-area">
       <script>
         var img_paths = JSON.parse(document.getElementById('img_paths').textContent);
         document.write(get_slider_imgs_html('show-room-slider not-display', img_paths));
       </script>
+      </div>
       {% else %}
+      <div id="room-img-area">
       <script>
         var img_paths = JSON.parse(document.getElementById('img_paths').textContent);
         document.write(get_slider_imgs_html('show-room-slider', img_paths));
       </script>
+      </div>
     {% endif %}
   </div>
 </div>

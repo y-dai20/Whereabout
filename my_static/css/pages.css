@@ -137,6 +137,12 @@ div.accordion-collapse, .accordion-button.collapsed {
     padding: 5px;
 }
 
+.left-button {
+    text-align: left;
+    padding: 5px;
+}
+
+
 .search-post-th {
     width: 100px;
 }
