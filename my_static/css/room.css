@@ -354,9 +354,11 @@ label.form-check-label {
     max-width: 3em;
 }
 
-/* .show-room-container {
-    margin: 0 10px;
-} */
+.show-room-container {
+    max-width: 800px;
+    width: 100%;
+    margin: auto;
+}
 
 .corner-circle {
     border-radius: 10px;

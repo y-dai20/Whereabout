@@ -3,7 +3,6 @@ from django.contrib.auth.hashers import make_password
 from django.views.generic import CreateView, TemplateView, ListView, View
 from django.conf import settings
 from django.http import JsonResponse, Http404
-from django.shortcuts import get_object_or_404
 from django.contrib.auth import login
 from django.utils.timezone import make_naive
 from django.contrib import messages
@@ -122,7 +121,7 @@ class SendMailForSignupView(HeaderView, SendMailView):
         self.email = form.clean_email()
         user = User.objects.get_or_none(email=self.email)
         if user is not None:
-            guest = get_object_or_404(Guest, email=self.email)
+            guest = f.get_object_or_404_from_q(Guest.objects.filter(email=self.email))
             access_count = guest.access_count
             guest.access_count = access_count + 1
             guest.save()

@@ -20,6 +20,7 @@ SOURCE_MAX_LENGTH = 255
 ROOM_TITLE_MAX_LENGTH = 50
 ROOM_SUBTITLE_MAX_LENGTH = 255
 ROOM_INFORMATION_MAX_LENGTH = 255
+ROOM_EMBED_VIDEO_MAX_LENGTH = 255
 PERSONAL_WEB_MAX_LENGTH = 255
 PERSONAL_PHONE_MAX_LENGTH = 15
 PERSONAL_ZIPCODE_MAX_LENGTH = 8
@@ -165,7 +166,13 @@ class UpdateRoomForm(CreateRoomForm):
 
     class Meta:
         model = Room
-        fields = ('title', 'subtitle')
+        fields = ('title', 'subtitle', 'embed_video')
+
+    def clean_embed_video(self):
+        embed_video = self.cleaned_data.get('embed_video')
+        if ROOM_EMBED_VIDEO_MAX_LENGTH < len(embed_video):
+            raise ValidationError(('サブタイトルは{}文字以下で入力してください'.format(ROOM_EMBED_VIDEO_MAX_LENGTH)))
+        return embed_video
 
 class RoomRequestInformationForm(ValidationForm, forms.ModelForm):
 

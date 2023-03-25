@@ -704,7 +704,8 @@ function set_url_parameter(_url, label, val) {
     return url.toString();
 }
 
-function get_youtube_embed(id) {
+function get_youtube_embed(url) {
+    var id = url.split('/').pop();
     return `
     <div class="yt-wrapper">
     <iframe

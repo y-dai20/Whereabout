@@ -22,6 +22,7 @@ from datetime import datetime, timedelta
 from abc import abstractmethod
 
 
+#todo (高) roomに関してはValidateRoomViewを使うようにすべし
 #todo (中) 外部キーがあるモデルはマネージャーを作成する
 #todo (中) roomの親子関係を作成し、評価やユーザーを結合するなど
 #todo (高) detail画面でh1などを作成して，SEO対策をする

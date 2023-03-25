@@ -117,9 +117,9 @@ class GetRoomTabItems(TemplateView):
         if f.is_empty(room_tab_id) or not f.is_str(room_tab_id):
             raise MyBadRequest('room_tab_id is error.')
         
-        room_tab = RoomTab.objects.get_object_or_404(id=room_tab_id)
+        room_tab = f.get_object_or_404_from_q(RoomTab.objects.filter(id=room_tab_id))
         vr = ValidateRoomView(room_tab.room)
-        if not vr.check_access(request.user):
+        if not vr.can_access(request.user):
             raise MyBadRequest('room access error.')
 
         room_base = RoomBase()
@@ -571,7 +571,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
             return JsonResponse(f.get_json_error_message(['動画サイズが{}を超えています'.format(f.get_file_size_by_unit(self.max_video_size, unit='MB'))]))
         self.room.video = video_list[0]
 
-        self.room.embed_video = f.get_dict_item(form_data, 'embed_video')
+        self.room.embed_video = form.clean_embed_video()
         self.room.save()
 
         img_list = f.get_img_list(form_data, self.files, self.max_img, [self.room.img1, self.room.img2, self.room.img3, self.room.img4, self.room.img5])

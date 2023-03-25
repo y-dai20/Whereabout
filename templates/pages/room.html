@@ -28,8 +28,8 @@
         <button class="close-button not-display" id="room-video-close-button">x</button>
         {% if embed_video %}
         <script>
-          var id = "{{embed_video}}";
-          document.write(get_youtube_embed(id));
+          var url = "{{embed_video}}";
+          document.write(get_youtube_embed(url));
         </script>
         {% elif video_path %}
         <video controls autoplay muted src="{{video_path}}" class="room-video"></video>
