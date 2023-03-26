@@ -50,7 +50,7 @@ class LoginView(HeaderView, LoginView):
         return super().form_invalid(form)
     
     def get_user(self):
-        return f.get_from_queryset(User.objects.active(username=f.get_dict_item(self.request.POST, 'username')))
+        return f.get_object_or_none_from_q(User.objects.active(username=f.get_dict_item(self.request.POST, 'username')))
 
 class SignUpView(HeaderView, CreateView):
     form_class = SignUpForm
@@ -229,7 +229,7 @@ class SendMailForResetPasswordView(SendMailView, ResetPasswordBaseView):
         username = f.get_dict_item(request.POST, 'username')
         email = form.clean_email()
         
-        user = f.get_from_queryset(User.objects.active(username=username ,email=email))
+        user = f.get_object_or_none_from_q(User.objects.active(username=username ,email=email))
         #todo (低) メールを送信しない場合とする場合のレスポンス時間を同一にする
         if user is None:
             return self.get_success_json_response()

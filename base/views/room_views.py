@@ -9,7 +9,7 @@ from base.views.exceptions import MyBadRequest
 from base.models.general_models import Personal, TagSequence
 from base.models.account_models import User, UserBlock
 from base.models.post_models import Post, PostFavorite
-from base.models.room_models import Room, RoomGuest, RoomUser, RoomGood, RoomAuthority, RoomTab, \
+from base.models.room_models import Room, RoomLink, RoomGuest, RoomUser, RoomGood, RoomAuthority, RoomTab, \
     RoomTabItem, RoomInviteUser, RoomReplyType, RoomTabSequence, RoomRequestInformation, RoomInformation
 from base.views.general_views import ShowRoomBaseView, PostItemView, RoomItemView, RoomBase, SearchBaseView, GoodView
 from base.views.validate_views import ValidateRoomView
@@ -163,7 +163,7 @@ class ManageRoomView(ManageRoomBaseView, ShowRoomBaseView, ListView):
                 if f.is_empty(rri):
                     information.append('')
                     continue
-                ri = f.get_from_queryset(RoomInformation.objects.active(rri=rri['id'], user=room_user.user))
+                ri = f.get_object_or_none_from_q(RoomInformation.objects.active(rri=rri['id'], user=room_user.user))
                 if ri is None:
                     information.append('')
                 else:
@@ -442,7 +442,7 @@ class ManageRoomAuthorityView(ManageRoomBaseView, TemplateView):
 
         for jd in f.get_dict_item_list(json_data, 'checks'):
             ru = f.get_object_or_404_from_q(RoomUser.objects.active(room=room, user__username=f.get_dict_item(jd, 'username')))
-            auth = f.get_from_queryset(RoomAuthority.objects.active(id=ru.authority.id))
+            auth = f.get_object_or_none_from_q(RoomAuthority.objects.active(id=ru.authority.id))
             can_reply, can_post, is_admin = self.get_authority_check(jd)
             if can_reply is not None:
                 auth.can_reply = can_reply
@@ -454,7 +454,7 @@ class ManageRoomAuthorityView(ManageRoomBaseView, TemplateView):
 
         default = f.get_dict_item_list(json_data, 'defa')
         if not f.is_empty(default):
-            auth = f.get_from_queryset(RoomAuthority.objects.active(id=room.authority.id))
+            auth = f.get_object_or_none_from_q(RoomAuthority.objects.active(id=room.authority.id))
             can_reply, can_post, is_admin = self.get_authority_check(default)
             if can_reply is not None:
                 auth.can_reply = can_reply
@@ -525,6 +525,7 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
     max_img_size = 2 * 1024 * 1024
     max_video_size = 11 * 1024 * 1024
     max_video = 1
+    max_room_link = 5
 
     def get(self, request, *args, **kwargs):
         raise Http404
@@ -584,7 +585,32 @@ class ManageRoomDisplayView(ManageRoomBaseView, TemplateView):
         self.room.img5 = img_list[4]  
         self.room.save()
 
+        links = f.literal_eval(f.get_dict_item_dict(form_data, 'links'))
+        for link in f.get_dict_item_list(links, 'create'):
+            if not self.check_room_link(link) or RoomLink.objects.active(room=self.room).count() > self.max_room_link:
+                continue
+            RoomLink.objects.create(room=self.room, icon=link['icon'], link=link['link'])
+        for link in f.get_dict_item_list(links, 'update'):
+            if not self.check_room_link(link):
+                continue
+            room_link = f.get_object_or_none_from_q(RoomLink.objects.active(id=link['id'], room=self.room))
+            if room_link is None:
+                continue
+            room_link.icon = link['icon']
+            room_link.link = link['link']
+            room_link.save()
+        delete_link_ids = f.get_dict_item_list(links, 'delete')
+        if not f.is_empty(delete_link_ids):
+            RoomLink.objects.active(id__in=delete_link_ids, room=self.room).update(is_deleted=True)
+
         return JsonResponse(f.get_json_success_message(['保存しました']))
+    
+    def check_room_link(self, dict):
+        link = f.get_dict_item(dict, 'link')
+        icon = f.get_dict_item(dict, 'icon')
+        if f.is_empty(link) or f.is_empty(icon):
+            return False
+        return True
 
 class ManageRoomTabView(ManageRoomBaseView, TemplateView):
     model = Room
@@ -640,7 +666,7 @@ class ManageRoomTabView(ManageRoomBaseView, TemplateView):
             self.error_messages.append('タブのタイトルは{}文字以内に収めてください'.format(self.max_tab_title_len))
             return None
         
-        room_tab = f.get_from_queryset(RoomTab.objects.active(id=room_tab_id))
+        room_tab = f.get_object_or_none_from_q(RoomTab.objects.active(id=room_tab_id))
         if room_tab is None:
             return RoomTab.objects.create(title=title, room=self.room)
         

@@ -67,6 +67,7 @@
     const phoneImg = "{% static "images/phone.svg" %}";
     const mapImg = "{% static "images/map.svg" %}";
     const calenderImg = "{% static "images/calender.svg" %}";
+    const uploadImg = "{% static "images/upload.svg" %}";
   </script>
   <script type="text/javascript" src="{% static 'js/const.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/function.js' %}"></script>
@@ -92,6 +93,7 @@
       {% include "modal/modal_user.html" %}
       {% include "modal/modal_room_request_information.html" %}
       {% include "modal/modal_message.html" %}
+      {% include "modal/modal_room_icon.html" %}
       {% block main %}
       {% endblock %}
     </div>

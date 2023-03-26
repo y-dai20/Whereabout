@@ -33,13 +33,16 @@ function get_dict_value(dict, key) {
 }
 
 function is_empty(str) {
-    if (str === undefined | str === null) {
+    if (str == undefined | str == null) {
         return true;
     }
-    if (typeof str == 'string' && str.trim() === "") {
+    if (typeof str == 'string' && str.trim() == "") {
         return true;
     }
-    if (str.length === 0) {
+    if (str == 'undefined') {
+        return true;
+    }
+    if (str.length == 0) {
         return true;
     }
 
@@ -227,11 +230,11 @@ function get_img_preview_html(img_path, name, file_name="", file_size=0, col=2, 
 
 function get_video_preview_html(video_path, name, file_name="", file_size=0, has_delete=true) {
     var html = `<div class="${name}-video-preview" file-name="${file_name}" data-size="${file_size}">
-        <video controls src="${video_path}" class="${name}-video"></video>`
+        <video controls src="${video_path}" class="${name}-video"></video>`;
     if (has_delete) {
         html += `<div class="delete">
             <a class="${name}-video-delete-button delete-font">削除</a>
-        </div>`
+        </div>`;
     }
     html += `</div>`;
     return html;
@@ -704,13 +707,18 @@ function set_url_parameter(_url, label, val) {
     return url.toString();
 }
 
-function get_youtube_embed(url) {
+function get_youtube_embed(url, is_autoplay=true) {
     var id = url.split('/').pop();
+    id = id.includes('?') ? id + '&' : id + '?';
+    if (is_autoplay) {
+        id += 'autoplay=1&';
+    }
+
     return `
     <div class="yt-wrapper">
     <iframe
     width="500" height="500"
-    src="https://www.youtube.com/embed/${id}?autoplay=1&mute=1" 
+    src="https://www.youtube.com/embed/${id}mute=1" 
     title="YouTube video player" 
     frameborder="0" 
     allow="accelerometer; 

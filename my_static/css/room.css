@@ -391,3 +391,27 @@ input#input-room-title, textarea#input-room-subtitle {
     max-width: 600px;
     width: 100%;
 }
+
+.link-item-icon-list {
+    margin: 5px 0;
+}
+
+.link-item-icon {
+    max-width: 50px;
+    width: 100%;
+    margin: 0 10px;
+}
+
+img.select-img{
+    cursor: pointer;
+	position:relative;
+	top:0;
+}
+img.select-img:hover{
+	top:-10px;
+	transition:0.3s;
+}
+
+.room-link-item {
+    margin-bottom: 5px;
+}

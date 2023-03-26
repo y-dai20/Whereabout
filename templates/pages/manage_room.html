@@ -1,4 +1,5 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block title %}
   {{title}}
@@ -121,7 +122,7 @@
             </span>
           </p>
           <div class="form-group">
-            <p>フォルダから追加はこちら</p>
+            <span>フォルダから追加はこちら</span>
             <label class="manage-room-video-preview-uploaders video-upload-label">
               動画の追加
               {% if video_path == None %}
@@ -143,6 +144,26 @@
               YouTubeの動画はこちら<script>document.write(get_question_img());</script>
             </span>
             <input type="text" class="form-control manage-room-embed-video" name="embed_video" placeholder="https://youtu.be/xxxxx" value="{{embed_video}}">
+          </div>
+
+          <p for="video" class="manage-headline">リンク</p>
+          <div class="form-group">
+            <div class="flex-area">
+              <a class="btn btn-sm btn-primary add-room-link-btn" href="#" role="button">追加</a>
+            </div>
+            <div class="room-link-item-list">
+              {% if links %}
+                {{links | json_script:'links'}}
+                <script>
+                  var links =JSON.parse(document.getElementById('links').textContent);
+                  $.each(links, function(idx, link) {
+                    document.write(get_editable_room_icon(link.id, link.icon, link.link));
+                  });
+                </script>
+              {% else %}
+                <script>document.write(get_editable_room_icon());</script>
+              {% endif %}
+            </div>
           </div>
         </form>
       </div>

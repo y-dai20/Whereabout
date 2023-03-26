@@ -11,7 +11,7 @@ from base.views.exceptions import MyBadRequest
 from base.models.post_models import Post, PostAgree, PostFavorite, PostDemagogy
 from base.models.reply_models import ReplyPost, ReplyReply, ReplyAgree, ReplyFavorite, ReplyDemagogy, Reply2Agree, Reply2Favorite, Reply2Demagogy, ReplyPosition
 from base.models.room_models import Room, RoomUser, RoomGuest, RoomInviteUser, RoomReplyType, RoomTabItem,\
-    RoomGood, RoomRequestInformation, RoomInformation
+    RoomGood, RoomRequestInformation, RoomInformation, RoomLink
 from base.models.account_models import UserFollow, UserBlock, Profile
 from base.models.general_models import Tag
 from base.views.mixins import LoginRequiredMixin, RoomAccessRequiredMixin
@@ -753,6 +753,10 @@ class ShowRoomBaseView(RoomAccessRequiredMixin, HeaderView):
         context['request_information'] = self.room_base.get_room_request_information()
         context['room_tags'] = self.room_base.get_room_tags()
 
+        #! test
+        links = RoomLink.objects.active(room=room).values('id', 'icon', 'link')
+        context['links'] = list(links)
+
         #todo (高) 住所の表示方法について
         if self.room.personal is not None:
             context['web'] = self.room.personal.web
@@ -799,7 +803,7 @@ class ShowRoomBaseView(RoomAccessRequiredMixin, HeaderView):
             return context
 
         #todo (低) 基本的にobjects.filterは共通で書くようにする
-        room_user = f.get_from_queryset(RoomUser.objects.active(room=room, user=self.request.user))
+        room_user = f.get_object_or_none_from_q(RoomUser.objects.active(room=room, user=self.request.user))
         if room_user is not None:
             if room_user.is_blocked:
                 context['is_blocked'] = True
@@ -807,7 +811,7 @@ class ShowRoomBaseView(RoomAccessRequiredMixin, HeaderView):
                 context['is_room_user'] = True
             return context
         
-        room_guest = f.get_from_queryset(RoomGuest.objects.active(room=room, guest=self.request.user))
+        room_guest = f.get_object_or_none_from_q(RoomGuest.objects.active(room=room, guest=self.request.user))
         if room_guest is not None:
             context['is_waiting'] = True
     

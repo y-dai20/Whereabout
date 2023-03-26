@@ -49,6 +49,13 @@
       </script>
       </div>
     {% endif %}
+    <div class="room-link-list flex-area">
+      {% for link in links%}
+        <div class="link-item-icon">
+          <a href="{{link.link}}"><img src="{{link.icon}}" class="select-img"></a>
+        </div>
+      {% endfor %}
+    </div>
   </div>
 </div>
 <h2 id="room-tab-link"></h2>

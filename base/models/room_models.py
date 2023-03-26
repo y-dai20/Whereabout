@@ -187,6 +187,15 @@ class RoomGood(models.Model):
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
 
+class RoomLink(models.Model):
+    objects = m.BaseManager()
+    id = models.CharField(default=create_id, primary_key=True, max_length=settings.ID_LENGTH, editable=False)
+    room = models.ForeignKey(Room, on_delete=models.CASCADE)
+    icon = models.ImageField(null=False, upload_to=room_directory_path)
+    link = models.CharField(max_length=255, blank=False, null=False)
+    is_deleted = models.BooleanField(default=False)
+    created_at = models.DateTimeField(auto_now_add=True)
+
 @receiver(post_save, sender=Room)
 def create_onetoone(sender, **kwargs):
     if kwargs['created']:

@@ -514,3 +514,27 @@ function get_calender_img() {
 function get_room_star(star_rate, star_denominator) {
     return `<div class="flex-center"><img class="room-star" src="${yellowStarImg}"><span class="c-yellow">${star_rate}%（${star_denominator}）</span></div>`;
 }
+
+function get_upload_img() {
+    return `<img src="${uploadImg}" class="upload-img">`;
+}
+
+function get_editable_room_icon(id="", icon="", link="") {
+    if (is_empty(icon)) {
+        icon = humanImg;
+    }
+
+    return `
+    <div class="room-link-item v-bottom" data-id="${escapeHTML(id)}">
+        <div class="link-item-icon">
+            <a class="select-icon-btn">
+                <img src="${escapeHTML(icon)}" class="select-img">
+            </a>
+        </div>
+        <div class="link-item-link">
+            <label for="">リンク</label><br>
+            <input type="text" placeholder="https://xxxx" value="${escapeHTML(link)}">
+        </div>
+        <a class="delete-room-link-item delete-font">削除</a>
+    </div>`;
+}

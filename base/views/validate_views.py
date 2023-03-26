@@ -8,7 +8,7 @@ class ValidateRoomView(View):
         super().__init__()
         self.error_messages = []
         if f.is_str(room):
-            self.room = f.get_from_queryset(Room.objects.active(id=room))
+            self.room = f.get_object_or_none_from_q(Room.objects.active(id=room))
         elif isinstance(room, Room):
             self.room = room
         else:

@@ -42,6 +42,7 @@ admin.site.register(ReplyDemagogy)
 
 admin.site.register(RoomAuthority)
 admin.site.register(Room)
+admin.site.register(RoomLink)
 admin.site.register(RoomTabSequence)
 admin.site.register(RoomTab)
 admin.site.register(RoomTabItem)

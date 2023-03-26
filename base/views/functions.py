@@ -301,14 +301,14 @@ def get_tag(val, created_by=None):
     
     return Tag.objects.create(name=val, created_by=created_by)
 
-def get_from_queryset(queryset):
+def get_object_or_none_from_q(queryset):
     if is_empty(queryset):
         return None
     
     return queryset[0] if queryset.exists() else None
 
 def get_object_or_404_from_q(queryset):
-    obj = get_from_queryset(queryset)
+    obj = get_object_or_none_from_q(queryset)
     if obj is None:
         raise Http404()
     return obj

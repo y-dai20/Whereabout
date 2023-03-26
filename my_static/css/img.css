@@ -62,3 +62,8 @@ img.room-star {
     height: auto;
     margin: auto 3px;
 }
+
+.icon {
+    height: 30px;
+    width: 30px;
+}

@@ -78,6 +78,11 @@ span.error, p.error {
     align-items: center;
 }
 
+.v-bottom {
+    display: flex;
+    align-items: flex-end;
+}
+
 nav.navbar, .modal-header, .dropdown-menu {
     background-color: rgb(37, 58, 86);
 }

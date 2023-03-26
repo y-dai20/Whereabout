@@ -1,3 +1,5 @@
+var deleteRoomLinkIds = [];
+
 $(document).ready(function(){
     $('.select-post-room').select2({
         dropdownParent: $('#modal-post'),
@@ -452,7 +454,19 @@ $(document).on('click', '.save-display-button', function(){
 
     var fd = get_img_preview_files('manage-room');
     fd = get_video_preview_files('manage-room', fd);
-    fd = get_form_data(form, ['input', 'textarea'], fd);
+    fd = get_form_data(form, ['input', 'textarea'], fd);    
+    
+    var links = {'create':[], 'update':[], 'delete':deleteRoomLinkIds};
+    $(`#${form}`).find('.room-link-item').each(function() {
+        var id = $(this).data('id');
+        var link = {'id':id, 'icon':$(this).find('img').attr('src'),'link':$(this).find('input').val()};
+        if (is_empty(id)) {
+            links['create'].push(link);
+            return true;
+        }
+        links['update'].push(link);
+    });
+    fd.append('links', JSON.stringify(links));
 
     $.ajax({
         url:'/manage/room-display/' + $('#manage-room-id').val() + '/',
@@ -1369,4 +1383,33 @@ $('.toggle-button').on('click', function() {
 $('.expand-area').on('click change keyup keydown paste cut input', function(){
     $(this).height(0);
     $(this).height(this.scrollHeight);
+});
+
+var modal_room_icon_target = null;
+$(document).on('click', '.select-icon-btn', function() {
+    show_modal('modal-room-icon');
+    modal_room_icon_target = $(this);
+});
+
+$(document).on('click', '.delete-room-link-item', function() {
+    var id = $(this).parent('.room-link-item').data('id');
+    if (!is_empty(id)) {
+        deleteRoomLinkIds.push(id);
+    }
+    $(this).parent('.room-link-item').remove();
+});
+
+$('.select-link-item-icon').on('click', function() {
+    if (is_empty(modal_room_icon_target)) {
+        return false;
+    }
+
+    modal_room_icon_target.html($(this).clone());
+    modal_room_icon_target = null;
+    close_modal('modal-room-icon');
+});
+
+//追加個数の制限を設ける
+$('.add-room-link-btn').on('click', function() {
+    $('.room-link-item-list').append(get_editable_room_icon());
 });
