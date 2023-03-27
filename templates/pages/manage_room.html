@@ -75,7 +75,7 @@
             </span>
           </p>
           <div class="form-group">
-            <textarea class="input-subtitle form-control expand-area" id="input-room-subtitle" name="subtitle" rows="3" data-max-len="255">{{subtitle}}</textarea>
+            <textarea class="input-subtitle form-control auto-adjust-height" id="input-room-subtitle" name="subtitle" rows="3" data-max-len="255">{{subtitle}}</textarea>
             <div class="char-len c-green"></div>
           </div>
 
@@ -404,7 +404,7 @@
         <button type="button" data-save-for="information" class="save-confirm-button btn btn-success">保存</button>
         <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
         <p class="manage-headline">入室する際に情報を要求</p>
-        <button type="button" id="room-request-information-demo-button" class="btn btn-secondary">デモ</button>
+        <button type="button" id="room-request-information-demo-btn" class="btn btn-secondary" data-url="{% url 'get-room-request-information' room_id %}">デモ</button>
         <table class="table table-light table-striped">
           <thead>
             <tr>
@@ -661,7 +661,7 @@
       </div>
       <div class="tab-pane container" id="setting-room-pane">
         <p class="manage-headline">Room削除</p>
-        <button type="button" class="btn btn-danger" id="delete-room-button">削除する</button>
+        <button type="button" class="btn btn-danger" id="delete-room-button" data-url="{% url 'delete-room' room_id%}">削除する</button>
       </div>
     </div>
     <div class="hidden-area">

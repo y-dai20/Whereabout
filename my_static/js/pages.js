@@ -1,10 +1,12 @@
-var deleteRoomLinkIds = [];
-
 $(document).ready(function(){
     $('.select-post-room').select2({
         dropdownParent: $('#modal-post'),
         language: 'ja',
     });
+    $('.manage-room-img-preview-list').sortable();
+    $('.manage-room-img-preview-list').disableSelection();
+    toggle_need_approval($('#manage-room-approval'), 'manage-room-approval-label');
+    toggle_is_public($('#manage-room-public'), 'manage-room-public-label');
 });
 
 $(function () {
@@ -12,14 +14,6 @@ $(function () {
     var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
         return new bootstrap.Tooltip(tooltipTriggerEl)
     });
-});
-
-//todo まとめない？？
-$(document).ready(function() {
-    $('.manage-room-img-preview-list').sortable();
-    $('.manage-room-img-preview-list').disableSelection();
-    toggle_need_approval($('#manage-room-approval'), 'manage-room-approval-label');
-    toggle_is_public($('#manage-room-public'), 'manage-room-public-label');
 });
 
 function get_item_data(target) {
@@ -334,7 +328,7 @@ $('#submit-reply-button').on('click', function(event) {
     var fd = get_img_preview_files('reply');
     fd = get_form_data('reply-form', ['input', 'textarea', 'select'], fd);
     $.ajax({
-        url:$(this).data('href'),
+        url:$(this).data('url'),
         type:'POST',
         data:fd,
         dataType:false,
@@ -859,118 +853,6 @@ $(document).on('click', '.delete-confirm-button', function() {
     show_modal_message('確認', ['削除しますか'], footer);
 });
 
-$(document).on('click', '.invite-user', function() {
-    var data = {'username':$(this).data('username')};
-    
-    $.ajax({
-        url:'/invite/room/' + $('#manage-room-id').val() + '/',
-        type:'POST',
-        data:JSON.stringify(data),
-        dataType:'json',
-        contentType:'application/json; charset=utf-8',
-        timeout:60000,
-    }).done(function (data) {
-        show_modal_message(data.title, data.message);
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
-});
-
-$(document).on('click', '.leave-room-confirm-button', function(){
-    var url = $(this).data('url');
-    var footer = `<a type="button" role="button" class="leave-room-button btn btn-danger" href="${url}">退出</a>`;
-    show_modal_message('確認', ['退出しますか'], footer);
-});
-
-//todo urlって何
-$(document).on('click', '.join-room-button', function(){
-    var url = $(this).data('url');
-    var target = $(this);
-    $.ajax({
-        url:url,
-        type:'GET',
-        timeout:60000,
-    }).done(function(data){
-        show_modal_message(data.title, data.message);
-        if (!data.is_success) {
-            return false;
-        }
-        target.removeClass('join-room-button');
-        if (data.is_waiting) {
-            target.prop('disabled', true);
-            target.text("許可待ち");
-        } else {
-            target.addClass('leave-room-confirm-button');
-            target.data('url', url.replace('join', 'leave'));
-            target.text("退出する");
-        }
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
-});
-
-$('#room-video-close-button').on('click', function(){
-    $(this).parent().addClass('not-scroll-function');
-    $('.room-file-content').css('height', 'auto');
-    $('#room-video-area').removeClass('fixed-right-bottom');
-    $('#room-video-area').find('.close-button').addClass('not-display');
-    $('#room-video-area').css('width', '100%');
-});
-
-$('.show-room-content').on('scroll', function(){
-    if (!$('video').hasClass('room-video') | $('#room-video-area').hasClass('not-scroll-function')) {
-        return false;
-    }
-    var windowScrollTop = $('body').scrollTop();
-    var offsetTop = $('#room-tab-pane-list').offset().top;
-    if (windowScrollTop > offsetTop - 50 && !$('#room-video-area').hasClass('fixed-right-bottom')) {
-        $('.room-file-content').css('height', $('#room-video-area').height());
-        $('#room-video-area').addClass('fixed-right-bottom');
-        $('#room-video-area').find('.close-button').removeClass('not-display');
-        $('#room-video-area').css('width', '300px');
-    } else if (windowScrollTop < offsetTop - 100 && $('#room-video-area').hasClass('fixed-right-bottom')) {
-        $('.room-file-content').css('height', 'auto');
-        $('#room-video-area').removeClass('fixed-right-bottom');
-        $('#room-video-area').find('.close-button').addClass('not-display');
-        $('#room-video-area').css('width', '100%');
-    }
-});
-
-$('#change-video-img-button').on('click', function(){
-    if($('.show-room-slider').hasClass('not-display')) {
-        $('.show-room-slider').removeClass('not-display');
-        $('#room-video-area').addClass('not-display');
-    } else if ($('#room-video-area').hasClass('not-display')) {
-        $('.show-room-slider').addClass('not-display');
-        $('#room-video-area').removeClass('not-display');
-    }
-});
-
-$(document).on('click', '.save-user-button', function() {
-    var form = 'manage-user-form';
-    if (!form_valid(form)) {
-        return false;
-    }
-    var fd = get_form_data(form, ['input', 'textarea']);
-    fd = get_img_preview_files('user-img', fd);
-
-    $.ajax({
-        url:'/profile/',
-        type:'POST',
-        data:fd,
-        dataType:false,
-        processData:false,
-        contentType:false,
-        enctype:'multipart/form-data',
-        timeout:60000,
-    }).done(function(data){
-        show_modal_message(data.title, data.message);
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
-});
-
-
 $(document).on('click', '.load-more-button', function() {
     var idx = $(this).data('idx');
     var type = $(this).data('type');
@@ -1042,76 +924,6 @@ function close_sidebar() {
     });
 }
 
-$(document).on('click', '.get-reply-link', function() {
-    var obj = get_item_data($(this));
-    if ($('.post-detail-link').data('obj-id') == obj.id) {
-        return false;
-    }
-
-    close_sidebar();
-    $('.index-post-reply-sidebar').removeClass('not-display');
-    add_class($('.index-post-reply2-sidebar'), 'not-display');
-
-    $('.reply-list').html($(this).clone());
-    //todo url
-    $('.post-detail-link').html(`<a href="/post/${obj.id}/" role="button" type="button" class="sidebar-button btn btn-secondary">投稿へ移動</a>`)
-    $('.post-detail-link').data('obj-id', obj.id);
-    $.ajax({
-        url: `/get/reply/`,
-        type:'POST',
-        data:{obj_id:obj.id},
-        dataType:'json',
-        timeout:60000,
-    }).done(function (data) {
-        if (is_error(data)) {
-            return false;
-        }
-        create_replies(data.items);
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
-
-    function create_replies(items) {
-        create_reply_items('.reply-list', items, true);
-        $('.reply-list').parents('.sidebar-item').find('.load-more-button').show();
-        $('.reply-list').parents('.sidebar-item').find('.load-more-button').data('idx', 1);
-    }
-});
-
-$(document).on('click', '.get-reply2-link', function() {
-    var obj = get_item_data($(this));
-    if ($('.reply-detail-link').data('obj-id') == obj.id) {
-        return false;
-    }
-
-    $('.index-post-reply2-sidebar').removeClass('not-display');
-    $('.reply2-list').html($(this).clone());
-    //todo url
-    $('.reply-detail-link').html(`<a href="/reply/${obj.id}/" role="button" type="button" class="btn btn-secondary sidebar-button">返信へ移動</a>`)
-    $('.reply-detail-link').data('obj-id', obj.id);
-
-    $.ajax({
-        url: `/get/reply2/`,
-        type:'POST',
-        data:{obj_id:obj.id},
-        dataType:'json',
-        timeout:60000,
-    }).done(function (data) {
-        if (is_error(data)) {
-            return false;
-        }
-        create_replies(data.items);
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
-
-    function create_replies(items) {
-        create_reply_items('.reply2-list', items, false);
-        $('.reply2-list').parents('.sidebar-item').find('.load-more-button').show();
-        $('.reply2-list').parents('.sidebar-item').find('.load-more-button').data('idx', 1);
-    }
-});
-
 $('.sidebar-menu').click(function(e) {
     e.stopPropagation();
     var target = $(this).data('for');
@@ -1119,8 +931,8 @@ $('.sidebar-menu').click(function(e) {
     $(`.${target}`).toggleClass('not-display');
 
     $(this).siblings('.sidebar-menu').each(function() {
-        var target = $(this).data('for');
-        add_class($(`.${target}`), 'not-display');
+        var target1 = $(this).data('for');
+        add_class($(`.${target1}`), 'not-display');
         $(this).removeClass('open');
     });
     
@@ -1142,130 +954,13 @@ $('.hamburger-menu').click(function(e){
     $(`.${target}`).toggleClass('not-display');
 });
 
-$(document).on('click', '.new-window-open', function() {
-    window.open(BASE_URL + $(this).data('href'), '_blank')
+$(document).on('click', '.open-new-window-btn', function() {
+    window.open(BASE_URL + $(this).data('url'), '_blank')
 });
 
-$('.input-clear-btn').on('click', function(){
+$('.clear-input-btn').on('click', function(){
     $(this).parents('form').find('input[type="text"]').each(function(){
         $(this).val('');
-    });
-});
-
-$('#send-mail-for-signup-button').on('click', function(){
-    var form = 'signup-send-mail-form';
-    if (!form_valid(form)) {
-        return false;
-    }
-    create_spinner();
-    $.ajax({
-        url:`/signup/`,
-        type:'POST',
-        data:get_form_input_data(form),
-        dataType:false,
-        processData:false,
-        contentType:false,
-        timeout:60000,
-    }).done(function (data) {
-        show_modal_message(data.title, data.message);
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
-    remove_spinner();
-});
-
-$('#send-mail-for-reset-password-button').on('click', function(){
-    var form = 'reset-password-send-mail-form';
-    if (!form_valid(form)) {
-        return false;
-    }
-
-    create_spinner();
-    $.ajax({
-        url: `/reset-password/`,
-        type:'POST',
-        data:get_form_input_data(form),
-        dataType:false,
-        processData:false,
-        contentType:false,
-        timeout:60000,
-    }).done(function (data) {
-        show_modal_message(data.title, data.message);
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
-    remove_spinner();
-});
-
-$('#change-password-button').on('click', function(){
-    var form = 'change-password-form';
-    if (!form_valid(form)) {
-        return false;
-    }
-
-    $.ajax({
-        url: `/change-password/`,
-        type:'POST',
-        data:get_form_input_data(form),
-        dataType:false,
-        processData:false,
-        contentType:false,
-        timeout:60000,
-    }).done(function (data) {
-        var footer = '';
-        if (data.is_success) {
-            //todo url
-            footer = `<a class="btn btn-success" href="/logout/">ログアウト</a>`;
-        }
-        show_modal_message(data.title, data.message, footer);
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
-});
-
-$('#signup-button').on('click', function(){
-    var form = 'signup-form';
-    if (!form_valid(form)) {
-        return false;
-    }
-
-    $.ajax({
-        url: location.href,
-        type:'POST',
-        data:get_form_input_data(form),
-        dataType:false,
-        processData:false,
-        contentType:false,
-        timeout:60000,
-    }).done(function (data) {
-        if (data.is_success) {
-            //todo url
-            window.location.href = '/rooms/';
-        }
-        show_modal_message(data.title, data.message);
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
-});
-
-$('#reset-password-button').on('click', function(){
-    var form = 'reset-password-form';
-    if (!form_valid(form)) {
-        return false;
-    }
-
-    $.ajax({
-        url: location.href,
-        type:'POST',
-        data:get_form_input_data(form),
-        dataType:false,
-        processData:false,
-        contentType:false,
-        timeout:60000,
-    }).done(function (data) {
-        show_modal_message(data.title, data.message);
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
     });
 });
 
@@ -1277,55 +972,6 @@ $(document).on('change', '.validate-num', function() {
 });
 $(document).on('change', '.validate-integer', function() {
     validate_integer($(this), $(this).val());
-});
-
-$('#room-request-information-demo-button').on('click', function(){
-    var room_id = $('#manage-room-id').val();
-    $.ajax({
-        url: `/get/room-request-information/${room_id}/`,
-        type:'POST',
-        timeout:60000,
-    }).done(function (data) {
-        var rris = data.rri;
-        show_room_request_information(rris, '');
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
-});
-
-$('.request-information-type').on('change', function() {
-    var target = $(this).parents('tr').find('.request-information-choice');
-    if ($(this).val() == 'choice') {
-        target.removeClass('not-display');
-        return true;
-    }
-    add_class(target, 'not-display');
-});
-
-$(document).on('click', '#submit-room-information', function(){
-    if (!form_valid('room-information-form')) {
-        return false;
-    }
-
-    var room_id = $(this).data('room-id');
-    if (is_empty(room_id)) {
-        return false;
-    }
-
-    $.ajax({
-        url: `/room/information/${room_id}/`,
-        type:'POST',
-        data:get_form_data('room-information-form', ['input', 'select']),
-        dataType:false,
-        processData:false,
-        contentType:false,
-        timeout:60000,
-    }).done(function (data) {
-        close_modal('modal-room-request-information');
-        show_modal_message(data.title, data.message);
-    }).fail(function (data) {
-        show_modal_message(data.status, [data.statusText]);
-    });
 });
 
 $(document).on('click', '.copy-link', function() {
@@ -1369,47 +1015,12 @@ $('.search-reply-button').on('click', function() {
     search_reply_ajax(url);
 });
 
-$('#delete-room-button').on('click', function() {
-    var url = `/delete/room/${$('#manage-room-id').val()}/`;
-    var footer = `<button type="button" class="delete-button btn btn-danger" data-url="${url}">削除</button>`;
-    show_modal_message('確認', ['削除しますか'], footer);
-});
-
-$('.toggle-button').on('click', function() {
-    var id = $(this).data('target-id');
-    $(`#${id}`).toggle();
+$('.toggle-btn').on('click', function() {
+    var id = get_id($(this).data('target-id'));
+    $(id).toggle();
 }); 
 
-$('.expand-area').on('click change keyup keydown paste cut input', function(){
-    $(this).height(0);
+$('.auto-adjust-height').on('click change keyup keydown paste cut input', function(){
+    $(this).height(5);
     $(this).height(this.scrollHeight);
-});
-
-var modal_room_icon_target = null;
-$(document).on('click', '.select-icon-btn', function() {
-    show_modal('modal-room-icon');
-    modal_room_icon_target = $(this);
-});
-
-$(document).on('click', '.delete-room-link-item', function() {
-    var id = $(this).parent('.room-link-item').data('id');
-    if (!is_empty(id)) {
-        deleteRoomLinkIds.push(id);
-    }
-    $(this).parent('.room-link-item').remove();
-});
-
-$('.select-link-item-icon').on('click', function() {
-    if (is_empty(modal_room_icon_target)) {
-        return false;
-    }
-
-    modal_room_icon_target.html($(this).clone());
-    modal_room_icon_target = null;
-    close_modal('modal-room-icon');
-});
-
-//追加個数の制限を設ける
-$('.add-room-link-btn').on('click', function() {
-    $('.room-link-item-list').append(get_editable_room_icon());
 });

@@ -365,7 +365,7 @@ function get_room_content(room) {
 
 function get_room_footer(room) {
     var html = `<div class="footer-button item-footer" data-id="${room.id}" data-type="room">
-    <button data-href="${room.url}" class="new-window-open btn btn-secondary" type="button">移動</button>`;
+    <button data-url="${room.url}" class="open-new-window-btn btn btn-secondary" type="button">移動</button>`;
     if (room.good_state) {
         html += `<button type="button" class="good-button btn btn-success">Good</button>`;
     } else {

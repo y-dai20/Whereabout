@@ -731,3 +731,11 @@ function get_youtube_embed(url, is_autoplay=true) {
     </div>
     `;
 }
+
+function get_delete_btn(url='') {
+    return `<button type="button" class="delete-button btn btn-danger" data-url="${url}">削除</button>`;
+}
+
+function get_id(str) {
+    return str.startsWith('#') ? str : '#' + str;
+}

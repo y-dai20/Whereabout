@@ -3,7 +3,7 @@
     <div class="accordion-item index-search">
       <p class="accordion-header" id="search-header1">
         <button
-          class="accordion-button"
+          class="accordion-button p-2"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#search-collapse1"
@@ -19,20 +19,20 @@
         aria-labelledby="search-header1"
         data-bs-parent="#search-accordion"
       >
-        <div class="accordion-body">
+        <div class="accordion-body p-2">
           {% if type %}
             {% include "../snippets/search_"|add:type|add:".html" %}
           {% endif %}
           <div class="right-button">
             <button
               type="button"
-              class="input-clear-btn btn btn-outline-secondary"
+              class="clear-input-btn btn btn-sm btn-outline-secondary"
             >
               クリア
             </button>
             <button
               type="button"
-              class="btn btn-secondary search-{{type}}-button"
+              class="btn btn-sm btn-secondary search-{{type}}-button"
             >
               検索
             </button>
@@ -43,7 +43,7 @@
     <div class="accordion-item index-search">
       <p class="accordion-header" id="order-header1">
         <button
-          class="accordion-button collapsed"
+          class="accordion-button collapsed p-2"
           type="button"
           data-bs-toggle="collapse"
           data-bs-target="#order-collapse1"
@@ -59,14 +59,14 @@
         aria-labelledby="order-header1"
         data-bs-parent="#search-accordion"
       >
-        <div class="accordion-body">
+        <div class="accordion-body p-2">
           {% if type %}
             {% include "../snippets/order_"|add:type|add:".html" %}
           {% endif %}
           <div class="right-button">
             <button
               type="button"
-              class="btn btn-secondary search-{{type}}-button"
+              class="btn btn-sm btn-secondary search-{{type}}-button"
             >
               並び替え
             </button>
