@@ -316,5 +316,3 @@ def get_object_or_404_from_q(queryset):
 def get_admin_user():
     return User.objects.get_or_none(username='admin', is_admin=True)
 
-def get_youtube_video_id(url):
-    return url.split('/')[-1]

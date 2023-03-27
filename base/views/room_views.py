@@ -48,7 +48,7 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
             created_at__lte=params['date_to'],
             room=self.room,
         )
-        if params['is_favorite'] and self.request.user.is_authenticated:
+        if f.get_boolean_or_none(params['is_favorite']) == True and self.request.user.is_authenticated:
             fav_ids = PostFavorite.objects.active(user=self.request.user, obj__room=self.room).values_list('obj__id', flat=True)
             posts = posts.filter(id__in=fav_ids)
         
