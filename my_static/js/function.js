@@ -77,13 +77,14 @@ function is_int(value) {
 }
 
 function show_modal_message(title='', messages=[], footer='') {
-    $('#modal-message').find('.modal-title').html(title);
+    var modal = get_id_obj('modal-message');
+    modal.find('.modal-title').html(title);
     var message = '';
     $.each(messages, function(index, value) {
         message += `<span>${value}</span><br>`;
     });
-    $('#modal-message').find('.modal-body').html(message);
-    $('#modal-message').find('.modal-footer').html(
+    modal.find('.modal-body').html(message);
+    modal.find('.modal-footer').html(
         `${footer}<button type="button" class="btn btn-secondary" data-bs-dismiss="modal">閉じる</button>`
     );
     show_modal('modal-message');
@@ -149,16 +150,17 @@ function get_file_size_by_unit(byte, unit='MB') {
 }
 
 function set_upload_file_size(name, file_type, size, max_size) {
-    var target = $(`#${name}-${file_type}-upload-size`);
+    var target = get_id_obj(`${name}-${file_type}-upload-size`);
     var size = size + parseFloat(target.data('size'));
     target.data('size', size);
     target.text(get_file_size_by_unit(size));
 
+    var size_err = get_id_obj(`${name}-${file_type}-size-error`);
     if (size < max_size) {
-        $(`#${name}-${file_type}-size-error`).remove();
+        size_err.remove();
         return true;    
     }
-    if ($(`#${name}-${file_type}-size-error`).length < 1) {
+    if (size_err.length < 1) {
         target.after(`<span id="${name}-${file_type}-size-error" class="file-size-error error"><br>ファイルサイズを${max_size/1024/1024}MB以下にしてください</span>`)
     }
     return true;
@@ -310,7 +312,7 @@ function delete_list_item(list, item) {
 
 function search(target) {
     var id = target.data('id');
-    var search_word = $('#' + id).val();
+    var search_word = get_id_obj(id).val();
     $.ajax({
         url: target.data('action'),
         type:'GET',
@@ -342,9 +344,9 @@ function search(target) {
 
 function toggle_text(obj, id, checked, unchecked) {
     if (obj.is(':checked')) {
-        $('#' + id).text(checked);
+        get_id_obj(id).text(checked);
     } else {
-        $('#' + id).text(unchecked);
+        get_id_obj(id).text(unchecked);
     }
 }
 
@@ -384,7 +386,7 @@ function remove_class(target, cls) {
 }
 
 function form_valid(form_id, show_error_message=false) {
-    var form = $(`#${form_id}`);
+    var form = get_id_obj(form_id);
     form.find('input').each(function(){
         if ($(this).hasClass('validate-length')) {
             validate_length($(this), $(this).val(), $(this).data('min-len'), $(this).data('max-len'));
@@ -399,7 +401,7 @@ function form_valid(form_id, show_error_message=false) {
 }
 
 function error_valid(form_id) {
-    return $(`#${form_id}`).find('.error:visible').length < 1;
+    return get_id_obj(form_id).find('.error:visible').length < 1;
 }
 
 function create_spinner() {
@@ -426,7 +428,7 @@ function get_form_data(form_id, tags=[], fd=null) {
     }
 
     $.each(tags, function(idx, tag) {
-        $(`#${form_id}`).find(tag).each(function(){
+        get_id_obj(id).find(tag).each(function(){
             if (is_empty($(this).attr('name'))) {
                 return true;
             }
@@ -446,7 +448,7 @@ function get_form_data(form_id, tags=[], fd=null) {
 function get_form_data_parameter(form_id, tags=['input']) {
     var parameter = '?';
     $.each(tags, function(idx, tag) {
-        $(`#${form_id}`).find(tag).each(function(){
+        get_id_obj(form_id).find(tag).each(function(){
             if (is_empty($(this).attr('name'))) {
                 return true;
             }
@@ -620,12 +622,12 @@ function get_num_html(min_length, max_length, name) {
 }
 
 function show_modal(id) {
-    var modal = new bootstrap.Modal($(`#${id}`), {});
+    var modal = new bootstrap.Modal(get_id_obj(id), {});
     modal.show();
 }
 
 function close_modal(id) {
-    $(`#${id}`).modal('hide');
+    get_id_obj(id).modal('hide');
 }
 
 function escapeHTML(string){
@@ -738,6 +740,12 @@ function get_delete_btn(url='') {
     return `<button type="button" class="delete-button btn btn-danger" data-url="${url}">削除</button>`;
 }
 
-function get_id_with_sharp(str) {
-    return str.startsWith('#') ? str : '#' + str;
+function get_id_obj(str) {
+    str = str.startsWith('#') ? str : '#' + str;
+    return $(str);
+}
+
+function get_cls_obj(str) {
+    str = str.startsWith('.') ? str : '.' + str;
+    return $(str);
 }

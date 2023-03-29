@@ -450,7 +450,7 @@ $(document).on('click', '.save-display-button', function(){
     fd = get_form_data(form, ['input', 'textarea'], fd);    
     
     var links = {'create':[], 'update':[], 'delete':deleteRoomLinkIds};
-    $(`#${form}`).find('.room-link-item').each(function() {
+    get_id_obj(form).find('.room-link-item').each(function() {
         var id = $(this).data('id');
         var link = {'id':id, 'icon':$(this).find('img').attr('src'),'link':$(this).find('input').val()};
         if (is_empty(id)) {
@@ -1015,8 +1015,7 @@ $('.search-reply-button').on('click', function() {
 });
 
 $('.toggle-btn').on('click', function() {
-    var id = get_id_with_sharp($(this).data('target-id'));
-    $(id).toggle();
+    get_id_obj($(this).data('target-id')).toggle();
 }); 
 
 $('.auto-adjust-height').on('click change keyup keydown paste cut input', function(){
