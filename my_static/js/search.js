@@ -65,3 +65,39 @@ function active_search_select(select_id) {
         });
     });
 }
+
+$('.search-post-button').on('click', function() {
+    var url = get_form_href('search-post-form');
+    search_post_ajax(url);
+});
+
+$('.search-pir-button').on('click', function() {
+    var url = get_form_href('search-pir-form');
+    search_post_ajax(url);
+});
+
+$('.search-user-button').on('click', function() {
+    var url = get_form_href('search-user-form');
+    search_user_ajax(url);
+});
+
+$('.search-room-button').on('click', function() {
+    var url = get_form_href('search-room-form');
+    search_room_ajax(url);
+});
+
+$('.search-reply-button').on('click', function() {
+    var url = get_form_href('search-reply-form');
+    search_reply_ajax(url);
+});
+
+$('.enter-search').keypress(function(e){
+    if (e.keyCode == 13) {
+        search($(this).parent().find('.search-button'));
+        return false;
+    }
+});
+
+$('.search-button').on('click', function(){
+    search($(this));
+});
