@@ -26,7 +26,8 @@
       {{room_tags | json_script:'room_tags'}}
       <script>
         var tags = JSON.parse(document.getElementById('room_tags').textContent);
-        document.write(get_tags(tags, 'room'));
+        var url  = '{{rooms_url}}';
+        document.write(get_tags(tags, url));
       </script>
       {% block room_content %}
       {% endblock %}
@@ -99,7 +100,7 @@
     {% endif %}
     <div class="username">
       <div class="headline">管理者</div>
-      <a class="c-white show-modal-user-button" href="#" data-username="{{username}}">{{username}}</a>
+      <a class="c-white show-modal-user-button" href="#" data-url="{% url 'get-user' username%}">{{username}}</a>
     </div>
     <div class="user-profession">
       <div class="headline">職業</div>

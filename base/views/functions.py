@@ -2,7 +2,7 @@ from django.conf import settings
 from django.utils.crypto import get_random_string
 from django.utils.timezone import make_naive
 from django.http import JsonResponse, Http404
-
+from django.urls import reverse_lazy
 
 from base.models import Tag, User
 
@@ -208,7 +208,6 @@ def get_combined_list(name1:str, list1:list, name2:str, list2:list):
     return combined_list
 
 def get_diff_seconds_from_now(model_time):
-    print(type(model_time))
     return (datetime.now() - make_naive(model_time)).seconds
 
 def get_unit_time(seconds, unit):
@@ -316,3 +315,5 @@ def get_object_or_404_from_q(queryset):
 def get_admin_user():
     return User.objects.get_or_none(username='admin', is_admin=True)
 
+def str_reverse_lazy(url_name):
+    return str(reverse_lazy(url_name))

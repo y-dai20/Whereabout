@@ -7,7 +7,6 @@ from django.contrib.auth import login
 from django.utils.timezone import make_naive
 from django.contrib import messages
 from django.shortcuts import render
-from django.urls import reverse_lazy
 
 
 import base.views.functions as f
@@ -181,7 +180,7 @@ class ChangePasswordView(LoginRequiredMixin, View):
 
         return JsonResponse(f.get_json_success_message(
             ['パスワードを変更しました'], 
-            add_dict={'url':reverse_lazy('logout')}))
+            add_dict={'url':f.str_reverse_lazy('logout')}))
 
 class ResetPasswordBaseView(View):
     resettable_seconds = 5 * 60

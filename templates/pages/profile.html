@@ -26,8 +26,8 @@
         <form id="manage-user-form">
           {% csrf_token %}
           <div class="form-group">
-            <button type="button" class="save-confirm-button btn btn-success" data-save-for="user">保存</button>
-            <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+            <button type="button" class="save-confirm-btn btn btn-success" data-save-for="user">保存</button>
+            <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
           </div>
           <p class="manage-headline">画像</p>
           <div class="form-group">
@@ -102,11 +102,11 @@
             <tbody>
               {% for room in room_guests %}
                 {% for guest in room.guests %}
-                <tr class="table-col" data-room="{{room.room_id}}" data-username="{{guest}}">
+                <tr class="table-col">
                   <td><a class="c-black filter-1 show-modal-room-button" data-roomid="{{room.room_id}}" href="#">{{room.room_title}}</a></td>
-                  <td><a class="c-black show-modal-user-button filter-2" href="#" data-username="{{guest}}">{{guest}}</a></td>
-                  <td><button type="button" class="profile-accept-button btn btn-outline-success btn-sm" data-is-blocked="False">承認</button></td>
-                  <td><button type="button" class="profile-accept-button btn btn-outline-danger btn-sm" data-is-blocked="True">拒否</button></td>
+                  <td><a class="c-black show-modal-user-button filter-2" href="#" data-url="{% url 'get-user' guest%}">{{guest}}</a></td>
+                  <td><button type="button" class="accept-room-guest-btn btn btn-outline-success btn-sm" data-url="{% url 'accept-room-guest' room.room_id guest%}" data-is-blocked="False">承認</button></td>
+                  <td><button type="button" class="accept-room-guest-btn btn btn-outline-danger btn-sm" data-url="{% url 'accept-room-guest' room.room_id guest%}" data-is-blocked="True">拒否</button></td>
                 </tr>
                 {% endfor %}
               {% endfor %}
@@ -134,11 +134,11 @@
             </thead>
             <tbody>
               {% for room in invited_rooms %}
-                <tr class="table-col" data-room="{{room.room_id}}">
+                <tr class="table-col">
                   <td><a class="c-black filter-1 show-modal-room-button" data-roomid="{{room.room_id}}" href="#">{{room.room_title}}</a></td>
-                  <td><a class="c-black show-modal-user-button filter-2" href="#" data-username="{{room.admin}}">{{room.admin}}</a></td>
-                  <td><button type="button" data-is-accept="True" class="accept-invite-button btn btn-outline-success btn-sm">承認</button></td>
-                  <td><button type="button" data-is-accept="False" class="accept-invite-button btn btn-outline-danger btn-sm">拒否</button></td>
+                  <td><a class="c-black show-modal-user-button filter-2" href="#" data-url="{% url 'get-user' room.admin%}">{{room.admin}}</a></td>
+                  <td><button type="button" data-is-accept="True" data-url="{% url 'accept-room-invite' room.room_id%}" class="accept-room-invite-btn btn btn-outline-success btn-sm">承認</button></td>
+                  <td><button type="button" data-is-accept="False" data-url="{% url 'accept-room-invite' room.room_id%}" class="accept-room-invite-btn btn btn-outline-danger btn-sm">拒否</button></td>
                 </tr>
               {% endfor %}
             </tbody>

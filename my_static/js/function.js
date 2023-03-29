@@ -1,3 +1,5 @@
+bsCustomFileInput.init();
+
 function getCookie(name) {
     var cookieValue = null;
     if (document.cookie && document.cookie !== '') {
@@ -736,6 +738,6 @@ function get_delete_btn(url='') {
     return `<button type="button" class="delete-button btn btn-danger" data-url="${url}">削除</button>`;
 }
 
-function get_id(str) {
+function get_id_with_sharp(str) {
     return str.startsWith('#') ? str : '#' + str;
 }

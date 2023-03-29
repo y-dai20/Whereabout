@@ -658,7 +658,7 @@ function get_extension_message(extension) {
 
 $(document).on('click', '.show-modal-user-button', function() {
     $.ajax({
-        url:`/get/user/${$(this).data('username')}/`,
+        url:$(this).data('url'),
         type:'POST',
 		timeout:60000,
     }).done(function (data) {

@@ -115,7 +115,7 @@ function get_post_header(post, need_room=true) {
 
 function get_post_content(post) {
     var html = `<div class="post-content">
-            ${get_tags(post.post_tags, 'posts')}
+            ${get_tags(post.post_tags, post.index_url)}
             <span class="post-title">${escapeHTML(post.title)}</span><br>
             <span class="post-text">${adapt_linebreaks(escapeHTML(post.text))}</span><br>
             <span class="post-source">${get_item_source(post.source)}</span>
@@ -170,11 +170,11 @@ function get_reply_item(reply, is_link=false) {
 function get_reply_header(reply) {
     var html = `<div class="reply-item-header item-header">`;
     if (reply.is_agree) {
-        html += get_traffic_img(trafficGreenImg);
+        html += get_traffic_img(IMGS.trafficGreen);
     } else if (reply.is_disagree) {
-        html += get_traffic_img(trafficRedImg);
+        html += get_traffic_img(IMGS.trafficRed);
     } else if (reply.is_neutral) {
-        html += get_traffic_img(trafficYellowImg);
+        html += get_traffic_img(IMGS.trafficYellow);
     }
     if (reply.type) {
         html += `<span>#${escapeHTML(reply.type)}</span>`
@@ -208,38 +208,38 @@ function get_reply_content(reply) {
 function get_item_footer(data) {
     var html = `<div class="footer-button item-footer" data-id="${data.obj_id}" data-type="${data.obj_type}" data-room-id="${data.room_id}">`;
     if (data.agree_state) {
-        html += `<button type="button" class="agree-button btn-sm btn btn-success">賛成</button>`;
+        html += `<button type="button" class="agree-btn btn-sm btn btn-success">賛成</button>`;
     } else {
-        html += `<button type="button" class="agree-button btn-sm btn btn-outline-success">賛成</button>`;
+        html += `<button type="button" class="agree-btn btn-sm btn btn-outline-success">賛成</button>`;
     }
     html += `<span class="agree-count">${data.agree_count}</span>`;
     
     if (data.agree_state == false) {
-        html += `<button type="button" class="disagree-button btn-sm btn btn-danger">反対</button>`;
+        html += `<button type="button" class="disagree-btn btn-sm btn btn-danger">反対</button>`;
     } else {
-        html += `<button type="button" class="disagree-button btn-sm btn btn-outline-danger">反対</button>`;
+        html += `<button type="button" class="disagree-btn btn-sm btn btn-outline-danger">反対</button>`;
     }
     html += `<span class="disagree-count">${data.disagree_count}</span>`;
     
-    html += `<a class="favorite-button">`;
+    html += `<a class="favorite-btn">`;
     if (!data.favorite_state) {
-        html += `<img src="${whiteStarImg}" alt="" class="favorite-img">`;
+        html += `<img src="${IMGS.whiteStar}" alt="" class="favorite-img">`;
     } else {
-        html += `<img src="${yellowStarImg}" alt="" class="favorite-img">`
+        html += `<img src="${IMGS.yellowStar}" alt="" class="favorite-img">`
     }
     html += `</a><span class="favorite-count">${data.favorite_count}</span>`;
 
     if (data.demagogy_state) {
-        html += `<button type="button" class="demagogy-button btn-sm btn btn-dark">真</button>`;
+        html += `<button type="button" class="demagogy-btn btn-sm btn btn-dark">真</button>`;
     } else {
-        html += `<button type="button" class="demagogy-button btn-sm btn btn-outline-dark">真</button>`;
+        html += `<button type="button" class="demagogy-btn btn-sm btn btn-outline-dark">真</button>`;
     }   
     html += `<span class="true-count">${data.true_count}</span>`;
 
     if (data.demagogy_state == false) {
-        html += `<button type="button" class="disdemagogy-button btn-sm btn btn-dark">偽</button>`;
+        html += `<button type="button" class="disdemagogy-btn btn-sm btn btn-dark">偽</button>`;
     } else {
-        html += `<button type="button" class="disdemagogy-button btn-sm btn btn-outline-dark">偽</button>`;
+        html += `<button type="button" class="disdemagogy-btn btn-sm btn btn-outline-dark">偽</button>`;
     }   
     html += `<span class="false-count">${data.false_count}</span>`;
     if (!is_empty(data.reply_count)) {
@@ -276,12 +276,12 @@ function get_user_header(user) {
 
 function get_user_content(user){
 	var html = `<div class="user-item-content">
-    ${get_tags(user.user_tags, 'users')}
+    ${get_tags(user.user_tags, user.index_url)}
     <div class="user-item-img user-img-area">`;
 	if (!is_empty(user.img)) {
 		html += `<img src="${user.img}" alt="" class="user-img">`;
 	} else {
-		html += `<img src="${humanImg}" alt="" class="user-img">`;
+		html += `<img src="${IMGS.human}" alt="" class="user-img">`;
     }
 	html += `</div><div class="username"><div class="headline">ユーザー名</div>${escapeHTML(user.username)}</div>
     <div class="user-rooms"><div class="headline">ルーム</div>`;
@@ -299,15 +299,15 @@ function get_user_content(user){
 function get_user_footer(user) {
     var html = `<div class="footer-button item-footer" data-username="${user.username}">`;
     if (user.is_block) {
-        html += `<button type="button" class="block-button btn btn-secondary">ブロック解除</button>`;
+        html += `<button type="button" class="block-btn btn btn-secondary">ブロック解除</button>`;
     } else {
         if (user.is_follow) {
-            html += `<button type="button" class="follow-button btn btn-secondary">フォロー解除</button>`;
+            html += `<button type="button" class="follow-btn btn btn-secondary">フォロー解除</button>`;
         } else {
-            html += `<button type="button" class="follow-button btn btn-outline-secondary">フォロー</button>`;
+            html += `<button type="button" class="follow-btn btn btn-outline-secondary">フォロー</button>`;
         }
         html += `<span class="followed-count">${user.followed_count}</span>
-        <button type="button" class="block-button btn btn-outline-secondary">ブロック</button>`;
+        <button type="button" class="block-btn btn btn-outline-secondary">ブロック</button>`;
     }
 
     html += `<span class="blocked-count">${user.blocked_count}</span></div>`;
@@ -341,7 +341,7 @@ function get_room_header(room) {
 function get_room_content(room) {
     var html = `<div class="room-item-content">
         ${get_room_star(room.star_rate, room.star_denominator)}
-        ${get_tags(room.room_tags, 'rooms')}
+        ${get_tags(room.room_tags, room.index_url)}
         <div class="room-item-title">
             <h2 class="room-item-title-font">${escapeHTML(room.title)}</h2>
         </div>
@@ -367,15 +367,15 @@ function get_room_footer(room) {
     var html = `<div class="footer-button item-footer" data-id="${room.id}" data-type="room">
     <button data-url="${room.url}" class="open-new-window-btn btn btn-secondary" type="button">移動</button>`;
     if (room.good_state) {
-        html += `<button type="button" class="good-button btn btn-success">Good</button>`;
+        html += `<button type="button" class="good-btn btn btn-success">Good</button>`;
     } else {
-        html += `<button type="button" class="good-button btn btn-outline-success">Good</button>`;
+        html += `<button type="button" class="good-btn btn btn-outline-success">Good</button>`;
     }
     html += `<span class="good-count">${room.good_count}</span>`;
     if (room.good_state == false) {
-        html += `<button type="button" class="bad-button btn btn-danger">Bad</button>`;
+        html += `<button type="button" class="bad-btn btn btn-danger">Bad</button>`;
     } else {
-        html += `<button type="button" class="bad-button btn btn-outline-danger">Bad</button>`;
+        html += `<button type="button" class="bad-btn btn btn-outline-danger">Bad</button>`;
     }
     html += `<span class="bad-count">${room.bad_count}</span>
     </div>`;
@@ -383,11 +383,11 @@ function get_room_footer(room) {
     return html;
 }
 
-function get_tags(tags, item='') {
+function get_tags(tags, url='') {
     var html = '<div class="flex-area">';
     $.each(tags, function(idx, tag) {
         if (!is_empty(tag)) {
-            html += `<div class="tag-item"><a href="#" class="tag-link-button" data-path="/${item}/">${escapeHTML(tag)}</a></div>`;
+            html += `<div class="tag-item"><a href="#" class="tag-link-button" data-url="${url}">${escapeHTML(tag)}</a></div>`;
         }
     });
     html += '</div>';
@@ -415,17 +415,17 @@ function get_slider_imgs_html(cls, img_paths) {
 function get_item_user_area(name, img=null, color='black') {
     var html = `<div class="item-header-user-img user-img-area">`;
     if (is_empty(img)) {
-        html += `<img src="${humanImg}" alt="" class="user-img">`;
+        html += `<img src="${IMGS.human}" alt="" class="user-img">`;
     } else {
         html += `<img src="${img}" alt="" class="user-img">`;
     }
-    html += `</div><a class="c-${color} show-modal-user-button" href="#" data-username="${name}">${name}</a>`;
+    html += `</div><a class="c-${color} show-modal-user-button" href="#" data-url="${get_user_url(name)}">${name}</a>`;
     return html;
 }
 
 function get_item_room_area(room_id, title, color='black') {
     if (!is_empty(room_id)) {
-        return `<div class="room-link"><img src="${houseImg}" class="house-img"><a class="c-${color} show-modal-room-button" href="#" data-roomid="${room_id}">${title}</a></div>`;
+        return `<div class="room-link"><img src="${IMGS.house}" class="house-img"><a class="c-${color} show-modal-room-button" href="#" data-roomid="${room_id}">${title}</a></div>`;
     }
     return '';
 }
@@ -460,11 +460,11 @@ function create_myroom_dropdown(id, title) {
 }
 
 function get_item_detail_link(path) {
-    return `<a href="${path}"><img src="${goDetailImg}" alt="" class="go-detail-img"></a>`;
+    return `<a href="${path}"><img src="${IMGS.goDetail}" alt="" class="go-detail-img"></a>`;
 }
 
 function get_item_copy_link(path) {
-    return `<img src="${copyLinkImg}" alt="" data-link="${BASE_URL}${path}" class="copy-link-img copy-link">`;
+    return `<img src="${IMGS.copyLink}" alt="" data-link="${URLS.base}${path}" class="copy-link-img copy-link">`;
 }
 
 function get_traffic_img(src) {
@@ -472,56 +472,56 @@ function get_traffic_img(src) {
 }
 
 function get_question_img() {
-    return `<img src="${questionImg}" class="question-img">`;
+    return `<img src="${IMGS.question}" class="question-img">`;
 }
 
 function get_human_img() {
-    return `<img src="${humanImg}" class="user-img">`;
+    return `<img src="${IMGS.human}" class="user-img">`;
 }
 
 function get_trash_img() {
-    return `<img src="${trashImg}" class="trash-img">`;
+    return `<img src="${IMGS.trash}" class="trash-img">`;
 }
 
 function get_add_img() {
-    return `<img src="${addImg}" class="img-add-button">`;
+    return `<img src="${IMGS.add}" class="img-add-button">`;
 }
 
 function get_lock_img() {
-    return `<img src="${lockImg}" class="lock-room">`;
+    return `<img src="${IMGS.lock}" class="lock-room">`;
 }
 
 function get_post_img() {
-    return `<img src="${postImg}">`;
+    return `<img src="${IMGS.post}">`;
 }
 
 function get_phone_img() {
-    return `<img src="${phoneImg}">`;
+    return `<img src="${IMGS.phone}">`;
 }
 
 function get_web_img() {
-    return `<img src="${webImg}">`;
+    return `<img src="${IMGS.web}">`;
 }
 
 function get_map_img() {
-    return `<img src="${mapImg}">`;
+    return `<img src="${IMGS.map}">`;
 }
 
 function get_calender_img() {
-    return `<img src="${calenderImg}">`;
+    return `<img src="${IMGS.calender}">`;
 }
 
 function get_room_star(star_rate, star_denominator) {
-    return `<div class="flex-center"><img class="room-star" src="${yellowStarImg}"><span class="c-yellow">${star_rate}%（${star_denominator}）</span></div>`;
+    return `<div class="flex-center"><img class="room-star" src="${IMGS.yellowStar}"><span class="c-yellow">${star_rate}%（${star_denominator}）</span></div>`;
 }
 
 function get_upload_img() {
-    return `<img src="${uploadImg}" class="upload-img">`;
+    return `<img src="${IMGS.upload}" class="upload-img">`;
 }
 
 function get_editable_room_icon(id="", icon="", link="") {
     if (is_empty(icon)) {
-        icon = humanImg;
+        icon = IMGS.human;
     }
 
     return `

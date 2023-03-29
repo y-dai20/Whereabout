@@ -6,6 +6,7 @@ from django.conf import settings
 from django.http import JsonResponse, Http404
 from django.db.models.functions import Length
 
+
 import base.views.functions as f
 from base.views.exceptions import MyBadRequest
 from base.models.post_models import Post, PostAgree, PostFavorite, PostDemagogy
@@ -467,8 +468,10 @@ class RoomItemView(View):
             'bad_count':f.get_number_unit(room.bad_count),
             'good_state':user_good[0]['is_good'] if user_good.exists() else None,
             'star_denominator':room.good_count + room.bad_count,
-            'url':room.get_absolute_url()
+            'url':room.get_absolute_url(),
+            'index_url':f.str_reverse_lazy('rooms'),
         }
+
         room_dict['star_rate'] = round(room.good_count / room_dict['star_denominator'], 1) * 100 if room_dict['star_denominator'] > 0 else 0.0
         
         return room_dict
@@ -496,6 +499,7 @@ class PostItemView(View):
         
         post_dict = {
             'obj_type':'post',
+            'index_url':f.str_reverse_lazy('posts'),
             'obj_id':post.id,
             'room_id':None,
             'title':post.title,
@@ -563,6 +567,7 @@ class UserItemView(View):
             'description':profile.description,
             'followed_count':f.get_number_unit(profile.followed_count),
             'blocked_count':f.get_number_unit(profile.blocked_count),
+            'index_url':f.str_reverse_lazy('users'),
         })
 
         if not self.request.user.is_authenticated:

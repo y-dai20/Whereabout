@@ -45,8 +45,8 @@
 
     <div class="tab-content">
       <div class="tab-pane container active" id="manage-display-pane">
-        <button type="button" data-save-for="display" class="save-confirm-button btn btn-success">保存</button>
-        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <button type="button" data-save-for="display" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <form class="manage-room-form" id="manage-room-display-form">
           {% csrf_token %}
           <p for="is_public" class="manage-headline">Roomの公開・非公開</p>
@@ -168,8 +168,8 @@
         </form>
       </div>
       <div class="tab-pane container" id="manage-tab-pane">
-        <button type="button" data-save-for="tab" class="save-confirm-button btn btn-success">保存</button>
-        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <button type="button" data-save-for="tab" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <form class="manage-room-form" id="manage-room-tab-form">
           <p for="text" class="manage-headline">タブ</p>
           <div class="tab-operation-area">
@@ -222,8 +222,8 @@
         </form>
       </div>
       <div class="tab-pane container" id="manage-participant-pane">
-        <button type="button" data-save-for="participant" class="save-confirm-button btn btn-success">保存</button>
-        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <button type="button" data-save-for="participant" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <p class="manage-headline" for="need_approval">Room参加時に承認が必要・不要</p>
         <div class="form-check form-switch">
           {% if need_approval %}
@@ -243,7 +243,7 @@
             <div id="room-guest-list" class="participant-list">
               {% for room_guest in room_guests %}
               <p class="room-guest">
-                <a class="c-white show-modal-user-button" href="#" data-username="{{room_guest.guest.username}}">{{room_guest.guest.username}}</a>
+                <a class="c-white show-modal-user-button" href="#" data-url="{% url 'get-user' room_guest.guest.username%}">{{room_guest.guest.username}}</a>
                 <button type="button" data-username="{{room_guest.guest.username}}" class="manage-room-accept-button btn btn-outline-success btn-sm">承認</button>
                 <button type="button" data-username="{{room_guest.guest.username}}" class="manage-room-disaccept-button btn btn-outline-danger btn-sm">拒否</button>
               </p>
@@ -256,7 +256,7 @@
             <div id="room-invite-user-list" class="participant-list">
               {% for room_invite_user in room_invite_users %}
               <p class="room-user">
-                <a class="c-white show-modal-user-button" href="#" data-username="{{room_invite_user.user.username}}">{{room_invite_user.user.username}}</a>
+                <a class="c-white show-modal-user-button" href="#" data-url="{% url 'get-user' room_invite_user.user.username%}">{{room_invite_user.user.username}}</a>
                 <button type="button" data-username="{{room_invite_user.user.username}}" class="cancel-invite-button btn btn-success btn-sm">取消</button>
               </p>                
               {% endfor %}
@@ -268,7 +268,7 @@
             <div id="room-user-list" class="participant-list">
               {% for room_user in room_users %}
               <p class="room-user">
-                <a class="c-white show-modal-user-button" href="#" data-username="{{room_user.user.username}}">{{room_user.user.username}}</a>
+                <a class="c-white show-modal-user-button" href="#" data-url="{% url 'get-user' room_user.user.username%}">{{room_user.user.username}}</a>
                 <button type="button" data-username="{{room_user.user.username}}" data-org-state="disbanished" class="banish-button btn btn-danger btn-sm">追放</button>
               </p>
               {% endfor %}
@@ -280,7 +280,7 @@
             <div id="room-user-blocked-list" class="participant-list">
               {% for room_blocked_user in room_blocked_users %}
               <p class="room-user">
-                <a class="c-white show-modal-user-button" href="#" data-username="{{room_blocked_user.user.username}}">{{room_blocked_user.user.username}}</a>
+                <a class="c-white show-modal-user-button" href="#" data-url="{% url 'get-user' room_blocked_user.user.username%}">{{room_blocked_user.user.username}}</a>
                 <button type="button" data-username="{{room_blocked_user.user.username}}" data-org-state="banished" class="disbanish-button btn btn-success btn-sm">取消</button>
               </p>                
               {% endfor %}
@@ -289,8 +289,8 @@
         </div>
       </div>
       <div class="tab-pane container" id="manage-authority-pane">
-          <button type="button" data-save-for="authority" class="save-confirm-button btn btn-success">保存</button>
-          <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+          <button type="button" data-save-for="authority" class="save-confirm-btn btn btn-success">保存</button>
+          <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
           <p class="manage-headline">今後の参加者に付与するデフォルト権限を設定</p>
           <div class="d-flex flex-row">
             <div class="px-2">
@@ -358,7 +358,7 @@
                 {% for room_user in room_users %}
                   <tr class="authority-user-col" data-username="{{room_user.user.username}}">
                     <td>
-                      <a class="c-black show-modal-user-button filter-1" href="#" data-username="{{room_user.user.username}}">{{room_user.user.username}}</a>
+                      <a class="c-black show-modal-user-button filter-1" href="#" data-url="{% url 'get-user' room_user.user.username%}">{{room_user.user.username}}</a>
                     </td>
                     {% if room_user.authority.can_reply %}
                     <td><input type="checkbox" class="reply-check-input filter-2" data-default="checked" checked></td>
@@ -382,8 +382,8 @@
           </div>
       </div>
       <div class="tab-pane container" id="manage-post-pane">
-        <button type="button" data-save-for="reply-type" class="save-confirm-button btn btn-success">保存</button>
-        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <button type="button" data-save-for="reply-type" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <p class="manage-headline">返信タイプの管理</p>
         <form id="manage-reply-types-form">
           {% csrf_token %}
@@ -401,8 +401,8 @@
         </form>
       </div>
       <div class="tab-pane container" id="manage-information-pane">
-        <button type="button" data-save-for="information" class="save-confirm-button btn btn-success">保存</button>
-        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <button type="button" data-save-for="information" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <p class="manage-headline">入室する際に情報を要求</p>
         <button type="button" id="room-request-information-demo-btn" class="btn btn-secondary" data-url="{% url 'get-room-request-information' room_id %}">デモ</button>
         <table class="table table-light table-striped">
@@ -521,7 +521,7 @@
                     {{forloop.counter}}
                   </td>
                   <td scope="col">
-                    <a class="c-black show-modal-user-button filter-1" href="#" data-username="{{room_information.username}}">{{room_information.username}}</a>
+                    <a class="c-black show-modal-user-button filter-1" href="#" data-url="{% url 'get-user' room_information.username%}">{{room_information.username}}</a>
                   </td>
                   {% for information in room_information.information %}
                     <td scope="col" class="filter-{{forloop.counter|add:1}}">{{information}}</td>
@@ -533,8 +533,8 @@
         </div>
       </div>
       <div class="tab-pane container" id="manage-room-personal-pane">
-        <button type="button" data-save-for="room-personal" class="save-confirm-button btn btn-success">保存</button>
-        <button type="button" class="cancel-confirm-button btn btn-danger">キャンセル</button>
+        <button type="button" data-save-for="room-personal" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <form id="manage-room-personal-form">
           <p class="manage-headline">Webサイト</p>
           <div class="form-group">

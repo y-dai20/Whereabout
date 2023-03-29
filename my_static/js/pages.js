@@ -58,14 +58,14 @@ function ajax_agree(target, is_agree) {
         }
 
         if (data['is_agree'] & !data['is_deleted']) {
-            obj.footer.children('.agree-button').removeClass("btn-outline-success").addClass("btn-success");
-            obj.footer.children('.disagree-button').removeClass("btn-danger").addClass("btn-outline-danger");
+            obj.footer.children('.agree-btn').removeClass("btn-outline-success").addClass("btn-success");
+            obj.footer.children('.disagree-btn').removeClass("btn-danger").addClass("btn-outline-danger");
         } else if (!data['is_agree'] & !data['is_deleted']) {
-            obj.footer.children('.agree-button').removeClass("btn-success").addClass("btn-outline-success");
-            obj.footer.children('.disagree-button').removeClass("btn-outline-danger").addClass("btn-danger");
+            obj.footer.children('.agree-btn').removeClass("btn-success").addClass("btn-outline-success");
+            obj.footer.children('.disagree-btn').removeClass("btn-outline-danger").addClass("btn-danger");
         } else {
-            obj.footer.children('.agree-button').removeClass("btn-success").addClass("btn-outline-success");
-            obj.footer.children('.disagree-button').removeClass("btn-danger").addClass("btn-outline-danger");
+            obj.footer.children('.agree-btn').removeClass("btn-success").addClass("btn-outline-success");
+            obj.footer.children('.disagree-btn').removeClass("btn-danger").addClass("btn-outline-danger");
         }
 
         obj.footer.children('.agree-count').text(data['agree_count']);
@@ -75,10 +75,10 @@ function ajax_agree(target, is_agree) {
     });
 }
 //todo 複製しているなら同期を取るようにする
-$(document).on('click', '.agree-button', function(){
+$(document).on('click', '.agree-btn', function(){
     ajax_agree($(this), true);
 });
-$(document).on('click', '.disagree-button', function(){
+$(document).on('click', '.disagree-btn', function(){
     ajax_agree($(this), false);
 });
 
@@ -96,14 +96,14 @@ function ajax_good(target, is_good) {
         }
         
         if (data['is_good'] & !data['is_deleted']) {
-            obj.footer.children('.good-button').removeClass("btn-outline-success").addClass("btn-success");
-            obj.footer.children('.bad-button').removeClass("btn-danger").addClass("btn-outline-danger");
+            obj.footer.children('.good-btn').removeClass("btn-outline-success").addClass("btn-success");
+            obj.footer.children('.bad-btn').removeClass("btn-danger").addClass("btn-outline-danger");
         } else if (!data['is_good'] & !data['is_deleted']) {
-            obj.footer.children('.good-button').removeClass("btn-success").addClass("btn-outline-success");
-            obj.footer.children('.bad-button').removeClass("btn-outline-danger").addClass("btn-danger");
+            obj.footer.children('.good-btn').removeClass("btn-success").addClass("btn-outline-success");
+            obj.footer.children('.bad-btn').removeClass("btn-outline-danger").addClass("btn-danger");
         } else {
-            obj.footer.children('.good-button').removeClass("btn-success").addClass("btn-outline-success");
-            obj.footer.children('.bad-button').removeClass("btn-danger").addClass("btn-outline-danger");
+            obj.footer.children('.good-btn').removeClass("btn-success").addClass("btn-outline-success");
+            obj.footer.children('.bad-btn').removeClass("btn-danger").addClass("btn-outline-danger");
         }
         obj.footer.children('.good-count').text(data['good_count']);
         obj.footer.children('.bad-count').text(data['bad_count']);
@@ -111,10 +111,10 @@ function ajax_good(target, is_good) {
         show_modal_message(data.status, [data.statusText]);
     });
 }
-$(document).on('click', '.good-button', function(){
+$(document).on('click', '.good-btn', function(){
     ajax_good($(this), true);
 });
-$(document).on('click', '.bad-button', function(){
+$(document).on('click', '.bad-btn', function(){
     ajax_good($(this), false);
 });
 
@@ -132,14 +132,14 @@ function ajax_demagogy(target, is_true) {
         }
 
         if (data['is_true'] & !data['is_deleted']) {
-            obj.footer.children('.demagogy-button').removeClass("btn-outline-dark").addClass("btn-dark");
-            obj.footer.children('.disdemagogy-button').removeClass("btn-dark").addClass("btn-outline-dark");
+            obj.footer.children('.demagogy-btn').removeClass("btn-outline-dark").addClass("btn-dark");
+            obj.footer.children('.disdemagogy-btn').removeClass("btn-dark").addClass("btn-outline-dark");
         } else if (!data['is_true'] & !data['is_deleted']) {
-            obj.footer.children('.demagogy-button').removeClass("btn-dark").addClass("btn-outline-dark");
-            obj.footer.children('.disdemagogy-button').removeClass("btn-outline-dark").addClass("btn-dark");
+            obj.footer.children('.demagogy-btn').removeClass("btn-dark").addClass("btn-outline-dark");
+            obj.footer.children('.disdemagogy-btn').removeClass("btn-outline-dark").addClass("btn-dark");
         } else {
-            obj.footer.children('.demagogy-button').removeClass("btn-dark").addClass("btn-outline-dark");
-            obj.footer.children('.disdemagogy-button').removeClass("btn-dark").addClass("btn-outline-dark");
+            obj.footer.children('.demagogy-btn').removeClass("btn-dark").addClass("btn-outline-dark");
+            obj.footer.children('.disdemagogy-btn').removeClass("btn-dark").addClass("btn-outline-dark");
         }
         
         obj.footer.children('.true-count').text(data['true_count']);
@@ -148,14 +148,14 @@ function ajax_demagogy(target, is_true) {
         show_modal_message(data.status, [data.statusText]);
     });
 }
-$(document).on('click', '.demagogy-button', function(){
+$(document).on('click', '.demagogy-btn', function(){
     ajax_demagogy($(this), true);
 });
-$(document).on('click', '.disdemagogy-button', function(){
+$(document).on('click', '.disdemagogy-btn', function(){
     ajax_demagogy($(this), false);
 });
 
-$(document).on('click', '.favorite-button', function(){
+$(document).on('click', '.favorite-btn', function(){
     var img = $(this).children('.favorite-img');
     var obj = get_item_data($(this));
 
@@ -171,11 +171,11 @@ $(document).on('click', '.favorite-button', function(){
 
         if (data['is_favorite']) {
             img.attr('src', function(i, e){
-                return e.replace(whiteStarImg, yellowStarImg)
+                return e.replace(IMGS.whiteStar, IMGS.yellowStar)
             });
         } else {
             img.attr('src', function(i, e){
-                return e.replace(yellowStarImg, whiteStarImg)
+                return e.replace(IMGS.yellowStar, IMGS.whiteStar)
             });
         }
 
@@ -185,11 +185,11 @@ $(document).on('click', '.favorite-button', function(){
     });
 });
 
-$(document).on('click', '.follow-button', function(){
+$(document).on('click', '.follow-btn', function(){
     var obj = get_item_data($(this));
     var btn = $(this);
     $.ajax({
-        url: `/follow/${obj.username}/`,
+        url: follow_url(obj.username),
         type:'POST',
         dataType:'json',
         timeout:60000,
@@ -211,10 +211,10 @@ $(document).on('click', '.follow-button', function(){
     });
 });
 
-$(document).on('click', '.block-button', function(){
+$(document).on('click', '.block-btn', function(){
     var obj = get_item_data($(this));
     $.ajax({
-        url: `/block/${obj.username}/`,
+        url: block_url(obj.username),
         type:'POST',
         dataType:'json',
         timeout:60000,
@@ -229,11 +229,10 @@ $(document).on('click', '.block-button', function(){
     });
 });
 
-//todo classでいいのか，idに出来るならそうしよう
-$('.accept-invite-button').on('click', function(){
+$('.accept-room-invite-btn').on('click', function(){
     var target = $(this).parents('.table-col');
     $.ajax({
-        url: '/accept/invite/' + target.data('room') + '/',
+        url: $(this).data('url'),
         type:'POST',
         data:{is_accept: $(this).data('is-accept')},
         dataType:'json',
@@ -248,10 +247,10 @@ $('.accept-invite-button').on('click', function(){
     });
 });
 
-$('.profile-accept-button').on('click', function(){
+$('.accept-room-guest-btn').on('click', function(){
     var target = $(this).parents('.table-col');
     $.ajax({
-        url: `/accept/${target.data('room')}/${target.data('username')}/`,
+        url: $(this).data('url'),
         type:'POST',
         data:{is_blocked: $(this).data('is-blocked')},
         dataType:'json',
@@ -363,7 +362,7 @@ $('#submit-reply-button').on('click', function(event) {
 });
 
 //todo 投稿したら入力内容をクリアにする
-$('#submit-post-button').on('click', function(event) {
+$('#submit-post-btn').on('click', function(event) {
     event.preventDefault();
     var form = 'post-form';
     if (!form_valid(form)) {
@@ -374,7 +373,7 @@ $('#submit-post-button').on('click', function(event) {
     fd = get_form_data(form, ['input', 'textarea', 'select'], fd);
 
     $.ajax({
-        url:'/post/',
+        url:$(this).data('url'),
         type:'POST',
         data:fd,
         cache:false,
@@ -400,7 +399,7 @@ $('#submit-post-button').on('click', function(event) {
 });
 
 //todo htmlでscriptを使用する際にエラーになるないようにする（横展開）
-$('#submit-create-room-button').on('click', function(event) {
+$('#submit-create-room-btn').on('click', function(event) {
     event.preventDefault();
     var form = 'create-room-form';
     if (!form_valid(form)) {
@@ -411,7 +410,7 @@ $('#submit-create-room-button').on('click', function(event) {
     fd = get_form_data(form, ['input', 'textarea'], fd);
 
     $.ajax({
-        url:'/create-room/',
+        url:$(this).data('url'),
         type:'POST',
         data:fd,
         dataType:false,
@@ -432,11 +431,11 @@ $('#submit-create-room-button').on('click', function(event) {
     });
 });
 
-$('.save-confirm-button').on('click', function(){
+$('.save-confirm-btn').on('click', function(){
     var save_for = $(this).data('save-for');
     show_modal_message('確認', ['保存しますか'], get_confirm_button('保存', `save-${save_for}-button`));
 });
-$('.cancel-confirm-button').on('click', function(){
+$('.cancel-confirm-btn').on('click', function(){
     show_modal_message('確認', ['変更内容をキャンセルしますか'], '<a onclick="location.reload()" type="button" class="btn btn-danger" data-bs-dismiss="modal">キャンセル</a>');
 });
 
@@ -955,7 +954,7 @@ $('.hamburger-menu').click(function(e){
 });
 
 $(document).on('click', '.open-new-window-btn', function() {
-    window.open(BASE_URL + $(this).data('url'), '_blank')
+    window.open(URLS.base + $(this).data('url'), '_blank')
 });
 
 $('.clear-input-btn').on('click', function(){
@@ -1016,7 +1015,7 @@ $('.search-reply-button').on('click', function() {
 });
 
 $('.toggle-btn').on('click', function() {
-    var id = get_id($(this).data('target-id'));
+    var id = get_id_with_sharp($(this).data('target-id'));
     $(id).toggle();
 }); 
 

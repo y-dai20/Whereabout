@@ -25,7 +25,7 @@ class FollowView(LoginRequiredMixin, DetailView):
         
         follow = UserFollow.objects.get_or_none(follower=request.user, followee=target_user)
         if follow is None:
-            follow.create(follower=request.user, followee=target_user)
+            follow = UserFollow.objects.create(follower=request.user, followee=target_user)
         else:
             follow.is_deleted = not follow.is_deleted
             follow.save()
@@ -50,7 +50,7 @@ class BlockView(LoginRequiredMixin, DetailView):
 
         block = UserBlock.objects.get_or_none(blocker=request.user, blockee=target_user)
         if block is None:
-            block.create(blocker=request.user, blockee=target_user)
+            block = UserBlock.objects.create(blocker=request.user, blockee=target_user)
         else:
             block.is_deleted = not block.is_deleted
             block.save()

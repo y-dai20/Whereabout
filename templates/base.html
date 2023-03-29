@@ -42,32 +42,42 @@
   <script type="text/javascript" src="{% static 'js/others/select2.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/others/luminous.min.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/others/datalist-css.min.js' %}"></script>
-  <script>
-    bsCustomFileInput.init();
-    const BASE_URL = "{{MY_URL}}";
-    const whiteStarImg = "{% static "images/white_star.svg" %}";
-    const yellowStarImg = "{% static "images/yellow_star.svg" %}";
-    const deleteImg = "{% static "images/delete.svg" %}";
-    const humanImg = "{% static "images/human.svg" %}";
-    const trafficGreenImg = "{% static "images/traffic_green.svg" %}";
-    const trafficYellowImg = "{% static "images/traffic_yellow.svg" %}";
-    const trafficRedImg = "{% static "images/traffic_red.svg" %}";
-    const houseImg = "{% static "images/house.svg" %}";
-    const imageImg = "{% static "images/image.svg" %}";
-    const titleImg = "{% static "images/title.png" %}";
-    const textImg = "{% static "images/text.png" %}";
-    const copyLinkImg = "{% static "images/copy_link.svg" %}";
-    const goDetailImg = "{% static "images/go_detail.svg" %}";
-    const questionImg = "{% static "images/black_question.svg" %}";
-    const trashImg = "{% static "images/trash.svg" %}";
-    const addImg = "{% static "images/add.svg" %}";
-    const lockImg = "{% static "images/lock.svg" %}";
-    const postImg = "{% static "images/post.svg" %}";
-    const webImg = "{% static "images/web.svg" %}";
-    const phoneImg = "{% static "images/phone.svg" %}";
-    const mapImg = "{% static "images/map.svg" %}";
-    const calenderImg = "{% static "images/calender.svg" %}";
-    const uploadImg = "{% static "images/upload.svg" %}";
+  <script
+    data-white-star="{% static "images/white_star.svg" %}"
+    data-yellow-star="{% static "images/yellow_star.svg" %}"
+    data-delete="{% static "images/delete.svg" %}"
+    data-human="{% static "images/human.svg" %}"
+    data-traffic-green="{% static "images/traffic_green.svg" %}"
+    data-traffic-yellow="{% static "images/traffic_yellow.svg" %}"
+    data-traffic-red="{% static "images/traffic_red.svg" %}"
+    data-house="{% static "images/house.svg" %}"
+    data-image="{% static "images/image.svg" %}"
+    data-title="{% static "images/title.png" %}"
+    data-copy-link="{% static "images/copy_link.svg" %}"
+    data-go-detail="{% static "images/go_detail.svg" %}"
+    data-question="{% static "images/black_question.svg" %}"
+    data-trash="{% static "images/trash.svg" %}"
+    data-add="{% static "images/add.svg" %}"
+    data-lock="{% static "images/lock.svg" %}"
+    data-post="{% static "images/post.svg" %}"
+    data-web="{% static "images/web.svg" %}"
+    data-phone="{% static "images/phone.svg" %}"
+    data-map="{% static "images/map.svg" %}"
+    data-calender="{% static "images/calender.svg" %}"
+    data-upload="{% static "images/upload.svg" %}"
+    >
+    const IMGS = document.currentScript.dataset;
+  </script>
+  <script 
+    data-base="{{MY_URL}}"
+    data-get-user="{% url 'get-user' 'P_USERNAME'%}"
+    data-follow-user="{% url 'follow-user' 'P_USERNAME'%}"
+    data-block-user="{% url 'block-user' 'P_USERNAME'%}"
+    >
+    const URLS = document.currentScript.dataset;
+    function get_user_url(username) {return URLS.getUser.replace('P_USERNAME', username);}
+    function follow_url(username) {return URLS.followUser.replace('P_USERNAME', username);}
+    function block_url(username) {return URLS.blockUser.replace('P_USERNAME', username);}
   </script>
   <script type="text/javascript" src="{% static 'js/const.js' %}"></script>
   <script type="text/javascript" src="{% static 'js/var.js' %}"></script>

@@ -74,6 +74,7 @@ class ShowRoomView(ShowRoomBaseView, SearchBaseView, PostItemView):
         context = super().get_context_data(**kwargs)
         context['star_denominator'] = self.room.good_count + self.room.bad_count
         context['star_rate'] = round(self.room.good_count / context['star_denominator'], 1) * 100 if context['star_denominator'] > 0 else 0.0
+        context['rooms_url'] = f.str_reverse_lazy('rooms')
 
         return context
 
