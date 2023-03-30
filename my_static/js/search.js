@@ -71,8 +71,8 @@ $('.search-post-button').on('click', function() {
     search_post_ajax(url);
 });
 
-$('.search-pir-button').on('click', function() {
-    var url = get_form_href('search-pir-form');
+$('.search-post-in-room-button').on('click', function() {
+    var url = get_form_href('search-post-in-room-form');
     search_post_ajax(url);
 });
 

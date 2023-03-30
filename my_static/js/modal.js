@@ -413,7 +413,7 @@ $(document).ready(function() {
 		},
 	});
 
-	$("form[id='search-pir-form']").validate({
+	$("form[id='search-post-in-room-form']").validate({
 		rules:{
 			username:{
 				maxlength:USERNAME_MAX_LENGTH,

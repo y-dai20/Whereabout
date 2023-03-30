@@ -76,7 +76,7 @@
       />
       <div
         class="added-tag-list flex-area"
-        id="added-search-pir-tag-list"
+        id="added-search-post-in-room-tag-list"
       ></div>
       <input type="hidden" value="" name="tags" />
       <script
@@ -85,7 +85,7 @@
         var DATA = document.currentScript.dataset;
         var tags = DATA.tags.split(",");
         $.each(tags, function (idx, tag) {
-          append_removable_tag(tag, "#added-search-pir-tag-list");
+          append_removable_tag(tag, "#added-search-post-in-room-tag-list");
         });
       </script>
     </td>

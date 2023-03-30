@@ -37,7 +37,7 @@
       {% block room_content %}
       {% endblock %}
 
-      {% include "../snippets/search.html" with type="post_in_room"%}
+      {% include "../snippets/search.html" with type="post-in-room"%}
       
       <div class="post-list">
         {{dumps_object_list | json_script:'dumps_object_list'}}

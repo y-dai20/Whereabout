@@ -50,17 +50,17 @@ class IndexPostListView(SearchBaseView, PostItemView):
             created_at__lte=params['date_to'],
         ).exclude(user__id__in=self.get_blocked_user_list())
         
-        if params['is_favorite'] and self.request.user.is_authenticated:
+        if f.get_boolean_or_none(params['is_favorite']) and self.request.user.is_authenticated:
             fav_ids = PostFavorite.objects.active(user=self.request.user).values_list('obj__id', flat=True)
             posts = posts.filter(id__in=fav_ids)
 
         my_rooms = RoomBase.get_my_room_list(self.request.user)
         attend_rooms = RoomBase.get_attend_room_list(self.request.user)
-        rooms = my_rooms if params['my_room_check'] == True else []
-        rooms += attend_rooms if params['attend_room_check'] == True else []
-        rooms += RoomBase.get_other_room_list(my_rooms + attend_rooms) if params['other_room_check'] == True else []
+        rooms = my_rooms if f.get_boolean_or_none(params['my_room_check']) == True else []
+        rooms += attend_rooms if f.get_boolean_or_none(params['attend_room_check']) == True else []
+        rooms += RoomBase.get_other_room_list(my_rooms + attend_rooms) if f.get_boolean_or_none(params['other_room_check']) == True else []
 
-        if params['no_room_check'] == True:
+        if f.get_boolean_or_none(params['no_room_check']) == True:
             posts = posts.filter(Q(room__in=rooms) | Q(room__isnull=True))
         else:
             posts = posts.filter(room__in=rooms)
