@@ -1,13 +1,13 @@
-$('#reset-password-button').on('click', function(){
-    var form = 'reset-password-form';
-    if (!form_valid(form)) {
+$('#reset-password-btn').on('click', function(){
+    var form_id = 'reset-password-form';
+    if (!form_valid(form_id)) {
         return false;
     }
 
     $.ajax({
         url: location.href,
         type:'POST',
-        data:get_form_input_data(form),
+        data:get_form_input_data(form_id),
         dataType:false,
         processData:false,
         contentType:false,
@@ -19,16 +19,16 @@ $('#reset-password-button').on('click', function(){
     });
 });
 
-$('#signup-button').on('click', function(){
-    var form = 'signup-form';
-    if (!form_valid(form)) {
+$('#signup-btn').on('click', function(){
+    var form_id = 'signup-form';
+    if (!form_valid(form_id)) {
         return false;
     }
 
     $.ajax({
         url: location.href,
         type:'POST',
-        data:get_form_input_data(form),
+        data:get_form_input_data(form_id),
         dataType:false,
         processData:false,
         contentType:false,
@@ -43,16 +43,16 @@ $('#signup-button').on('click', function(){
     });
 });
 
-$('#change-password-button').on('click', function(){
-    var form = 'change-password-form';
-    if (!form_valid(form)) {
+$('#change-password-btn').on('click', function(){
+    var form_id = 'change-password-form';
+    if (!form_valid(form_id)) {
         return false;
     }
 
     $.ajax({
         url: $(this).data('url'),
         type:'POST',
-        data:get_form_input_data(form),
+        data:get_form_input_data(form_id),
         dataType:false,
         processData:false,
         contentType:false,
@@ -69,15 +69,15 @@ $('#change-password-button').on('click', function(){
 });
 
 $('#send-mail-for-signup-btn').on('click', function(){
-    var form = 'signup-send-mail-form';
-    if (!form_valid(form)) {
+    var form_id = 'signup-send-mail-form';
+    if (!form_valid(form_id)) {
         return false;
     }
     create_spinner();
     $.ajax({
         url:$(this).data('url'),
         type:'POST',
-        data:get_form_input_data(form),
+        data:get_form_input_data(form_id),
         dataType:false,
         processData:false,
         contentType:false,
@@ -91,8 +91,8 @@ $('#send-mail-for-signup-btn').on('click', function(){
 });
 
 $('#send-mail-for-reset-password-btn').on('click', function(){
-    var form = 'reset-password-send-mail-form';
-    if (!form_valid(form)) {
+    var form_id = 'reset-password-send-mail-form';
+    if (!form_valid(form_id)) {
         return false;
     }
 
