@@ -62,15 +62,15 @@
   </div>
   <div class="sidebar-item">
     <div class="room-personal-area c-white">
-      <div class="room-personal"><script>document.write(get_web_img());</script><a href="{{web}}">{{web_domain}}</a></div>
-      <div class="room-personal"><script>document.write(get_phone_img());</script><a href="tel:{{phone}}">{{phone}}</a></div>
-      <div class="room-personal"><script>document.write(get_map_img());</script><a href="{{map}}">{{map}}</a></div>
+      <div class="room-personal"><img src="{% static "images/web.svg" %}"><a href="{{web}}">{{web_domain}}</a></div>
+      <div class="room-personal"><img src="{% static "images/phone.svg" %}"><a href="tel:{{phone}}">{{phone}}</a></div>
+      <div class="room-personal"><img src="{% static "images/map.svg" %}"><a href="{{map}}">{{map}}</a></div>
 
       <div class="accordion" id="calender-accordion">
         <div class="accordion-item">
           <p class="accordion-header" id="calender-accordion-hearder1">
           <button class="accordion-button collapsed p-1" type="button" data-bs-toggle="collapse" data-bs-target="#calender-accordion-collapse1" aria-expanded="false" aria-controls="calender-accordion-collapse1">
-            <script>document.write(get_calender_img());</script>カレンダー
+            <img src="{% static "images/calender.svg" %}">カレンダー
           </button>
           </p>
           <div id="calender-accordion-collapse1" class="accordion-collapse collapse" aria-labelledby="calender-accordion-hearder1" data-bs-parent="#calender-accordion">
@@ -137,7 +137,7 @@
     <script>document.write(get_human_img());</script>
   </div>
   <div class="sidebar-menu c-white" data-for="index-post-reply-sidebar">
-    <script>document.write(get_post_img());</script>
+    <img src="{% static "images/post.svg" %}">
   </div>
 </div>
 {% endblock %}

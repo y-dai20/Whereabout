@@ -11,7 +11,7 @@ $(document).on('click', '.get-reply2-link', function() {
     $('.reply-detail-link').data('obj-id', obj.id);
 
     $.ajax({
-        url: `/get/reply2/`,
+        url: GET_REPLY2_URL,
         type:'POST',
         data:{obj_id:obj.id},
         dataType:'json',
@@ -47,7 +47,7 @@ $(document).on('click', '.get-reply-link', function() {
     $('.post-detail-link').html(`<a href="/post/${obj.id}/" role="button" type="button" class="sidebar-button btn btn-secondary">投稿へ移動</a>`)
     $('.post-detail-link').data('obj-id', obj.id);
     $.ajax({
-        url: `/get/reply/`,
+        url: GET_REPLY_URL,
         type:'POST',
         data:{obj_id:obj.id},
         dataType:'json',

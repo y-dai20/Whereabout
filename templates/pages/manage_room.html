@@ -6,6 +6,21 @@
 {% endblock %}
 
 {% block main %}
+<script
+  data-delete="{% static "images/delete.svg" %}"
+  data-image="{% static "images/image.svg" %}"
+  data-title="{% static "images/title.png" %}"
+  data-text="{% static "images/text.png" %}"
+  data-add="{% static "images/add.svg" %}"
+  >
+  const IMGS = document.currentScript.dataset;
+  const DELETE_IMG = IMGS.delete;
+  const IMAGE_IMG = IMGS.image;
+  const TITLE_IMAGE = IMGS.title;
+  const TEXT_IMAGE = IMGS.text;
+  const ADD_IMAGE = IMGS.add
+</script>
+
 <div class="left-sidebar sidebar">
   <nav class="nav flex-column nav-pills manage-room-function-list w-100">
     <a class="sidebar-button manage-room-function nav-link active" data-bs-toggle="pill" data-bs-target="#manage-display-pane" type="button" role="pill">
@@ -179,7 +194,7 @@
               </div>
             </div>
             <div class="trash-area droppable" data-bs-toggle="tooltip" data-bs-placement="top" title="この上にオブジェクトをドロップすると削除できます">
-              <script>document.write(get_trash_img());</script>
+              <img src="{% static "images/trash.svg" %}" class="trash-img">
             </div>
             <div data-bs-toggle="tooltip" data-bs-placement="top" title="クリックしたオブジェクトを右へ拡大します">
               <button class="btn btn-secondary expand-object-button need-click-object" type="button" disabled>右へ拡大</button>

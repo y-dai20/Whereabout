@@ -45,36 +45,40 @@
   <script
     data-white-star="{% static "images/white_star.svg" %}"
     data-yellow-star="{% static "images/yellow_star.svg" %}"
-    data-delete="{% static "images/delete.svg" %}"
-    data-human="{% static "images/human.svg" %}"
     data-traffic-green="{% static "images/traffic_green.svg" %}"
     data-traffic-yellow="{% static "images/traffic_yellow.svg" %}"
     data-traffic-red="{% static "images/traffic_red.svg" %}"
+    data-human="{% static "images/human.svg" %}"
     data-house="{% static "images/house.svg" %}"
-    data-image="{% static "images/image.svg" %}"
-    data-title="{% static "images/title.png" %}"
     data-copy-link="{% static "images/copy_link.svg" %}"
     data-go-detail="{% static "images/go_detail.svg" %}"
-    data-question="{% static "images/black_question.svg" %}"
-    data-trash="{% static "images/trash.svg" %}"
-    data-add="{% static "images/add.svg" %}"
-    data-lock="{% static "images/lock.svg" %}"
-    data-post="{% static "images/post.svg" %}"
-    data-web="{% static "images/web.svg" %}"
-    data-phone="{% static "images/phone.svg" %}"
-    data-map="{% static "images/map.svg" %}"
-    data-calender="{% static "images/calender.svg" %}"
-    data-upload="{% static "images/upload.svg" %}"
+    data-question="{% static "images/question.svg" %}"
     >
     const IMGS = document.currentScript.dataset;
+    const WHITE_STAR_IMG = IMGS.whiteStar;
+    const YELLOW_STAR_IMG = IMGS.yellowStar;
+    const TRAFFIC_RED_IMG = IMGS.trafficRed;
+    const TRAFFIC_GREEN_IMG = IMGS.trafficGreen;
+    const TRAFFIC_YELLOW_IMG = IMGS.trafficYellow;
+    const HUMAN_IMG = IMGS.human;
+    const HOUSE_IMG = IMGS.house;
+    const COPY_LINK_IMG = IMGS.copyLink;
+    const GO_DETAIL_IMG = IMGS.goDetail;
+    const QUESTION_IMG = IMGS.question;
   </script>
   <script 
     data-base="{{MY_URL}}"
+    data-get-reply="{% url 'get-reply' %}"
+    data-get-reply2="{% url 'get-reply2' %}"
     data-get-user="{% url 'get-user' 'P_USERNAME'%}"
     data-follow-user="{% url 'follow-user' 'P_USERNAME'%}"
     data-block-user="{% url 'block-user' 'P_USERNAME'%}"
     >
     const URLS = document.currentScript.dataset;
+    const BASE_URL = URLS.base;
+    const GET_REPLY_URL = URLS.getReply;
+    const GET_REPLY2_URL = URLS.getReply2;
+    function get_reply2_url() {return URLS.getReply2;}
     function get_user_url(username) {return URLS.getUser.replace('P_USERNAME', username);}
     function follow_url(username) {return URLS.followUser.replace('P_USERNAME', username);}
     function block_url(username) {return URLS.blockUser.replace('P_USERNAME', username);}

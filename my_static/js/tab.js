@@ -61,7 +61,7 @@ function create_room_tab_title(id="None" ,title="title", is_editable=true, is_ac
     html += `</a>`;
     if (is_editable) {
         html += `<div class="flex-area" id="room-tab-title${tab}-info"><div class="delete-tab-button" data-tab="${tab}">
-        <img src="${IMGS.delete}" class="tab-delete-button"></div>
+        <img src="${DELETE_IMG}" class="tab-delete-button"></div>
         <div class="char-len margin-left c-green"></div></div>`;
     }
 
@@ -111,17 +111,17 @@ function get_addable_object_list() {
     $('.addable-object-list').html(`
         <div class="my-col">
         <div class="draggable addable-object" id="addable-object-title">
-        <img src="${IMGS.title}" class="image">
+        <img src="${TITLE_IMAGE}" class="image">
         </div>
         </div>
         <div class="my-col">
         <div class="draggable addable-object" id="addable-object-textarea">
-        <img src="${IMGS.text}" class="image">
+        <img src="${TEXT_IMAGE}" class="image">
         </div>
         </div>
         <div class="my-col">
         <div class="draggable addable-object" id="addable-object-img">
-            <img src="${IMGS.image}" class="image">
+            <img src="${IMAGE_IMG}" class="image">
         </div>
         </div>
     `);

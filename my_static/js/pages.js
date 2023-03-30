@@ -171,11 +171,11 @@ $(document).on('click', '.favorite-btn', function(){
 
         if (data['is_favorite']) {
             img.attr('src', function(i, e){
-                return e.replace(IMGS.whiteStar, IMGS.yellowStar)
+                return e.replace(WHITE_STAR_IMG, YELLOW_STAR_IMG)
             });
         } else {
             img.attr('src', function(i, e){
-                return e.replace(IMGS.yellowStar, IMGS.whiteStar)
+                return e.replace(YELLOW_STAR_IMG, WHITE_STAR_IMG)
             });
         }
 
@@ -423,7 +423,7 @@ $('.hamburger-menu').click(function(e){
 });
 
 $(document).on('click', '.open-new-window-btn', function() {
-    window.open(URLS.base + $(this).data('url'), '_blank')
+    window.open(BASE_URL + $(this).data('url'), '_blank')
 });
 
 $('.clear-input-btn').on('click', function(){

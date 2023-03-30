@@ -170,11 +170,11 @@ function get_reply_item(reply, is_link=false) {
 function get_reply_header(reply) {
     var html = `<div class="reply-item-header item-header">`;
     if (reply.is_agree) {
-        html += get_traffic_img(IMGS.trafficGreen);
+        html += get_traffic_img(TRAFFIC_GREEN_IMG);
     } else if (reply.is_disagree) {
-        html += get_traffic_img(IMGS.trafficRed);
+        html += get_traffic_img(TRAFFIC_RED_IMG);
     } else if (reply.is_neutral) {
-        html += get_traffic_img(IMGS.trafficYellow);
+        html += get_traffic_img(TRAFFIC_YELLOW_IMG);
     }
     if (reply.type) {
         html += `<span>#${escapeHTML(reply.type)}</span>`
@@ -223,9 +223,9 @@ function get_item_footer(data) {
     
     html += `<a class="favorite-btn">`;
     if (!data.favorite_state) {
-        html += `<img src="${IMGS.whiteStar}" alt="" class="favorite-img">`;
+        html += `<img src="${WHITE_STAR_IMG}" alt="" class="favorite-img">`;
     } else {
-        html += `<img src="${IMGS.yellowStar}" alt="" class="favorite-img">`
+        html += `<img src="${YELLOW_STAR_IMG}" alt="" class="favorite-img">`
     }
     html += `</a><span class="favorite-count">${data.favorite_count}</span>`;
 
@@ -281,7 +281,7 @@ function get_user_content(user){
 	if (!is_empty(user.img)) {
 		html += `<img src="${user.img}" alt="" class="user-img">`;
 	} else {
-		html += `<img src="${IMGS.human}" alt="" class="user-img">`;
+		html += `<img src="${HUMAN_IMG}" alt="" class="user-img">`;
     }
 	html += `</div><div class="username"><div class="headline">ユーザー名</div>${escapeHTML(user.username)}</div>
     <div class="user-rooms"><div class="headline">ルーム</div>`;
@@ -415,7 +415,7 @@ function get_slider_imgs_html(cls, img_paths) {
 function get_item_user_area(name, img=null, color='black') {
     var html = `<div class="item-header-user-img user-img-area">`;
     if (is_empty(img)) {
-        html += `<img src="${IMGS.human}" alt="" class="user-img">`;
+        html += `<img src="${HUMAN_IMG}" alt="" class="user-img">`;
     } else {
         html += `<img src="${img}" alt="" class="user-img">`;
     }
@@ -425,7 +425,7 @@ function get_item_user_area(name, img=null, color='black') {
 
 function get_item_room_area(room_id, title, color='black') {
     if (!is_empty(room_id)) {
-        return `<div class="room-link"><img src="${IMGS.house}" class="house-img"><a class="c-${color} show-modal-room-button" href="#" data-roomid="${room_id}">${title}</a></div>`;
+        return `<div class="room-link"><img src="${HOUSE_IMG}" class="house-img"><a class="c-${color} show-modal-room-button" href="#" data-roomid="${room_id}">${title}</a></div>`;
     }
     return '';
 }
@@ -460,11 +460,11 @@ function create_myroom_dropdown(id, title) {
 }
 
 function get_item_detail_link(path) {
-    return `<a href="${path}"><img src="${IMGS.goDetail}" alt="" class="go-detail-img"></a>`;
+    return `<a href="${path}"><img src="${GO_DETAIL_IMG}" alt="" class="go-detail-img"></a>`;
 }
 
 function get_item_copy_link(path) {
-    return `<img src="${IMGS.copyLink}" alt="" data-link="${URLS.base}${path}" class="copy-link-img copy-link">`;
+    return `<img src="${COPY_LINK_IMG}" alt="" data-link="${BASE_URL}${path}" class="copy-link-img copy-link">`;
 }
 
 function get_traffic_img(src) {
@@ -472,56 +472,24 @@ function get_traffic_img(src) {
 }
 
 function get_question_img() {
-    return `<img src="${IMGS.question}" class="question-img">`;
+    return `<img src="${QUESTION_IMG}" class="question-img">`;
 }
 
 function get_human_img() {
-    return `<img src="${IMGS.human}" class="user-img">`;
-}
-
-function get_trash_img() {
-    return `<img src="${IMGS.trash}" class="trash-img">`;
+    return `<img src="${HUMAN_IMG}" class="user-img">`;
 }
 
 function get_add_img() {
-    return `<img src="${IMGS.add}" class="img-add-button">`;
-}
-
-function get_lock_img() {
-    return `<img src="${IMGS.lock}" class="lock-room">`;
-}
-
-function get_post_img() {
-    return `<img src="${IMGS.post}">`;
-}
-
-function get_phone_img() {
-    return `<img src="${IMGS.phone}">`;
-}
-
-function get_web_img() {
-    return `<img src="${IMGS.web}">`;
-}
-
-function get_map_img() {
-    return `<img src="${IMGS.map}">`;
-}
-
-function get_calender_img() {
-    return `<img src="${IMGS.calender}">`;
+    return `<img src="${ADD_IMAGE}" class="img-add-button">`;
 }
 
 function get_room_star(star_rate, star_denominator) {
-    return `<div class="flex-center"><img class="room-star" src="${IMGS.yellowStar}"><span class="c-yellow">${star_rate}%（${star_denominator}）</span></div>`;
-}
-
-function get_upload_img() {
-    return `<img src="${IMGS.upload}" class="upload-img">`;
+    return `<div class="flex-center"><img class="room-star" src="${YELLOW_STAR_IMG}"><span class="c-yellow">${star_rate}%（${star_denominator}）</span></div>`;
 }
 
 function get_editable_room_icon(id="", icon="", link="") {
     if (is_empty(icon)) {
-        icon = IMGS.human;
+        icon = HUMAN_IMG;
     }
 
     return `

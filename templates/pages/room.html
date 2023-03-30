@@ -7,7 +7,7 @@
 {% block room_content %}
 <div class="text-center">
   {% if is_public == False %}
-  <script>document.write(get_lock_img());</script>
+  <img src="{% static "images/lock.svg" %}" class="lock-room">
   {% endif %}
   <script>
     document.write(get_room_star({{star_rate}}, {{star_denominator}}));
