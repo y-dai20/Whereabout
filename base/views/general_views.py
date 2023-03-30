@@ -23,6 +23,7 @@ from datetime import datetime, timedelta
 from abc import abstractmethod
 
 
+#todo (高) 保存するときに変更された箇所だけdjangoに送信するようにしたい。
 #todo (高) roomに関してはValidateRoomViewを使うようにすべし
 #todo (中) 外部キーがあるモデルはマネージャーを作成する
 #todo (中) roomの親子関係を作成し、評価やユーザーを結合するなど

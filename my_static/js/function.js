@@ -656,7 +656,7 @@ function append_removable_tag(val, append_to) {
         $('.input-tag').val('');
         return false;
     }
-    append_to.append(`<div class="removable-tag-item tag-item">${val}</div>`);
+    append_to.append(`<div class="removable-tag-item tag-item">${val}✖︎</div>`);
     if (input_tags.length < 1) {
         append_to.next(`<input type="hidden" value="${val}" name="tags">`);
         return true;
