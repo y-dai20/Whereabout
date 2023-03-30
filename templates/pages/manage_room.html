@@ -13,7 +13,7 @@
   data-text="{% static "images/text.png" %}"
   data-add="{% static "images/add.svg" %}"
   >
-  const IMGS = document.currentScript.dataset;
+  var IMGS = document.currentScript.dataset;
   const DELETE_IMG = IMGS.delete;
   const IMAGE_IMG = IMGS.image;
   const TITLE_IMAGE = IMGS.title;

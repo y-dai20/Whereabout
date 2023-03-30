@@ -1,12 +1,15 @@
 {% extends 'base.html' %}
+{% load static %}
 
 {% block main %}
 {% if do_pass_request_information %}
   {{request_information | json_script:'request_information'}}
-  <script>
+  <script
+    data-room-id="{{room_id}}"
+    >
     var rris = JSON.parse(document.getElementById('request_information').textContent);
-    var room_id = '{{room_id}}';
-    show_room_request_information(rris, room_id);
+    var DATA = document.currentScript.dataset;
+    show_room_request_information(rris, DATA.roomId);
   </script>
 {% endif %}
 <div class="left-sidebar sidebar">
@@ -24,10 +27,12 @@
   <div class="my-container">
     <div class="show-room-container">
       {{room_tags | json_script:'room_tags'}}
-      <script>
+      <script
+        data-rooms-url="{{rooms_url}}"
+        >
         var tags = JSON.parse(document.getElementById('room_tags').textContent);
-        var url  = '{{rooms_url}}';
-        document.write(get_tags(tags, url));
+        var DATA = document.currentScript.dataset;
+        document.write(get_tags(tags, DATA.roomsUrl));
       </script>
       {% block room_content %}
       {% endblock %}

@@ -79,8 +79,11 @@
         id="added-search-pir-tag-list"
       ></div>
       <input type="hidden" value="" name="tags" />
-      <script>
-        var tags = "{{search.tags}}".split(",");
+      <script
+        data-tags="{{search.tags}}"
+        >
+        var DATA = document.currentScript.dataset;
+        var tags = DATA.tags.split(",");
         $.each(tags, function (idx, tag) {
           append_removable_tag(tag, "#added-search-pir-tag-list");
         });
