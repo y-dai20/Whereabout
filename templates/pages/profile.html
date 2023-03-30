@@ -26,7 +26,7 @@
         <form id="manage-user-form">
           {% csrf_token %}
           <div class="form-group">
-            <button type="button" class="save-confirm-btn btn btn-success" data-save-for="user">保存</button>
+            <button type="button" class="save-confirm-btn btn btn-success" data-selector="#save-user-btn" data-url="{% url 'profile' %}">保存</button>
             <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
           </div>
           <p class="manage-headline">画像</p>

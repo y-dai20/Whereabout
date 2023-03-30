@@ -285,21 +285,19 @@ function create_video_input(name, is_multi=false) {
     $(`.${name}-video-preview-uploaders`).prepend(html);
 }
 
-function get_confirm_button(value, add_class='', is_success=true) {
-    var html = `<a type="button" role="button" class="btn btn-`;
-    if (is_success) {
-        html += 'success '
-    } else {
-        html += 'danger '
+function get_confirm_button(value, selector='', url='', is_success=true) {
+    var html = `<a type="button" role="button" data-bs-dismiss="modal" `;
+
+    var cls = is_success ? 'class="btn btn-success ' : 'class="btn btn-danger '; 
+    if (selector.startsWith('.')) {
+        cls += selector.slice(1);
     }
+    cls += `"`;
+    var id = selector.startsWith('#') ? `id="${selector.slice(1)}"` : ``;
 
-    if (add_class != '') {
-        html += add_class;
-    }
+    html += `${cls} ${id} data-url="${url}">${value}</a>`;
 
-    html += `" data-bs-dismiss="modal">${value}</a>`;
-
-    return html
+    return html;
 }
 
 function delete_list_item(list, item) {
@@ -428,7 +426,7 @@ function get_form_data(form_id, tags=[], fd=null) {
     }
 
     $.each(tags, function(idx, tag) {
-        get_id_obj(id).find(tag).each(function(){
+        get_id_obj(form_id).find(tag).each(function(){
             if (is_empty($(this).attr('name'))) {
                 return true;
             }

@@ -45,7 +45,7 @@
 
     <div class="tab-content">
       <div class="tab-pane container active" id="manage-display-pane">
-        <button type="button" data-save-for="display" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="save-confirm-btn btn btn-success" data-selector="#save-room-display-btn" data-url="{% url 'manage-room-display' room_id %}">保存</button>
         <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <form class="manage-room-form" id="manage-room-display-form">
           {% csrf_token %}
@@ -168,7 +168,7 @@
         </form>
       </div>
       <div class="tab-pane container" id="manage-tab-pane">
-        <button type="button" data-save-for="tab" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="save-confirm-btn btn btn-success" data-selector="#save-room-tab-btn" data-url="{% url 'manage-room-tab' room_id %}">保存</button>
         <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <form class="manage-room-form" id="manage-room-tab-form">
           <p for="text" class="manage-headline">タブ</p>
@@ -222,7 +222,7 @@
         </form>
       </div>
       <div class="tab-pane container" id="manage-participant-pane">
-        <button type="button" data-save-for="participant" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="save-confirm-btn btn btn-success" data-selector="#save-room-participant-btn" data-url="{% url 'manage-room-participant' room_id %}">保存</button>
         <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <p class="manage-headline" for="need_approval">Room参加時に承認が必要・不要</p>
         <div class="form-check form-switch">
@@ -289,7 +289,7 @@
         </div>
       </div>
       <div class="tab-pane container" id="manage-authority-pane">
-          <button type="button" data-save-for="authority" class="save-confirm-btn btn btn-success">保存</button>
+          <button type="button" class="save-confirm-btn btn btn-success" data-selector="#save-room-authority-btn" data-url="{% url 'manage-room-authority' room_id %}">保存</button>
           <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
           <p class="manage-headline">今後の参加者に付与するデフォルト権限を設定</p>
           <div class="d-flex flex-row">
@@ -382,7 +382,7 @@
           </div>
       </div>
       <div class="tab-pane container" id="manage-post-pane">
-        <button type="button" data-save-for="reply-type" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="save-confirm-btn btn btn-success" data-selector="#save-room-reply-type-btn" data-url="{% url 'manage-room-reply-type' room_id %}">保存</button>
         <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <p class="manage-headline">返信タイプの管理</p>
         <form id="manage-reply-types-form">
@@ -401,7 +401,7 @@
         </form>
       </div>
       <div class="tab-pane container" id="manage-information-pane">
-        <button type="button" data-save-for="information" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="save-confirm-btn btn btn-success" data-selector="#save-room-information-btn" data-url="{% url 'manage-room-information' room_id %}">保存</button>
         <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <p class="manage-headline">入室する際に情報を要求</p>
         <button type="button" id="room-request-information-demo-btn" class="btn btn-secondary" data-url="{% url 'get-room-request-information' room_id %}">デモ</button>
@@ -533,7 +533,7 @@
         </div>
       </div>
       <div class="tab-pane container" id="manage-room-personal-pane">
-        <button type="button" data-save-for="room-personal" class="save-confirm-btn btn btn-success">保存</button>
+        <button type="button" class="save-confirm-btn btn btn-success" data-selector="#save-room-personal-btn" data-url="{% url 'manage-room-personal' room_id %}">保存</button>
         <button type="button" class="cancel-confirm-btn btn btn-danger">キャンセル</button>
         <form id="manage-room-personal-form">
           <p class="manage-headline">Webサイト</p>

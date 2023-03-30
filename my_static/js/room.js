@@ -209,7 +209,7 @@ $('#manage-room-approval').on('click', function() {
     toggle_need_approval($(this), 'manage-room-approval-label');
 });
 
-$(document).on('click', '.save-room-personal-button', function(){
+$(document).on('click', '#save-room-personal-btn', function(){
     var form = 'manage-room-personal-form';
     if (!form_valid(form)) {
         return false;
@@ -217,7 +217,7 @@ $(document).on('click', '.save-room-personal-button', function(){
 
     var fd = get_form_data(form, ['input']);
     $.ajax({
-        url:'/manage/room-personal/' + $('#manage-room-id').val() + '/',
+        url:$(this).data('url'),
         type:'POST',
         data:fd,
         dataType:false,
@@ -231,7 +231,7 @@ $(document).on('click', '.save-room-personal-button', function(){
     });
 });
 
-$(document).on('click', '.save-participant-button', function(){
+$(document).on('click', '#save-room-participant-btn', function(){
     var data = {
         'need_approval':$('#manage-room-approval').is(':checked'),
         'accept_users':RoomUsers['accept'],
@@ -241,7 +241,7 @@ $(document).on('click', '.save-participant-button', function(){
     }
 
     $.ajax({
-        url:'/manage/room-participant/' + $('#manage-room-id').val() + '/',
+        url:$(this).data('url'),
         type:'POST',
         data:JSON.stringify(data),
         dataType:'json',
@@ -254,9 +254,9 @@ $(document).on('click', '.save-participant-button', function(){
     });
 });
 
-$(document).on('click', '.save-reply-type-button', function(){
+$(document).on('click', '#save-room-reply-type-btn', function(){
     $.ajax({
-        url:'/manage/room-reply-type/' + $('#manage-room-id').val() + '/',
+        url:$(this).data('url'),
         type:'POST',
         data:get_form_input_data('manage-reply-types-form'),
         dataType:false,
@@ -270,8 +270,8 @@ $(document).on('click', '.save-reply-type-button', function(){
     });
 });
 
-$(document).on('click', '.save-information-button', function(){
-    var room_id = $('#manage-room-id').val();
+$(document).on('click', '#save-room-information-btn', function(){
+    var url = $(this).data('url');
     var ajax_list = [];
     var ajax_obj;
     var data_list = [];
@@ -283,7 +283,7 @@ $(document).on('click', '.save-information-button', function(){
         var fd = get_form_data($(this).attr('id'), ['input', 'select']);
         fd.append('sequence', idx+1);
         ajax_obj = $.ajax({
-            url:`/manage/room-information/${room_id}/`,
+            url:url,
             type:'POST',
             data:fd,
             dataType:false,
@@ -309,7 +309,7 @@ $(document).on('click', '.save-information-button', function(){
     });
 });
 
-$(document).on('click', '.save-authority-button', function(){
+$(document).on('click', '#save-room-authority-btn', function(){
     var data = {'checks':[], 'defa':{}};
     $('.authority-user-col').each(function(){
         var reply_check = $(this).find('.reply-check-input');
@@ -339,7 +339,7 @@ $(document).on('click', '.save-authority-button', function(){
     };
 
     $.ajax({
-        url:'/manage/room-authority/' + $('#manage-room-id').val() + '/',
+        url:$(this).data('url'),
         type:'POST',
         data:JSON.stringify(data),
         dataType:'json',
@@ -377,7 +377,7 @@ $(document).on('click change input', 'textarea.added-object-text', function() {
 });
 
 
-$(document).on('click', '.save-display-button', function(){
+$(document).on('click', '#save-room-display-btn', function(){
     var form = 'manage-room-display-form';
     if (!form_valid(form)) {
         return false;
@@ -400,7 +400,7 @@ $(document).on('click', '.save-display-button', function(){
     fd.append('links', JSON.stringify(links));
 
     $.ajax({
-        url:'/manage/room-display/' + $('#manage-room-id').val() + '/',
+        url:$(this).data('url'),
         type:'POST',
         data:fd,
         dataType:false,
@@ -414,7 +414,7 @@ $(document).on('click', '.save-display-button', function(){
     });
 });
 
-$(document).on('click', '.save-tab-button', function() {
+$(document).on('click', '#save-room-tab-btn', function() {
     var fd = new FormData();
     var tabs = [];
     var create_flag;
@@ -483,7 +483,7 @@ $(document).on('click', '.save-tab-button', function() {
     fd.append('tabs', JSON.stringify(tabs));
 
     $.ajax({
-        url:'/manage/room-tab/' + $('#manage-room-id').val() + '/',
+        url:$(this).data('url'),
         type:'POST',
         data:fd,
         dataType:false,

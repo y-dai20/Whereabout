@@ -113,7 +113,7 @@ $('#send-mail-for-reset-password-btn').on('click', function(){
     remove_spinner();
 });
 
-$(document).on('click', '.save-user-button', function() {
+$(document).on('click', '#save-user-btn', function() {
     var form = 'manage-user-form';
     if (!form_valid(form)) {
         return false;
@@ -122,7 +122,7 @@ $(document).on('click', '.save-user-button', function() {
     fd = get_img_preview_files('user-img', fd);
 
     $.ajax({
-        url:'/profile/',
+        url:$(this).data('url'),
         type:'POST',
         data:fd,
         dataType:false,

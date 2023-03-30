@@ -230,8 +230,7 @@ $(document).on('click', '.block-btn', function(){
 });
 
 $('.save-confirm-btn').on('click', function(){
-    var save_for = $(this).data('save-for');
-    show_modal_message('確認', ['保存しますか'], get_confirm_button('保存', `save-${save_for}-button`));
+    show_modal_message('確認', ['保存しますか'], get_confirm_button('保存', $(this).data('selector'), $(this).data('url')));
 });
 $('.cancel-confirm-btn').on('click', function(){
     show_modal_message('確認', ['変更内容をキャンセルしますか'], '<a onclick="location.reload()" type="button" class="btn btn-danger" data-bs-dismiss="modal">キャンセル</a>');
