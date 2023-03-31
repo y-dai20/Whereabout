@@ -117,7 +117,7 @@ function get_post_content(post) {
     var html = `<div class="post-content">
             ${get_tags(post.post_tags, post.index_url)}
             <span class="post-title">${escapeHTML(post.title)}</span><br>
-            <span class="post-text">${adapt_linebreaks(escapeHTML(post.text))}</span><br>
+            <span class="post-text">${adapt_linebreaks(get_auto_link(escapeHTML(post.text)))}</span><br>
             <span class="post-source">${get_item_source(post.source)}</span>
         </div>
         <div class="file-content text-center">

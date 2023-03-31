@@ -747,3 +747,13 @@ function get_cls_obj(str) {
     str = str.startsWith('.') ? str : '.' + str;
     return $(str);
 }
+
+function get_auto_link(str) {
+    let regexp_url = /((h?)(ttps?:\/\/[a-zA-Z0-9.\-_@:/~?%&;=+#',()*!]+))/g;
+    let regexp_makeLink = function(all, url, h, href) {
+        var _url = new URL(url);
+        return '<a href="h' + href + '" target="_blank">' + _url.host + '</a>';
+    }
+    let textWithLink = str.replace(regexp_url, regexp_makeLink);
+    return textWithLink;
+}

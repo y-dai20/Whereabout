@@ -329,7 +329,7 @@ function set_object(tab, row, column, data) {
         drop_area.append(`<h3 class="break-word tab-title-style">${escapeHTML(data.title)}</span></h3>`);
     } else if (escapeHTML(data.text) != '') {
         drop_area.addClass('tab-text-content');
-        drop_area.append(`<pre class="break-word tab-text-style">${escapeHTML(data.text)}</pre>`);
+        drop_area.append(`<pre class="break-word tab-text-style">${get_auto_link(escapeHTML(data.text))}</pre>`);
     } else if (escapeHTML(data.img) != '') {
         drop_area.append(`<img class="img-fluid corner-circle tab-img-style" src="/media/${escapeHTML(data.img)}">`);
     }
